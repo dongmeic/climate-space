@@ -1,2 +1,2 @@
 # climate-space
-Repository for the climate space project
+A repository for the climate space project
