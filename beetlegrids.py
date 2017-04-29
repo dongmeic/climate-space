@@ -117,4 +117,4 @@ except:
 
 stop = timeit.default_timer()
 print stop - start
-#9990.35717139
+
