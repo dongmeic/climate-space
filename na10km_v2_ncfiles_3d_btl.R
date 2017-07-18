@@ -38,8 +38,8 @@ time_def <- ncvar_def(dlname,tunits,list(tdim),NULL,dlname,prec="integer")
 
 
 # mpb
-ncfname <- paste(ncpath,"na10km_v2_mpb_presence.nc", sep="")
-csvfile <- "na10km_presence_details.csv"
+ncfname <- paste(ncpath,"prs/na10km_v2_mpb_presence.nc", sep="")
+csvfile <- "na10km_presence_details_all_3.csv"
 dname <- "mpb_prs"
 dlname <- "Mountain pine beetle presence"
 dunits <- "binary"
@@ -47,7 +47,6 @@ dunits <- "binary"
 # read and reshape
 print("read beetle presence data")
 indata <- read.csv(paste(csvpath, csvfile, sep=""))
-indata <- indata[,-1]
 str(indata)
 print("done!")
 
@@ -112,11 +111,11 @@ print("add more beetle presence data")
 for (i in 1:length(species)){
   print(i)
   pinenm = paste(species[i], "_mpb_prs", sep="")
-  pinelnm = paste("Mountain pine beetle in", species[i], "pine", sep="")
+  pinelnm = paste("Mountain pine beetle in ", species[i], " pine", sep="")
   pine_def <- ncvar_def(pinenm, dunits, list(xdim, ydim, tdim), fillvalue,pinelnm, prec = "float")
   ncout <- ncvar_add(ncout, pine_def)
   temp_array <- array(fillvalue, dim = c(nx,ny,nt))
-  temp_array[cbind(j2,k2,m)] <- as.matrix(indata[1:nobs,(34+nt*(i-1)):(33+nt*i)])  
+  temp_array[cbind(j2,k2,m)] <- as.matrix(indata[1:nobs,(35+nt*(i-1)):(34+nt*i)])  
   ncvar_put(ncout, pine_def, temp_array)
 }
 print("done!")
@@ -127,7 +126,7 @@ print("add more beetle presence data")
 var_def <- ncvar_def(dname,dunits,list(xdim,ydim,tdim),fillvalue,dlname,prec="float")
 ncout <- ncvar_add(ncout, var_def)
 temp_array <- array(fillvalue, dim = c(nx,ny,nt))
-temp_array[cbind(j2,k2,m)] <- as.matrix(indata[1:nobs,154:168]) 
+temp_array[cbind(j2,k2,m)] <- as.matrix(indata[1:nobs,155:169]) 
 ncvar_put(ncout, var_def, temp_array)
 
 # close the file, writing data to disk

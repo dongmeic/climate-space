@@ -12,6 +12,7 @@ library(geosphere)
 # open CRU netCDF file to get dimensions, etc.
 crupath <- "/home2/dongmeic/beetle/ncfiles/cru_ts4.00/derived/"
 crufile <- "cru_ts4.00.1901.2015.pre.anm3d.nc"
+out <- "/home2/dongmeic/beetle/output/maps/"
 cru_ncfile <- paste(crupath,crufile,sep="")
 ncin <- nc_open(cru_ncfile)
 print(ncin)
