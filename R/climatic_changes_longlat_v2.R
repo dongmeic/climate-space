@@ -120,26 +120,26 @@ print("calculate long term means")
 ptm <- proc.time()
 for (k in 1:(nt+1)){
 	if (k > 1 && k < (nt+1)){
-		cpos[,,(k-1)] <- apply(abind(pre_ltm[,,10:12,(k-1):k],pre_ltm[,,1:9,k:(k+1)],along=3),c(1,2),sum)
+		cpos[,,(k-1)] <- apply(abind(pre[,,10:12,(k-1):k],pre[,,1:9,k:(k+1)],along=3),c(1,2),sum)
 	} 
 	if (k > 1){
-		mat[,,(k-1)] <- apply(abind(tmp_ltm[,,10:12,(k-1)],tmp_ltm[,,1:9,k],along=3),c(1,2),mean)
-		map[,,(k-1)] <- apply(abind(pre_ltm[,,10:12,(k-1)],pre_ltm[,,1:9,k],along=3),c(1,2),mean)
-		cpja[,,(k-1)] <- apply(abind(pre_ltm[,,6:8,(k-1):k],along=3),c(1,2),sum)
-		pos[,,(k-1)] <- apply(abind(pre_ltm[,,10:12,(k-1)],pre_ltm[,,1:9,k],along=3),c(1,2),sum)		
+		mat[,,(k-1)] <- apply(abind(tmp[,,10:12,(k-1)],tmp[,,1:9,k],along=3),c(1,2),mean)
+		map[,,(k-1)] <- apply(abind(pre[,,10:12,(k-1)],pre[,,1:9,k],along=3),c(1,2),mean)
+		cpja[,,(k-1)] <- apply(abind(pre[,,6:8,(k-1):k],along=3),c(1,2),sum)
+		pos[,,(k-1)] <- apply(abind(pre[,,10:12,(k-1)],pre[,,1:9,k],along=3),c(1,2),sum)		
 	}
 	if (k < (nt+1)){
-		ntw[,,k] <- apply(abind(tmn_ltm[,,12,k],tmn_ltm[,,1:2,(k+1)],along=3),c(1,2),min)
+		ntw[,,k] <- apply(abind(tmn[,,12,k],tmn[,,1:2,(k+1)],along=3),c(1,2),min)
 	}
-	mtaa[,,k] <- apply(abind(tmp_ltm[,,4:8,k], along=3),c(1,2),mean)
-	mta[,,k] <- tmp_ltm[,,8,k]
-	nto[,,k] <- tmn_ltm[,,10,k]
-	ntj[,,k] <- tmn_ltm[,,1,k]
-	ntm[,,k] <- tmn_ltm[,,3,k]
-	xta[,,k] <- tmx_ltm[,,8,k]
-	pja[,,k] <- apply(abind(pre_ltm[,,6:8,k],along=3),c(1,2),sum)
-	gsp[,,k] <- apply(abind(pre_ltm[,,4:6,k],along=3),c(1,2),sum)
-	vgp[,,k] <- apply(abind(pre_ltm[,,4:6,k],along=3),c(1,2),function(x) sqrt(var(x))/mean(x))
+	mtaa[,,k] <- apply(abind(tmp[,,4:8,k], along=3),c(1,2),mean)
+	mta[,,k] <- tmp[,,8,k]
+	nto[,,k] <- tmn[,,10,k]
+	ntj[,,k] <- tmn[,,1,k]
+	ntm[,,k] <- tmn[,,3,k]
+	xta[,,k] <- tmx[,,8,k]
+	pja[,,k] <- apply(abind(pre[,,6:8,k],along=3),c(1,2),sum)
+	gsp[,,k] <- apply(abind(pre[,,4:6,k],along=3),c(1,2),sum)
+	vgp[,,k] <- apply(abind(pre[,,4:6,k],along=3),c(1,2),function(x) sqrt(var(x))/mean(x))
 	print(k)
 }
 proc.time() - ptm
@@ -177,7 +177,7 @@ vgp_ltm <- apply(vgp,c(1,2),mean,na.rm=TRUE)
 vgp_std <- apply(vgp,c(1,2),sd,na.rm=TRUE)
 
 # read vegetation and bettle presence data
-prs_path <- "/home2/dongmeic/beetle/ncfiles/na10km_v2/prs/"
+prs_path <- "/projects/bonelab/dongmeic/beetle/ncfiles/na10km_v2/prs/"
 vgt_ncfile <- "na10km_v2_presence_pines.nc"
 ncin_vgt <- nc_open(paste(prs_path,vgt_ncfile,sep=""))
 print(ncin_vgt)
@@ -189,7 +189,7 @@ btl <- ncvar_get(ncin_btl,"mpb_prs")
 
 print("get 3d array for climatic variables")
 ptm <- proc.time()
-for (yr in 1:nyr){
+for (yr in 98:112){
 	# 1. annual mean temperature
 	mat_slice <- apply(abind(tmp[,,10:12,(yr+1)],tmp[,,1:9,(yr+2)],along=3),c(1,2),mean)
 	matstd_slice <- (mat_slice - mat_ltm)/mat_std
@@ -304,7 +304,7 @@ for (yr in 1:nyr){
 	vgt_vgp <- vgp_slice * vgt
 	
 	vgt_mat_msk <- vgt_mat[!is.na(landmask)] 
-	vgt_mtaa_msk <- vgt_mtaa[!is.na(landmask)] 
+	vgt_mtaa_msk <- vgt_mtaa[!is.na(landmask)]
 	vgt_mta_msk <- vgt_mta[!is.na(landmask)] 
 	vgt_ntw_msk <- vgt_ntw[!is.na(landmask)] 
 	vgt_nto_msk <- vgt_nto[!is.na(landmask)] 
@@ -320,7 +320,8 @@ for (yr in 1:nyr){
 	vgt_vgp_msk <- vgt_vgp[!is.na(landmask)] 
 	
 	# get climate data with the presence of all mpb
-	btl_slice <- btl[,,yr]
+	btlyr <- yr-97
+	btl_slice <- btl[,,btlyr]
 	btl_slice[btl_slice==0] <- NA
 	btl_mat <- mat_slice * btl_slice
 	btl_mtaa <- mtaa_slice * btl_slice
@@ -420,7 +421,7 @@ for (yr in 1:nyr){
 	btl_vgpstd_msk <- btl_vgpstd[!is.na(landmask)] 
 	
 	# get array data
-	if (yr == 1){
+	if (btlyr == 1){
 		print(paste0("start to reshape 2d to 3d in year ", years[yr]))
 		mat <- abind(mat_slice, vgt_mat, btl_mat, along=3) 
 		mtaa <- abind(mtaa_slice, vgt_mtaa, btl_mtaa, along=3)
@@ -595,6 +596,7 @@ n <- 15
 ntm_slice_3d <- ntm_4d[,,2,n]
 grid <- expand.grid(x=x, y=y)
 cutpts <- c(-50,-25,-10,-5,0,5,10,15,25,40,50)
+options(bitmapType='cairo')
 png(file=paste(out,"na10km_v2_ntm_tree_",end_year,".png",sep=""))
 levelplot(ntm_slice_3d ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 
           col.regions=(rev(brewer.pal(10,"RdBu"))))
@@ -604,12 +606,13 @@ dev.off()
 mapstd_slice_4d <- mapstd_4d[,,3,n]
 grid <- expand.grid(x=x, y=y)
 cutpts <- c(-5,-4,-3,-2,-1,0,1,2,3,4,5)
+options(bitmapType='cairo')
 png(file=paste(out,"na10km_v2_mapstd_beetle_",end_year,".png",sep=""))
 levelplot(mapstd_slice_4d ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 
           col.regions=(rev(brewer.pal(10,"RdBu"))))
 dev.off()
 
-csvpath <- "/home2/dongmeic/beetle/csvfiles/"
+csvpath <- "/projects/bonelab/dongmeic/beetle/csvfiles/"
 na10km_2d <- read.csv(paste0(csvpath, "na10km_v2.csv"))
 
 if (all(sapply(list(mat_msk, mtaa_msk, mta_msk, ntw_msk, nto_msk, ntj_msk, ntm_msk, xta_msk,
@@ -624,8 +627,8 @@ cpjastd_msk, pjastd_msk, cposstd_msk, posstd_msk, gspstd_msk, vgpstd_msk), funct
 	xtastd_msk, mapstd_msk, cpjastd_msk, pjastd_msk, cposstd_msk, posstd_msk, gspstd_msk, vgpstd_msk)
  
 	print("write csvfiles...")
-	write.csv(na10km_2d_n1, paste0(csvpath,"climatic_variables_longlat_var.csv"))
-	write.csv(na10km_2d_n2, paste0(csvpath,"climatic_variables_longlat_std.csv"))
+	write.csv(na10km_2d_n1, paste0(csvpath,"climatic_variables_longlat_var_v2.csv"))
+	write.csv(na10km_2d_n2, paste0(csvpath,"climatic_variables_longlat_std_v2.csv"))
 	
 } else{
 	
@@ -636,4 +639,151 @@ cpjastd_msk, pjastd_msk, cposstd_msk, posstd_msk, gspstd_msk, vgpstd_msk), funct
 
 }
 
+# print("try again...")
+# print("convert the 3d array to 2d for climatic variables")
+ptm <- proc.time()
+for (yr in 1:112){
+	# 1. annual mean temperature
+	mat_slice <- apply(abind(tmp[,,10:12,(yr+1)],tmp[,,1:9,(yr+2)],along=3),c(1,2),mean)
+	# matstd_slice <- (mat_slice - mat_ltm)/mat_std
+	
+	# 2. mean temperature between April and August (in the current year)
+	mtaa_slice <- apply(abind(tmp[,,4:8,(yr+2)],along=3),c(1,2),mean)
+	# mtaastd_slice <- (mtaa_slice - mtaa_ltm)/mtaa_std
+
+	# 3. current year August mean temperature
+	mta_slice <- tmp[,,8,(yr+2)]
+	# mtastd_slice <- (mta_slice - mta_ltm)/mta_std
+
+	# winter as December, January, February
+	winter <- abind(tmn[,,12,(yr+1)],tmn[,,1:2,(yr+2)],along=3)
+	# 4. winter monthly average daily minimum
+	ntw_slice <- apply(winter,c(1,2),min)
+	# ntwstd_slice <- (ntw_slice - ntw_ltm)/ntm_std
+
+	# 5. October monthly average daily minimum
+	nto_slice <- tmn[,,10,(yr+1)]
+	# ntostd_slice <- (nto_slice - nto_ltm)/nto_std
+
+	# 6. January monthly average daily minimum
+	ntj_slice <- tmn[,,1,(yr+2)]
+	# ntjstd_slice <- (ntj_slice - ntj_ltm)/ntj_std
+
+	# 7. March monthly average daily minimum
+	ntm_slice <- tmn[,,3,(yr+2)]
+	# ntmstd_slice <- (ntm_slice - ntm_ltm)/ntm_std
+
+	# 8. August monthly average daily maximum (in the current year)
+	xta_slice <- tmx[,,8,(yr+2)]
+	# xtastd_slice <- (xta_slice - xta_ltm)/xta_std
+
+	# 9. mean annual precipitation
+	map_slice <- apply(abind(pre[,,10:12,(yr+1)],pre[,,1:9,(yr+2)],along=3),c(1,2),mean)
+	# mapstd_slice <- (map_slice - map_ltm)/map_std
+
+	# 10. cumulative precipitation from June to August in the current and previous years
+	cpja_slice <- apply(abind(pre[,,6:8,(yr+1):(yr+2)],along=3),c(1,2),sum)
+	# cpjastd_slice <- (cpja_slice - cpja_ltm)/cpja_std
+
+	# 11. precipitation from June to August in the previous year
+	pja_slice <- apply(abind(pre[,,6:8,(yr+1)],along=3),c(1,2),sum)
+	# pjastd_slice <- (pja_slice - pja_ltm)/pja_std
+
+	# 12. cumulative precipitation from October to September in the current and previous years
+	cpos_slice <- apply(abind(pre[,,10:12,yr:(yr+1)],pre[,,1:9,(yr+1):(yr+2)],along=3),c(1,2),sum)
+	# cposstd_slice <- (cpos_slice - cpos_ltm)/cpos_std
+
+	# 13. precipitation from October to September in the previous year
+	pos_slice <- apply(abind(pre[,,10:12,yr],pre[,,1:9,(yr+1)],along=3),c(1,2),sum)
+	# posstd_slice <- (pos_slice - pos_ltm)/pos_std
+
+	# 14. total growing season precipitation
+	gsp_slice <- apply(pre[,,4:6,(yr+2)],c(1,2),sum)
+	# gspstd_slice <- (gsp_slice - gsp_ltm)/gsp_std
+
+	# 15. variability of growing season precipitation
+	vgp_slice <- apply(abind(pre[,,4:6,(yr+2)],along=3),c(1,2),function(x) sqrt(var(x))/mean(x))
+	# vgpstd_slice <- (vgp_slice - vgp_ltm)/vgp_std
+	
+	# mask the points in land
+	mat_slice_msk <- mat_slice[!is.na(landmask)]
+	mtaa_slice_msk <- mtaa_slice[!is.na(landmask)] 
+	mta_slice_msk <- mta_slice[!is.na(landmask)]
+	ntw_slice_msk <- ntw_slice[!is.na(landmask)] 
+	nto_slice_msk <- nto_slice[!is.na(landmask)] 
+	ntj_slice_msk <- ntj_slice[!is.na(landmask)] 
+	ntm_slice_msk <- ntm_slice[!is.na(landmask)] 
+	xta_slice_msk <- xta_slice[!is.na(landmask)] 
+	map_slice_msk <- map_slice[!is.na(landmask)] 
+	cpja_slice_msk <- cpja_slice[!is.na(landmask)] 
+	pja_slice_msk <- pja_slice[!is.na(landmask)]  
+	cpos_slice_msk <- cpos_slice[!is.na(landmask)] 
+	pos_slice_msk <- pos_slice[!is.na(landmask)] 
+	gsp_slice_msk <- gsp_slice[!is.na(landmask)] 
+	vgp_slice_msk <- vgp_slice[!is.na(landmask)] 
+	
+	# get array data
+	if (yr == 1){
+		# reshape to 2d
+		print(paste0("start to reshape 2d to 1d in year ", years[yr]))
+		mat_msk <- cbind(mat_slice_msk) 
+		mtaa_msk <- cbind(mtaa_slice_msk)
+		mta_msk <- cbind(mta_slice_msk)
+		ntw_msk <- cbind(ntw_slice_msk)
+		nto_msk <- cbind(nto_slice_msk)
+		ntj_msk <- cbind(ntj_slice_msk)
+		ntm_msk <- cbind(ntm_slice_msk) 
+		xta_msk <- cbind(xta_slice_msk)	
+		map_msk <- cbind(map_slice_msk)
+		cpja_msk <- cbind(cpja_slice_msk)
+		pja_msk <- cbind(pja_slice_msk)
+		cpos_msk <- cbind(cpos_slice_msk)
+		pos_msk <- cbind(pos_slice_msk)
+		gsp_msk <- cbind(gsp_slice_msk)
+		vgp_msk <- cbind(vgp_slice_msk)
+		mapstd_msk <- cbind(mapstd_slice_msk)
+		cpjastd_msk <- cbind(cpjastd_slice_msk)
+		pjastd_msk <- cbind(pjastd_slice_msk)
+		cposstd_msk <- cbind(cposstd_slice_msk)
+		posstd_msk <- cbind(posstd_slice_msk)
+		gspstd_msk <- cbind(gspstd_slice_msk)
+		vgpstd_msk <- cbind(vgpstd_slice_msk)
+		
+	} else{
+		print(paste0("start to reshape 2d to 1d in year ", years[yr]))
+		mat_msk <- cbind(mat_msk, mat_slice_msk) 
+		mtaa_msk <- cbind(mtaa_msk, mtaa_slice_msk)
+		mta_msk <- cbind(mta_msk, mta_slice_msk)
+		ntw_msk <- cbind(ntw_msk, ntw_slice_msk)
+		nto_msk <- cbind(nto_msk, nto_slice_msk)
+		ntj_msk <- cbind(ntj_msk, ntj_slice_msk)
+		ntm_msk <- cbind(ntm_msk, ntm_slice_msk) 
+		xta_msk <- cbind(xta_msk, xta_slice_msk)	
+		map_msk <- cbind(map_msk, map_slice_msk)
+		cpja_msk <- cbind(cpja_msk, cpja_slice_msk)
+		pja_msk <- cbind(pja_msk, pja_slice_msk)
+		cpos_msk <- cbind(cpos_msk, cpos_slice_msk)
+		pos_msk <- cbind(pos_msk, pos_slice_msk)
+		gsp_msk <- cbind(gsp_msk, gsp_slice_msk)
+		vgp_msk <- cbind(vgp_msk, vgp_slice_msk)		
+	}	
+	print(paste0(years[yr], " is done!"))
+}
+proc.time() - ptm
+
+if (all(sapply(list(mat_msk, mtaa_msk, mta_msk, ntw_msk, nto_msk, ntj_msk, ntm_msk, xta_msk,
+map_msk, cpja_msk, pja_msk, cpos_msk, pos_msk, gsp_msk, vgp_msk), function(x) identical(dim(x)[1],dim(na10km_2d)[1])))){
+	
+	na10km_2d_n3 <- cbind(na10km_2d, mat_msk, mtaa_msk, mta_msk, ntw_msk, nto_msk, ntj_msk, ntm_msk, xta_msk,
+	map_msk, cpja_msk, pja_msk, cpos_msk, pos_msk, gsp_msk, vgp_msk)
+
+	print("write csvfiles...")
+	write.csv(na10km_2d_n3, paste0(csvpath,"climatic_variables_longlat_var_longterm.csv"))
+	
+} else{
+	
+	sapply(list(mat_msk, mtaa_msk, mta_msk, ntw_msk, nto_msk, ntj_msk, ntm_msk, xta_msk,
+	map_msk, cpja_msk, pja_msk, cpos_msk, pos_msk, gsp_msk, vgp_msk), function(x) identical(dim(x)[1],dim(na10km_2d)[1]))
+
+}
 print("all done!")

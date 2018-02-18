@@ -9,10 +9,10 @@ library(RColorBrewer)
 library(parallel)
 library(doParallel)
 library(foreach)
-registerDoParallel(cores=12)
+registerDoParallel(cores=28)
 
 path <- "/projects/bonelab/dongmeic/beetle/ncfiles/na10km_v2/ts/"
-out <- "/projects/bonelab/dongmeic/beetle/output/20180205/"
+out <- "/projects/bonelab/dongmeic/beetle/output/20180207/"
 
 # variables
 # 1: annual mean monthly average of daily mean temperature in the past water year - mat
@@ -32,7 +32,6 @@ out <- "/projects/bonelab/dongmeic/beetle/output/20180205/"
 # 15: variability of growing season precipitation - vgp
 
 # define time parameters
-start_year = 1903; end_year = 2014;
 # near surface air temperature - tmp (1 & 2)
 print("read temperature netCDF file")
 ncfile <- "na10km_v2_cru_ts4.00.1901.2015.tmp.abs4d.nc"
@@ -123,86 +122,86 @@ dim(pre)
 nc_close(ncin_pre)
 pre[pre==fillvalue$value] <- NA
 
-years = 1903:2014; nyr <- length(years)
+years = 2000:2014; nyr <- length(years)
 # get long-term means
 # define array for long-term means
 nt <- 2015 - 1901
-mat <- array(NA, dim=c(nx,ny,nt))
-mtaa <- array(NA, dim=c(nx,ny,(nt+1)))
-mta <- array(NA, dim=c(nx,ny,(nt+1)))
-ntw <- array(NA, dim=c(nx,ny,nt))
-nto <- array(NA, dim=c(nx,ny,(nt+1)))
-ntj <- array(NA, dim=c(nx,ny,(nt+1)))
-ntm <- array(NA, dim=c(nx,ny,(nt+1)))
-xta <- array(NA, dim=c(nx,ny,(nt+1)))
-map <- array(NA, dim=c(nx,ny,nt))
-cpja <- array(NA, dim=c(nx,ny,nt))
-pja <- array(NA, dim=c(nx,ny,(nt+1)))
-cpos <- array(NA, dim=c(nx,ny,(nt-1)))
-pos <- array(NA, dim=c(nx,ny,(nt+1)))
-gsp <- array(NA, dim=c(nx,ny,(nt+1)))
-vgp <- array(NA, dim=c(nx,ny,(nt+1)))
+mat_3d <- array(NA, dim=c(nx,ny,nt))
+mtaa_3d <- array(NA, dim=c(nx,ny,(nt+1)))
+mta_3d <- array(NA, dim=c(nx,ny,(nt+1)))
+ntw_3d <- array(NA, dim=c(nx,ny,nt))
+nto_3d <- array(NA, dim=c(nx,ny,(nt+1)))
+ntj_3d <- array(NA, dim=c(nx,ny,(nt+1)))
+ntm_3d <- array(NA, dim=c(nx,ny,(nt+1)))
+xta_3d <- array(NA, dim=c(nx,ny,(nt+1)))
+map_3d <- array(NA, dim=c(nx,ny,nt))
+cpja_3d <- array(NA, dim=c(nx,ny,nt))
+pja_3d <- array(NA, dim=c(nx,ny,(nt+1)))
+cpos_3d <- array(NA, dim=c(nx,ny,(nt-1)))
+pos_3d <- array(NA, dim=c(nx,ny,(nt+1)))
+gsp_3d <- array(NA, dim=c(nx,ny,(nt+1)))
+vgp_3d <- array(NA, dim=c(nx,ny,(nt+1)))
 
 # long-term means
 print("calculate long term means")
 ptm <- proc.time()
 for (k in 1:(nt+1)){
 	if (k > 1 && k < (nt+1)){
-		cpos[,,(k-1)] <- apply(abind(pre[,,10:12,(k-1):k],pre[,,1:9,k:(k+1)],along=3),c(1,2),sum)
+		cpos_3d[,,(k-1)] <- apply(abind(pre[,,10:12,(k-1):k],pre[,,1:9,k:(k+1)],along=3),c(1,2),sum)
 	} 
 	if (k > 1){
-		mat[,,(k-1)] <- apply(abind(tmp[,,10:12,(k-1)],tmp[,,1:9,k],along=3),c(1,2),mean)
-		map[,,(k-1)] <- apply(abind(pre[,,10:12,(k-1)],pre[,,1:9,k],along=3),c(1,2),mean)
-		cpja[,,(k-1)] <- apply(abind(pre[,,6:8,(k-1):k],along=3),c(1,2),sum)
-		pos[,,(k-1)] <- apply(abind(pre[,,10:12,(k-1)],pre[,,1:9,k],along=3),c(1,2),sum)		
+		mat_3d[,,(k-1)] <- apply(abind(tmp[,,10:12,(k-1)],tmp[,,1:9,k],along=3),c(1,2),mean)
+		map_3d[,,(k-1)] <- apply(abind(pre[,,10:12,(k-1)],pre[,,1:9,k],along=3),c(1,2),mean)
+		cpja_3d[,,(k-1)] <- apply(abind(pre[,,6:8,(k-1):k],along=3),c(1,2),sum)
+		pos_3d[,,(k-1)] <- apply(abind(pre[,,10:12,(k-1)],pre[,,1:9,k],along=3),c(1,2),sum)		
 	}
 	if (k < (nt+1)){
-		ntw[,,k] <- apply(abind(tmn[,,12,k],tmn[,,1:2,(k+1)],along=3),c(1,2),min)
+		ntw_3d[,,k] <- apply(abind(tmn[,,12,k],tmn[,,1:2,(k+1)],along=3),c(1,2),min)
 	}
-	mtaa[,,k] <- apply(abind(tmp[,,4:8,k], along=3),c(1,2),mean)
-	mta[,,k] <- tmp[,,8,k]
-	nto[,,k] <- tmn[,,10,k]
-	ntj[,,k] <- tmn[,,1,k]
-	ntm[,,k] <- tmn[,,3,k]
-	xta[,,k] <- tmx[,,8,k]
-	pja[,,k] <- apply(abind(pre[,,6:8,k],along=3),c(1,2),sum)
-	gsp[,,k] <- apply(abind(pre[,,4:6,k],along=3),c(1,2),sum)
-	vgp[,,k] <- apply(abind(pre[,,4:6,k],along=3),c(1,2),function(x) sqrt(var(x))/mean(x))
+	mtaa_3d[,,k] <- apply(abind(tmp[,,4:8,k], along=3),c(1,2),mean)
+	mta_3d[,,k] <- tmp[,,8,k]
+	nto_3d[,,k] <- tmn[,,10,k]
+	ntj_3d[,,k] <- tmn[,,1,k]
+	ntm_3d[,,k] <- tmn[,,3,k]
+	xta_3d[,,k] <- tmx[,,8,k]
+	pja_3d[,,k] <- apply(abind(pre[,,6:8,k],along=3),c(1,2),sum)
+	gsp_3d[,,k] <- apply(abind(pre[,,4:6,k],along=3),c(1,2),sum)
+	vgp_3d[,,k] <- apply(abind(pre[,,4:6,k],along=3),c(1,2),function(x) sqrt(var(x))/mean(x))
 	print(k)
 }
 proc.time() - ptm
 
 print("calculate standard deviations")
-mat_ltm <- apply(mat,c(1,2),mean,na.rm=TRUE)
-mat_std <- apply(mat,c(1,2),sd,na.rm=TRUE)
-mtaa_ltm <- apply(mtaa,c(1,2),mean,na.rm=TRUE)
-mtaa_std <- apply(mtaa,c(1,2),sd,na.rm=TRUE)
-mta_ltm <- apply(mta,c(1,2),mean,na.rm=TRUE)
-mta_std <- apply(mta,c(1,2),sd,na.rm=TRUE)
-ntw_ltm <- apply(ntw,c(1,2),mean,na.rm=TRUE)
-ntw_std <- apply(ntw,c(1,2),sd,na.rm=TRUE)
-nto_ltm <- apply(nto,c(1,2),mean,na.rm=TRUE)
-nto_std <- apply(nto,c(1,2),sd,na.rm=TRUE)
-ntj_ltm <- apply(ntj,c(1,2),mean,na.rm=TRUE)
-ntj_std <- apply(ntj,c(1,2),sd,na.rm=TRUE)
-ntm_ltm <- apply(ntm,c(1,2),mean,na.rm=TRUE)
-ntm_std <- apply(ntm,c(1,2),sd,na.rm=TRUE)
-xta_ltm <- apply(xta,c(1,2),mean,na.rm=TRUE)
-xta_std <- apply(xta,c(1,2),sd,na.rm=TRUE)
-map_ltm <- apply(map,c(1,2),mean,na.rm=TRUE)
-map_std <- apply(map,c(1,2),sd,na.rm=TRUE)
-cpja_ltm <- apply(cpja,c(1,2),mean,na.rm=TRUE)
-cpja_std <- apply(cpja,c(1,2),sd,na.rm=TRUE)
-cpos_ltm <- apply(cpos,c(1,2),mean,na.rm=TRUE)
-cpos_std <- apply(cpos,c(1,2),sd,na.rm=TRUE)
-pja_ltm <- apply(pja,c(1,2),mean,na.rm=TRUE)
-pja_std <- apply(pja,c(1,2),sd,na.rm=TRUE)
-pos_ltm <- apply(pos,c(1,2),mean,na.rm=TRUE)
-pos_std <- apply(pos,c(1,2),sd,na.rm=TRUE)
-gsp_ltm <- apply(gsp,c(1,2),mean,na.rm=TRUE)
-gsp_std <- apply(gsp,c(1,2),sd,na.rm=TRUE)
-vgp_ltm <- apply(vgp,c(1,2),mean,na.rm=TRUE)
-vgp_std <- apply(vgp,c(1,2),sd,na.rm=TRUE)
+mat_ltm <- apply(mat_3d,c(1,2),mean,na.rm=TRUE)
+mat_std <- apply(mat_3d,c(1,2),sd,na.rm=TRUE)
+mtaa_ltm <- apply(mtaa_3d,c(1,2),mean,na.rm=TRUE)
+mtaa_std <- apply(mtaa_3d,c(1,2),sd,na.rm=TRUE)
+mta_ltm <- apply(mta_3d,c(1,2),mean,na.rm=TRUE)
+mta_std <- apply(mta_3d,c(1,2),sd,na.rm=TRUE)
+ntw_ltm <- apply(ntw_3d,c(1,2),mean,na.rm=TRUE)
+ntw_std <- apply(ntw_3d,c(1,2),sd,na.rm=TRUE)
+nto_ltm <- apply(nto_3d,c(1,2),mean,na.rm=TRUE)
+nto_std <- apply(nto_3d,c(1,2),sd,na.rm=TRUE)
+ntj_ltm <- apply(ntj_3d,c(1,2),mean,na.rm=TRUE)
+ntj_std <- apply(ntj_3d,c(1,2),sd,na.rm=TRUE)
+ntm_ltm <- apply(ntm_3d,c(1,2),mean,na.rm=TRUE)
+ntm_std <- apply(ntm_3d,c(1,2),sd,na.rm=TRUE)
+xta_ltm <- apply(xta_3d,c(1,2),mean,na.rm=TRUE)
+xta_std <- apply(xta_3d,c(1,2),sd,na.rm=TRUE)
+map_ltm <- apply(map_3d,c(1,2),mean,na.rm=TRUE)
+map_std <- apply(map_3d,c(1,2),sd,na.rm=TRUE)
+cpja_ltm <- apply(cpja_3d,c(1,2),mean,na.rm=TRUE)
+cpja_std <- apply(cpja_3d,c(1,2),sd,na.rm=TRUE)
+cpos_ltm <- apply(cpos_3d,c(1,2),mean,na.rm=TRUE)
+cpos_std <- apply(cpos_3d,c(1,2),sd,na.rm=TRUE)
+pja_ltm <- apply(pja_3d,c(1,2),mean,na.rm=TRUE)
+pja_std <- apply(pja_3d,c(1,2),sd,na.rm=TRUE)
+pos_ltm <- apply(pos_3d,c(1,2),mean,na.rm=TRUE)
+pos_std <- apply(pos_3d,c(1,2),sd,na.rm=TRUE)
+gsp_ltm <- apply(gsp_3d,c(1,2),mean,na.rm=TRUE)
+gsp_std <- apply(gsp_3d,c(1,2),sd,na.rm=TRUE)
+vgp_ltm <- apply(vgp_3d,c(1,2),mean,na.rm=TRUE)
+vgp_std <- apply(vgp_3d,c(1,2),sd,na.rm=TRUE)
 
 # read vegetation and bettle presence data
 prs_path <- "/projects/bonelab/dongmeic/beetle/ncfiles/na10km_v2/prs/"
@@ -217,7 +216,7 @@ btl <- ncvar_get(ncin_btl,"mpb_prs")
 
 print("get 3d array for climatic variables")
 ptm <- proc.time()
-for (yr in 1:nyr){
+for (yr in 98:112){
 	# 1. annual mean temperature
 	mat_slice <- apply(abind(tmp[,,10:12,(yr+1)],tmp[,,1:9,(yr+2)],along=3),c(1,2),mean)
 	matstd_slice <- (mat_slice - mat_ltm)/mat_std
@@ -299,7 +298,8 @@ for (yr in 1:nyr){
 	vgt_vgp <- vgp_slice * vgt
 	
 	# get climate data with the presence of all mpb
-	btl_slice <- btl[,,yr]
+	btlyr <- yr-97
+	btl_slice <- btl[,,btlyr]
 	btl_slice[btl_slice==0] <- NA
 	btl_mat <- mat_slice * btl_slice
 	btl_mtaa <- mtaa_slice * btl_slice
@@ -351,8 +351,8 @@ for (yr in 1:nyr){
 	btl_vgpstd <- vgpstd_slice * btl_slice
 	
 	# get array data
-	if (yr == 1){
-		print(paste0("start to reshape 2d to 3d in year ", years[yr]))
+	if (btlyr == 1){
+		print(paste0("start to reshape 2d to 3d in year ", years[btlyr]))
 		mat <- abind(mat_slice, vgt_mat, btl_mat, along=3) 
 		mtaa <- abind(mtaa_slice, vgt_mtaa, btl_mtaa, along=3)
 		mta <- abind(mta_slice, vgt_mta, btl_mta, along=3)
@@ -385,7 +385,7 @@ for (yr in 1:nyr){
 		vgpstd <- abind(vgpstd_slice, vgt_vgpstd, btl_vgpstd, along=3)
 					
 	} else{
-		print(paste0("start to reshape 2d to 3d in year ", years[yr]))
+		print(paste0("start to reshape 2d to 3d in year ", years[btlyr]))
 		mat <- abind(mat, mat_slice, vgt_mat, btl_mat, along=3) 
 		mtaa <- abind(mtaa, mtaa_slice, vgt_mtaa, btl_mtaa, along=3)
 		mta <- abind(mta, mta_slice, vgt_mta, btl_mta, along=3)
@@ -418,7 +418,7 @@ for (yr in 1:nyr){
 		vgpstd <- abind(vgpstd, vgpstd_slice, vgt_vgpstd, btl_vgpstd, along=3)
 		
 	}
-	print(paste0(years[yr], " is done!"))
+	print(paste0(years[btlyr], " is done!"))
 }
 proc.time() - ptm
 
@@ -457,11 +457,13 @@ gspstd_4d <- array(gspstd, dim=c(nx,ny,nv,nyr))
 vgpstd_4d <- array(vgpstd, dim=c(nx,ny,nv,nyr))
 
 print("quick maps...")
+start_year = 2000; end_year = 2014;
 # quick maps to check data
 n <- 15
 mat_slice_3d <- mat_4d[,,2,n]
 grid <- expand.grid(x=x, y=y)
 cutpts <- c(-50,-25,-10,-5,0,5,10,15,25,40,50)
+options(bitmapType='cairo')
 png(file=paste(out,"na10km_v2_mat_tree_",end_year,".png",sep=""))
 levelplot(mat_slice_3d ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 
           col.regions=(rev(brewer.pal(10,"RdBu"))))
@@ -471,6 +473,7 @@ dev.off()
 gspstd_slice_4d <- gspstd_4d[,,3,n]
 grid <- expand.grid(x=x, y=y)
 cutpts <- c(-5,-4,-3,-2,-1,0,1,2,3,4,5)
+options(bitmapType='cairo')
 png(file=paste(out,"na10km_v2_gspstd_beetle_",end_year,".png",sep=""))
 levelplot(gspstd_slice_4d ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 
           col.regions=(rev(brewer.pal(10,"RdBu"))))
@@ -556,7 +559,7 @@ c(cpjastd_m),c(pjastd_m),c(cposstd_m),c(posstd_m),c(gspstd_m),c(vgpstd_m)), func
 	c(xtastd_m), c(map_m), c(cpja_m), c(pja_m),c(cpos_m),c(pos_m),c(gsp_m),c(vgp_m),c(mapstd_m),
 	c(cpjastd_m),c(pjastd_m),c(cposstd_m),c(posstd_m),c(gspstd_m),c(vgpstd_m))
 	print("write a csvfile...")
-	write.csv(na10km_2d_n, paste0(csvpath,"climatic_variables_beetle.csv"), row.names=FALSE)
+	write.csv(na10km_2d_n, paste0(csvpath,"climatic_variables_beetle_v2.csv"), row.names=FALSE)
 	
 }else{
 
@@ -608,6 +611,7 @@ cposstd_4d,posstd_4d,gspstd_4d,vgpstd_4d, along=4)
 
 # write 4d data in a loop
 print("start to write 4d data")
+
 dnames <- c("mat", "mtaa", "mta", "ntw", "nto", "ntj", "ntm", "xta","matstd", "mtaastd", "mtastd", 
 "ntwstd", "ntostd", "ntjstd", "ntmstd", "xtastd", "map", "cpja", "pja", "cpos", "pos", 
 "gsp", "vgp", "mapstd", "cpjastd", "pjastd", "cposstd", "posstd", "gspstd", "vgpstd") 
@@ -646,9 +650,7 @@ dlongnames <- c("Annual mean monthly average of daily mean temperature in the pa
 dunits <- c("°C","°C","°C","°C","°C","°C","°C","°C","","","","","","","","","mm","mm","mm","mm","mm","mm","","","","","","","","")
 
 d1 <- dim(var_all_4d)[1];d2 <- dim(var_all_4d)[2];d3 <- dim(var_all_4d)[3];d4 <- (dim(var_all_4d)[4])/(length(dnames))
-
 ptm <- proc.time() # timer
-
 foreach(i=1:30) %dopar%{
 
 	filenm <- paste0("na10km_v2_",dnames[i],"_",start_year,".",end_year,".4d.nc")
@@ -706,6 +708,100 @@ foreach(i=1:30) %dopar%{
 	ncatt_put(ncout,0,"source","generated by climatic_variables_ncfiles_v2.R")
 	history <- paste("D. Chen", date(), sep=", ")
 	ncatt_put(ncout,0,"history",history)
+	ncatt_put(ncout,0,"base_period","2000-2014")
+	ncatt_put(ncout,0,"Conventions","CF-1_6")
+
+	# close the file, writing data to disk
+	nc_close(ncout)
+	print(paste0("writing netCDF file for ", dnames[i], " is done!"))
+}
+proc.time() - ptm
+
+# combine all 3d for a loop
+var_all_3d <- abind(mat_3d[,,2:113],mtaa_3d[,,3:114],mta_3d[,,3:114],ntw_3d[,,2:113],nto_3d[,,2:113],ntj_3d[,,3:114],ntm_3d[,,3:114],xta_3d[,,3:114],
+map_3d[,,2:113],cpja_3d[,,2:113],pja_3d[,,3:114],cpos_3d[,,1:112],pos_3d[,,2:113],gsp_3d[,,3:114],vgp_3d[,,3:114],along=3)
+
+start_year = 1903; end_year = 2014;
+nyr <- end_year - start_year + 1
+# write 3d data in a loop
+print("start to write 3d data")
+dnames <- c("mat", "mtaa", "mta", "ntw", "nto", "ntj", "ntm", "xta", "map", "cpja", "pja", "cpos", "pos", "gsp", "vgp") 
+
+dlongnames <- c("Annual mean monthly average of daily mean temperature in the past water year - mat",
+  "Mean of monthly average of daily mean temperature from April to August - mtaa",
+  "Monthly average of daily mean temperature in August - mta",
+  "Minimum of monthly average of daily minimum temperature between Dec and Feb - ntw",
+  "Monthly average of daily minimum temperature in October - nto",
+  "Monthly average of daily minimum temperature in January - ntj",
+  "Monthly average of daily minimum temperature in March - ntm",
+  "Monthly average of daily maximum temperature in August - xta",
+  "Mean annual precipitation in the past water year - map",
+  "Cumulative precipitation from June to August the current and previous year - cpja",
+  "Precipitation from June to August the previous year - pja",
+  "Cumulative precipitation from October to September the current and previous year - cpos",
+  "Precipitation from October to September the previous year - pos",
+  "Growing season precipitation the current year - gsp",
+  "Variability of growing season precipitation - vgp")
+
+dunits <- c("°C","°C","°C","°C","°C","°C","°C","°C","mm","mm","mm","mm","mm","mm","")
+
+d1 <- dim(var_all_3d)[1];d2 <- dim(var_all_3d)[2]; d3 <- (dim(var_all_3d)[3])/(length(dnames))
+ptm <- proc.time() # timer
+foreach(i=1:15) %dopar%{
+
+	filenm <- paste0("na10km_v2_",dnames[i],"_",start_year,".",end_year,".3d.nc")
+	ncfile <- paste0(path,"var/",filenm)
+
+	# define dimensions
+	xdim <- ncdim_def("x",units="m",longname="x coordinate of projection",as.double(x))
+	ydim <- ncdim_def("y",units="m",longname="y coordinate of projection",as.double(y))
+	year <- seq(start_year,end_year, by=1)
+	yeardim <- ncdim_def("year","year",as.integer(year))
+
+	# define common variables
+	fillvalue <- 1e32
+	dlname <- "Longitude of cell center"
+	lon_def <- ncvar_def("lon","degrees_east",list(xdim,ydim),NULL,dlname,prec="double")
+	dlname <- "Latitude of cell center"
+	lat_def <- ncvar_def("lat","degrees_north",list(xdim,ydim),NULL,dlname,prec="double")
+	projname <- crs_name
+	proj_def <- ncvar_def(projname,"1",NULL,NULL,longname=dlname,prec="char")
+
+	# create netCDF file and put data
+	var_def <- ncvar_def(dnames[i],dunits[i],list(xdim,ydim,yeardim),fillvalue,dlongnames[i],prec="double")
+	ncout <- nc_create(ncfile,list(lon_def,lat_def,var_def,proj_def),force_v4=TRUE, verbose=FALSE)
+
+	# put additional attributes into dimension and data variables
+	ncatt_put(ncout,"x","axis",x_axis)
+	ncatt_put(ncout,"x","standard_name",x_standard_name)
+	ncatt_put(ncout,"x","grid_spacing",x_grid_spacing)
+	ncatt_put(ncout,"x","_CoordinateAxisType",x_CoordinatAxisType)
+	ncatt_put(ncout,"y","axis",y_axis)
+	ncatt_put(ncout,"y","standard_name",y_standard_name)
+	ncatt_put(ncout,"y","grid_spacing",y_grid_spacing)
+	ncatt_put(ncout,"y","_CoordinateAxisType",y_CoordinatAxisType)
+
+	ncatt_put(ncout,crs_name,"name",crs_name)
+	ncatt_put(ncout,crs_name,"long_name",crs_long_name)
+	ncatt_put(ncout,crs_name,"grid_mapping_name",crs_grid_mapping_name)
+	ncatt_put(ncout,crs_name,"longitude_of_projection_origin",crs_longitude_of_projection_origin)
+	ncatt_put(ncout,crs_name,"latitude_of_projection_origin",crs_latitude_of_projection_origin)
+	ncatt_put(ncout,crs_name,"_CoordinateTransformType",crs_CoordinateTransformType)
+	ncatt_put(ncout,crs_name,"_CoordinateAxisTypes",crs_CoordinateAxisTypes)
+	ncatt_put(ncout,crs_name,"CRS.PROJ.4",crs_CRS.PROJ.4)
+
+	# put variables
+	var3d <- array(var_all_3d[,,(1+nyr*(i-1)):(nyr*i)],dim=c(d1,d2,d3))
+	ncvar_put(ncout,lon_def,lon)
+	ncvar_put(ncout,lat_def,lat)
+	ncvar_put(ncout,var_def,var3d)
+
+	# add global attributes
+	ncatt_put(ncout,0,"title","CRU CL 2.0 absolute values on the na10km_v2 10-km Grid")
+	ncatt_put(ncout,0,"institution","Dept. Geography; Univ_ Oregon")
+	ncatt_put(ncout,0,"source","generated by climatic_variables_ncfiles_v2.R")
+	history <- paste("D. Chen", date(), sep=", ")
+	ncatt_put(ncout,0,"history",history)
 	ncatt_put(ncout,0,"base_period","1903-2014")
 	ncatt_put(ncout,0,"Conventions","CF-1_6")
 
@@ -714,4 +810,5 @@ foreach(i=1:30) %dopar%{
 	print(paste0("writing netCDF file for ", dnames[i], " is done!"))
 }
 proc.time() - ptm
+
 print("all done!")
