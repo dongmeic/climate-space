@@ -22,10 +22,11 @@ density.plot <- function(xs, colors, ...) {
 }
 
 names(data)
-predictors <- names(data)[c(3:12, 14:21)]
+exclude <- c('beetle', 'year', 'vegetation', 'studyArea', 'x', 'y')
+predictors <- names(data)[-which(names(data) %in% exclude)]
 length(predictors)
 
-par(mfrow=c(3, 6))
+par(mfrow=c(4, 5))
 par(mar=c(0, 0, 2, 0))
 
 for (p in predictors) {
