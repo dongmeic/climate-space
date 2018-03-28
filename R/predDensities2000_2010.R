@@ -17,10 +17,8 @@ get.yearly.data <- function(field, year) {
 density.plot <- function(xs, colors, ...) {
   d1 <- density(xs[[1]])
   d2 <- density(xs[[2]])
-  plot(density(xs[[1]]), col=colors[1], ylim=range(c(d1$y, d2$y), na.rm=T), ...) 
-  for (i in 2:length(xs)) {
-    lines(density(xs[[i]]), col=colors[i])
-  }
+  plot(d1, col=colors[1], ylim=range(c(d1$y, d2$y), na.rm=T), ...) 
+  lines(d2, col=colors[2])
 }
 
 names(data)
