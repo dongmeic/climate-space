@@ -1,0 +1,8 @@
+Daily weather data samples found via:
+https://www.esrl.noaa.gov/psd/data/gridded/tables/temperature.html >
+https://www.esrl.noaa.gov/psd/data/gridded/data.ncep.reanalysis2.html#plot >
+https://www.esrl.noaa.gov/psd/cgi-bin/db_search/DBSearch.pl?Dataset=NCEP%2FDOE+AMIP-II+Reanalysis+%28Reanalysis-2%29&Variable=Air+Temperature&Variable=Maximum+Temperature&Variable=Minimum+Temperature&group=0&submit=Search >
+https://www.esrl.noaa.gov/psd/cgi-bin/db_search/DBListFiles.pl?did=61&tid=66776&vid=4286 >
+tmax.2m.gauss.2008.nc # max
+tmin.2m.gauss.2008.nc # min
+air.2m.gauss.2008.nc  # mean
