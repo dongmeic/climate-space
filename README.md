@@ -12,7 +12,7 @@ Select the following options:
 + Precipitation
   + Precipitation (PRCP)
 + Air Temp
-  + Avg (TAVG)
+  + Observerd (TOBS) [or TAVG if TOBS not available]
   + Max (TMAX)
   + Min (TMIN)
 
