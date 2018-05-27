@@ -9,6 +9,11 @@
 .Rapp.history
 
 
+# Jupyter
+#=============================
+.ipynb_checkpoints/
+
+
 # Directories
 #=============================
 data/
