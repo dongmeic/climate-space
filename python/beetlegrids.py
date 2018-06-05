@@ -37,30 +37,30 @@ try:
                 break
             else:
                 arcpy.AddField_management("mask", "prs_"+ str(year), "SHORT", "", "", 10)
-            try:
-                arcpy.SelectLayerByLocation_management("mask", "WITHIN_A_DISTANCE", "bcfc_{0}".format(year), dist, "NEW_SELECTION")
-                arcpy.SelectLayerByLocation_management("mask", "WITHIN_A_DISTANCE", "bcpoly_{0}".format(year), dist, "ADD_TO_SELECTION")
-                arcpy.SelectLayerByLocation_management("mask", "WITHIN_A_DISTANCE", "usfc_{0}".format(year), dist, "ADD_TO_SELECTION")
-                with arcpy.da.UpdateCursor("mask", ['prs_{0}'.format(year)]) as cursor:
-                    for row in cursor:
-                        row[0] = 1
-                        cursor.updateRow(row)
-                del row
-                del cursor
-                arcpy.SelectLayerByLocation_management("mask", "SWITCH_SELECTION")
-                with arcpy.da.UpdateCursor("mask", ['prs_{0}'.format(year)]) as cursor:
-                    for row in cursor:
-                        row[0] = 0
-                        cursor.updateRow(row)
-                del row
-                del cursor
-                arcpy.SelectLayerByAttribute_management("mask", "CLEAR_SELECTION")
-                print(arcpy.GetMessages(0))
-            except arcpy.ExecuteError:
-                print(arcpy.GetMessages(2))
+        try:
+            arcpy.SelectLayerByLocation_management("mask", "WITHIN_A_DISTANCE", "bcfc_{0}".format(year), dist, "NEW_SELECTION")
+            arcpy.SelectLayerByLocation_management("mask", "WITHIN_A_DISTANCE", "bcpoly_{0}".format(year), dist, "ADD_TO_SELECTION")
+            arcpy.SelectLayerByLocation_management("mask", "WITHIN_A_DISTANCE", "usfc_{0}".format(year), dist, "ADD_TO_SELECTION")
+            with arcpy.da.UpdateCursor("mask", ['prs_{0}'.format(year)]) as cursor:
+                for row in cursor:
+                    row[0] = 1
+                    cursor.updateRow(row)
+            del row
+            del cursor
+            arcpy.SelectLayerByLocation_management("mask", "SWITCH_SELECTION")
+            with arcpy.da.UpdateCursor("mask", ['prs_{0}'.format(year)]) as cursor:
+                for row in cursor:
+                    row[0] = 0
+                    cursor.updateRow(row)
+            del row
+            del cursor
+            arcpy.SelectLayerByAttribute_management("mask", "CLEAR_SELECTION")
+            print(arcpy.GetMessages(0))
+        except arcpy.ExecuteError:
+            print(arcpy.GetMessages(2))
 
-            except Exception as ex:
-                print(ex.args[0])
+        except Exception as ex:
+            print(ex.args[0])
         print('{0} year update finished'.format(year))
         
     for year in range(2001,2017):
@@ -78,31 +78,31 @@ try:
                 break
             else:
                 arcpy.AddField_management("mask", "prs_"+ str(year), "SHORT", "", "", 10)
-            try:
-                arcpy.SelectLayerByLocation_management("mask", "WITHIN_A_DISTANCE", "abfc_{0}".format(year), dist, "NEW_SELECTION")
-                arcpy.SelectLayerByLocation_management("mask", "WITHIN_A_DISTANCE", "bcfc_{0}".format(year), dist, "ADD_TO_SELECTION")
-                arcpy.SelectLayerByLocation_management("mask", "WITHIN_A_DISTANCE", "bcpoly_{0}".format(year), dist, "ADD_TO_SELECTION")
-                arcpy.SelectLayerByLocation_management("mask", "WITHIN_A_DISTANCE", "usfc_{0}".format(year), dist, "ADD_TO_SELECTION")
-                with arcpy.da.UpdateCursor("mask", ['prs_{0}'.format(year)]) as cursor:
-                    for row in cursor:
-                        row[0] = 1
-                        cursor.updateRow(row)
-                del row
-                del cursor
-                arcpy.SelectLayerByLocation_management("mask", "SWITCH_SELECTION")
-                with arcpy.da.UpdateCursor("mask", ['prs_{0}'.format(year)]) as cursor:
-                    for row in cursor:
-                        row[0] = 0
-                        cursor.updateRow(row)
-                del row
-                del cursor
-                arcpy.SelectLayerByAttribute_management("mask", "CLEAR_SELECTION")
-                print(arcpy.GetMessages(0))
-            except arcpy.ExecuteError:
-                print(arcpy.GetMessages(2))
+        try:
+            arcpy.SelectLayerByLocation_management("mask", "WITHIN_A_DISTANCE", "abfc_{0}".format(year), dist, "NEW_SELECTION")
+            arcpy.SelectLayerByLocation_management("mask", "WITHIN_A_DISTANCE", "bcfc_{0}".format(year), dist, "ADD_TO_SELECTION")
+            arcpy.SelectLayerByLocation_management("mask", "WITHIN_A_DISTANCE", "bcpoly_{0}".format(year), dist, "ADD_TO_SELECTION")
+            arcpy.SelectLayerByLocation_management("mask", "WITHIN_A_DISTANCE", "usfc_{0}".format(year), dist, "ADD_TO_SELECTION")
+            with arcpy.da.UpdateCursor("mask", ['prs_{0}'.format(year)]) as cursor:
+                for row in cursor:
+                    row[0] = 1
+                    cursor.updateRow(row)
+            del row
+            del cursor
+            arcpy.SelectLayerByLocation_management("mask", "SWITCH_SELECTION")
+            with arcpy.da.UpdateCursor("mask", ['prs_{0}'.format(year)]) as cursor:
+                for row in cursor:
+                    row[0] = 0
+                    cursor.updateRow(row)
+            del row
+            del cursor
+            arcpy.SelectLayerByAttribute_management("mask", "CLEAR_SELECTION")
+            print(arcpy.GetMessages(0))
+        except arcpy.ExecuteError:
+            print(arcpy.GetMessages(2))
 
-            except Exception as ex:
-                print(ex.args[0])
+        except Exception as ex:
+            print(ex.args[0])
         print('{0} year update finished'.format(year))
 
     arcpy.CopyFeatures_management("mask", outfolder+"na_beetle_presence.shp")
