@@ -35,10 +35,11 @@ for year in range(1997,2001):
     field_names = [f.name for f in fieldList]
 ##    for field in fieldList:
 ##        print("Field:", field.name, field.type)
-    if "prs_"+ str(year) in field_names:
-        continue
+    newfield = "prs_"+ str(year)
+    if newfield in field_names:
+        pass
     else:
-        arcpy.AddField_management("mask", "prs_"+ str(year), "SHORT", "", "", 10)
+        arcpy.AddField_management("mask", newfield, "SHORT", "", "", 10)
     arcpy.SelectLayerByLocation_management("mask", "WITHIN_A_DISTANCE", "bcfc_{0}".format(year), dist, "NEW_SELECTION")
     if year != 1999:
         arcpy.SelectLayerByLocation_management("mask", "WITHIN_A_DISTANCE", "bcpoly_{0}".format(year), dist, "ADD_TO_SELECTION")
@@ -71,10 +72,11 @@ for year in range(2001,2017):
     arcpy.MakeFeatureLayer_management(usfc,"usfc_{0}".format(year))
     fieldList = arcpy.ListFields("mask")
     field_names = [f.name for f in fieldList]
-    if "prs_"+ str(year) in field_names:
-        continue
+    newfield = "prs_"+ str(year)
+    if newfield in field_names:
+        pass
     else:
-        arcpy.AddField_management("mask", "prs_"+ str(year), "SHORT", "", "", 10)
+        arcpy.AddField_management("mask", newfield, "SHORT", "", "", 10)
     arcpy.SelectLayerByLocation_management("mask", "WITHIN_A_DISTANCE", "abfc_{0}".format(year), dist, "NEW_SELECTION")
     arcpy.SelectLayerByLocation_management("mask", "WITHIN_A_DISTANCE", "bcfc_{0}".format(year), dist, "ADD_TO_SELECTION")
     arcpy.SelectLayerByLocation_management("mask", "WITHIN_A_DISTANCE", "bcpoly_{0}".format(year), dist, "ADD_TO_SELECTION")
