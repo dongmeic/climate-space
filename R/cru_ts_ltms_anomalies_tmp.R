@@ -1,17 +1,17 @@
 # Created by Pat Bartlein
 # Modified by Dongmei Chen
 
-# Read CRU TS 4.00 climate data
+# Read CRU TS 4.01 climate data
 
 library(ncdf4)
 library(lattice)
 library(RColorBrewer)
 
 # open points netCDF file to get dimensions, etc.
-ncpath <- "/home2/dongmeic/beetle/ncfiles/cru_ts4.00/source/"
-ncoutpath <- "/home2/dongmeic/beetle/ncfiles/cru_ts4.00/derived/"
-out <- "/home2/dongmeic/beetle/output/maps/"
-ncinfile <- "cru_ts4.00.1901.2015.tmp.dat.nc"
+ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/cru_ts4.01/source/"
+ncoutpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/cru_ts4.01/derived/"
+out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/maps/"
+ncinfile <- "cru_ts4.01.1901.2016.tmp.dat.nc"
 ncin <- nc_open(paste(ncpath,ncinfile,sep=""))
 print(ncin)
 
@@ -41,7 +41,7 @@ n <- 1344
 var_slice_3d <- var3d[,,n]
 grid <- expand.grid(lon=lon, lat=lat)
 cutpts <- c(-50,-40,-30,-20,-10,0,10,20,30,40,50)
-png(paste(out,"cru_ts4.00.tmp.2012.12.3d.png", sep=""))
+png(paste(out,"cru_ts4.01.tmp.2012.12.3d.png", sep=""))
 levelplot(var_slice_3d ~ lon * lat, data=grid, at=cutpts, cuts=11, pretty=T, 
   col.regions=(rev(brewer.pal(10,"RdBu"))))
 dev.off()
@@ -57,7 +57,7 @@ m <- 6; n <- ny-2
 var_slice_4d <- var4d[,,m,n]
 grid <- expand.grid(lon=lon, lat=lat)
 cutpts <- c(-50,-40,-30,-20,-10,0,10,20,30,40,50)
-png(paste(out,"cru_ts4.00.tmp.2013.06.4d.png", sep=""))
+png(paste(out,"cru_ts4.01.tmp.2014.06.4d.png", sep=""))
 levelplot(var_slice_4d ~ lon * lat, data=grid, at=cutpts, cuts=11, pretty=T, 
   col.regions=(rev(brewer.pal(10,"RdBu"))))
 dev.off()
@@ -78,7 +78,7 @@ levelplot(landmask ~ lon * lat, data=grid, at=cutpts, cuts=11, pretty=T,
 dev.off()
 
 # get long-term means
-begyr <- 1901; endyr <- 2015 # year range of CRU data 
+begyr <- 1901; endyr <- 2016 # year range of CRU data 
 firstyr <- 1961; lastyear <- 1990 # year range for long-term means (e.g. 1961-1990)
 
 # subscripts of first and last year
@@ -103,7 +103,7 @@ m <- 12
 var_slice_3d <- ltm[,,m]
 grid <- expand.grid(lon=lon, lat=lat)
 cutpts <- c(-50,-40,-30,-20,-10,0,10,20,30,40,50)
-png(paste(out,"cru_ts4.00.tmp.ltm.12.3d.png", sep=""))
+png(paste(out,"cru_ts4.01.tmp.ltm.12.3d.png", sep=""))
 levelplot(var_slice_3d ~ lon * lat, data=grid, at=cutpts, cuts=11, pretty=T, 
   col.regions=(rev(brewer.pal(10,"RdBu"))))
 dev.off()
@@ -141,7 +141,7 @@ dlname <- "2m air temperature"
 var_def <- ncvar_def("tmp_ltm","deg_C",list(londim,latdim,tdim),fillvalue,dlname,prec="single")
 
 # create netCDF file and put array
-ncfname <- paste(ncoutpath,"cru_ts4.00.1961-1990.tmp.ltm.nc",sep="")
+ncfname <- paste(ncoutpath,"cru_ts4.01.1961-1990.tmp.ltm.nc",sep="")
 ncout <- nc_create(ncfname,list(bnds_def,var_def),force_v4=TRUE, verbose=FALSE)
 #nc_close(ncout)
 
@@ -156,7 +156,7 @@ ncvar_put(ncout,bnds_def,climatology_bounds)
 ncvar_put(ncout,var_def,ltm)
 
 # add global attributes
-ncatt_put(ncout,0,"title","CRU TS 4.00 1961-1990 long-term means")
+ncatt_put(ncout,0,"title","CRU TS 4.01 1961-1990 long-term means")
 ncatt_put(ncout,0,"institution","Dept. Geography; Univ_ Oregon")
 ncatt_put(ncout,0,"source",ncinfile)
 history <- paste("D. Chen", date(), sep=", ")
@@ -188,7 +188,7 @@ n <- 1380
 var_slice_3d <- var3d[,,n]
 grid <- expand.grid(lon=lon, lat=lat)
 cutpts <- c(-10,-5,-2,-1,-.5,0,.5,1,2,5,10)
-png(paste(out,"cru_ts4.00.tmp.anm.2015.12.3d.png", sep=""))
+png(paste(out,"cru_ts4.01.tmp.anm.2015.12.3d.png", sep=""))
 levelplot(var_slice_3d ~ lon * lat, data=grid, at=cutpts, cuts=11, pretty=T, 
   col.regions=(rev(brewer.pal(10,"RdBu"))))
 dev.off()
@@ -198,7 +198,7 @@ m <- 6; n <- ny
 var_slice_4d <- var4d[,,m,n]
 grid <- expand.grid(lon=lon, lat=lat)
 cutpts <- c(-10,-5,-2,-1,-.5,0,.5,1,2,5,10)
-png(paste(out,"cru_ts4.00.tmp.anm.2015.06.4d.png", sep=""))
+png(paste(out,"cru_ts4.01.tmp.anm.2016.06.4d.png", sep=""))
 levelplot(var_slice_4d ~ lon * lat, data=grid, at=cutpts, cuts=11, pretty=T, 
   col.regions=(rev(brewer.pal(10,"RdBu"))))
 dev.off()
@@ -221,7 +221,7 @@ dlname <- "2m air temperature anomalies"
 tmp_def <- ncvar_def("tmp_anm","deg_C",list(londim,latdim,timedim),fillvalue,dlname,prec="single")
 
 # create netCDF file and put arrays
-ncfname <- paste(ncoutpath,"cru_ts4.00.1901.2015.tmp.anm3d.nc",sep="")
+ncfname <- paste(ncoutpath,"cru_ts4.01.1901.2016.tmp.anm3d.nc",sep="")
 ncout <- nc_create(ncfname,tmp_def,force_v4=T)
 
 # put variables
@@ -233,7 +233,7 @@ ncatt_put(ncout,"time","calendar","standard")
 ncatt_put(ncout,"tmp_anm","comment","anomalies, differences from 1961-1990 base period long-term means")
 
 # add global attributes
-ncatt_put(ncout,0,"title","CRU TS 4.00 2m air temperature anomalies")
+ncatt_put(ncout,0,"title","CRU TS 4.01 2m air temperature anomalies")
 ncatt_put(ncout,0,"institution","Dept. Geography; Univ_ Oregon")
 ncatt_put(ncout,0,"source",ncinfile)
 history <- paste("D. Chen", date(), sep=", ")
@@ -250,7 +250,7 @@ nc_close(ncout)
 # define dimensions
 londim <- ncdim_def("lon","degrees_east",as.double(lon)) 
 latdim <- ncdim_def("lat","degrees_north",as.double(lat)) 
-year <- seq(1901,2015, by=1)
+year <- seq(1901,2016, by=1)
 yeardim <- ncdim_def("year","year",as.integer(year))
 month <- seq(1,12, by=1)
 monthdim <- ncdim_def("month","month",as.integer(month))
@@ -261,7 +261,7 @@ dlname <- "2m air temperature anomalies"
 tmp.def <- ncvar_def("tmp_anm","deg_C",list(londim,latdim,monthdim,yeardim),fillvalue,dlname,prec="single")
 
 # create netCDF file and put arrays
-ncfname <- paste(ncoutpath,"cru_ts4.00.1901.2015.tmp.anm4d.nc",sep="")
+ncfname <- paste(ncoutpath,"cru_ts4.01.1901.2016.tmp.anm4d.nc",sep="")
 ncout <- nc_create(ncfname,tmp.def,force_v4=T)
 
 # put variables
@@ -271,7 +271,7 @@ ncvar_put(ncout,tmp.def,var4d)
 ncatt_put(ncout,"tmp_anm","comment","anomalies, differences from 1961-1990 base period long-term means")
 
 # add global attributes
-ncatt_put(ncout,0,"title","CRU TS 4.00 2m air temperature anomalies")
+ncatt_put(ncout,0,"title","CRU TS 4.01 2m air temperature anomalies")
 ncatt_put(ncout,0,"institution","Dept. Geography; Univ_ Oregon")
 ncatt_put(ncout,0,"source",ncinfile)
 history <- paste("D. Chen", date(), sep=", ")
