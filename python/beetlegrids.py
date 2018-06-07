@@ -28,10 +28,7 @@ for year in range(1997,2001):
     bcpoly = "bc_mpb_poly_" + str(year) + ".shp"
     usfc = "us_mpb_" + str(year)+".shp"
     arcpy.MakeFeatureLayer_management(bcfc,"bcfc_{0}".format(year))
-    if year == 1999:
-        pass
-    else:
-        arcpy.MakeFeatureLayer_management(bcpoly,"bcpoly_{0}".format(year))
+    arcpy.MakeFeatureLayer_management(bcpoly,"bcpoly_{0}".format(year))
     arcpy.MakeFeatureLayer_management(usfc,"usfc_{0}".format(year))
     fieldList = arcpy.ListFields("mask")
     field_names = [f.name for f in fieldList]
@@ -43,10 +40,7 @@ for year in range(1997,2001):
     else:
         arcpy.AddField_management("mask", newfield, "SHORT", "", "", 10)
     arcpy.SelectLayerByLocation_management("mask", "WITHIN_A_DISTANCE", "bcfc_{0}".format(year), dist, "NEW_SELECTION")
-    if year == 1999:
-        pass
-    else:
-        arcpy.SelectLayerByLocation_management("mask", "WITHIN_A_DISTANCE", "bcpoly_{0}".format(year), dist, "ADD_TO_SELECTION")
+    arcpy.SelectLayerByLocation_management("mask", "WITHIN_A_DISTANCE", "bcpoly_{0}".format(year), dist, "ADD_TO_SELECTION")
     arcpy.SelectLayerByLocation_management("mask", "WITHIN_A_DISTANCE", "usfc_{0}".format(year), dist, "ADD_TO_SELECTION")
     with arcpy.da.UpdateCursor("mask", ['prs_{0}'.format(year)]) as cursor:
         for row in cursor:
