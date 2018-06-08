@@ -1,9 +1,9 @@
 library(ncdf4)
 
-csvpath <- "/home2/dongmeic/beetle/csvfiles/"
+csvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/csvfiles/"
 
 # open points netCDF file to get dimensions, etc.
-ncpath <- "/home2/dongmeic/beetle/ncfiles/na10km_v2/"
+ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/"
 ncin <- nc_open(paste(ncpath,"na10km_v2.nc",sep=""))
 x <- ncvar_get(ncin, varid="x"); nx <- length(x)
 y <- ncvar_get(ncin, varid="y"); ny <- length(y)
@@ -33,7 +33,7 @@ str(vardefs)
 
 # presence variables
 ncfname <- paste0(ncpath, "prs/na10km_v2_presence_pines.nc")
-csvfile <- "na10km_presence_details_all_2.csv"
+csvfile <- "na10km_presence_details_all.csv"
 nvars <- 10
 
 # read and reshape
@@ -48,7 +48,7 @@ head(cbind(indata$x,indata$y,j2,k2))
 nobs <- dim(indata)[1]
 m <- rep(1:nvars,each=nobs)
 temp_array <- array(fillvalue, dim=c(nx,ny,nvars))
-temp_array[cbind(j2,k2,m)] <- as.matrix(indata[1:nobs,25:34])
+temp_array[cbind(j2,k2,m)] <- as.matrix(indata[1:nobs,26:35])
 
 
 # create netCDF file and put data
@@ -93,7 +93,7 @@ for (i in 1:nvars){
   ncout <- ncvar_add(ncout, var_def)
   ncvar_put(ncout, var_def, temp_array[,,i])
   if (i==1){
-    ncatt_put(ncout,vardefs$data_name[i],"base_period","1997-2015")
+    ncatt_put(ncout,vardefs$data_name[i],"base_period","1997-2016")
   }
 }
 
