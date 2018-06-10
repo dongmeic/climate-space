@@ -39,7 +39,6 @@ nvars <- 10
 # read and reshape
 indata <- read.csv(paste(csvpath, csvfile, sep=""))
 str(indata)
-indata <- indata[,-1]
 
 j2 <- sapply(indata$x, function(xy) which.min(abs(x-xy)))
 k2 <- sapply(indata$y, function(xy) which.min(abs(y-xy)))
