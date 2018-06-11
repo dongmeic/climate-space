@@ -2,13 +2,8 @@
 
 library(ncdf4)
 
-<<<<<<< HEAD
-# path
-csvpath <- "/projects/bonelab/dongmeic/beetle/csvfiles/"
-=======
 # path in ACISS
 csvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/csvfiles/"
->>>>>>> 9f55ce8226a09b90391de27a36b1dd0e12786bc9
 
 # open points netCDF file to get dimensions, etc.
 ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/"
@@ -43,11 +38,7 @@ time_def <- ncvar_def(dlname,tunits,list(tdim),NULL,dlname,prec="integer")
 
 # mpb
 ncfname <- paste(ncpath,"prs/na10km_v2_mpb_presence.nc", sep="")
-<<<<<<< HEAD
-csvfile <- "na10km_presence_details_all_2.csv"
-=======
 csvfile <- "na10km_presence_details_all.csv"
->>>>>>> 9f55ce8226a09b90391de27a36b1dd0e12786bc9
 dname <- "mpb_prs"
 dlname <- "Mountain pine beetle presence"
 dunits <- "binary"
@@ -55,7 +46,6 @@ dunits <- "binary"
 # read and reshape
 print("read beetle presence data")
 indata <- read.csv(paste(csvpath, csvfile, sep=""))
-indata <- indata[,-1]
 str(indata)
 print("done!")
 
