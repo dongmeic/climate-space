@@ -233,7 +233,7 @@ for (yr in 98:112){
 	winter <- abind(tmn[,,12,(yr+1)],tmn[,,1:2,(yr+2)],along=3)
 	# 4. winter monthly average daily minimum
 	ntw_slice <- apply(winter,c(1,2),min)
-	ntwstd_slice <- (ntw_slice - ntw_ltm)/ntm_std
+	ntwstd_slice <- (ntw_slice - ntw_ltm)/ntw_std
 
 	# 5. October monthly average daily minimum
 	nto_slice <- tmn[,,10,(yr+1)]

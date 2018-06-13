@@ -5,21 +5,24 @@ library(ncdf4)
 library(lattice)
 library(RColorBrewer)
 
+# define time parameters
+start_year = 1997; end_year = 2016; start_time = 1153; time_length = 240
+
 # open points netCDF file to get dimensions, etc.
-tspath <- "/home2/dongmeic/beetle/ncfiles/na10km_v2/ts/"
-ltmpath <- "/home2/dongmeic/beetle/ncfiles/na10km_v2/ltm/"
-ncinfile <- "na10km_v2_cru_ts4.00.1901.2015.dtr.anm3d.nc"
-out <- "/home2/dongmeic/beetle/output/maps/"
+tspath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/ts/"
+ltmpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/ltm/"
+ncinfile <- "na10km_v2_cru_ts4.01.1901.2016.pre.anm3d.nc"
+out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/maps/"
 ncin <- nc_open(paste(tspath,ncinfile,sep=""))
 print(ncin)
 
 # get data
-dname <- "dtr_anm"
-var3d <- ncvar_get(ncin,dname)
+dname <- "pre_anm"
+var3d <- ncvar_get(ncin,dname,start=c(x=1,y=1,time=start_time),count=c(x=1078,y=900,time=time_length))
 dim(var3d)
 fillvalue <- ncatt_get(ncin,dname,"_FillValue")
 dunits <- ncatt_get(ncin,dname,"units")
-dlongname <- ncatt_get(ncin,dname,"long_name")
+dlongname <- "Precipitation"
 print (fillvalue)
 
 # get dimension variables and attributes
@@ -37,7 +40,7 @@ y_standard_name <- ncatt_get(ncin, "x", "standard_name")$value
 y_grid_spacing <- ncatt_get(ncin, "x", "grid_spacing")$value
 y_CoordinatAxisType <- ncatt_get(ncin, "x", "CoordinateAxisType")$value
 
-time <- ncvar_get(ncin, varid="time"); nt <- length(time)
+time <- ncvar_get(ncin, varid="time", start=start_time, count=time_length); nt <- length(time)
 tunits <- ncatt_get(ncin,"time","units")
 
 # get longitude and latitude and attributes
@@ -64,11 +67,11 @@ nc_close(ncin)
 # calculate abosulte values
 
 # quick map to check data
-n <- nt
+n <- time_length
 var_slice_3d <- var3d[,,n]
 grid <- expand.grid(x=x, y=y)
-cutpts <- c(-50,-25,-10,-5,0,5,10,15,25,40,50)
-png(file=paste(out,"na10km_v2_cru_4.00.2015.anm.dtr3d.png",sep=""))
+cutpts <- c(-1000,-500,-200,0,50,100,200,500,1000,2000,3000)
+png(file=paste(out,"na10km_v2_cru_4.01.2016.anm.pre3d.png",sep=""))
 levelplot(var_slice_3d ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 
           col.regions=(rev(brewer.pal(10,"RdBu"))))
 dev.off()
@@ -86,27 +89,27 @@ dim(var4d)
 m <- 12; n <- nyr-2
 var_slice_4d <- var4d[,,m,n]
 grid <- expand.grid(x=x, y=y)
-cutpts <- c(-50,-25,-10,-5,0,5,10,15,25,40,50)
-png(file=paste(out,"na10km_v2_cru_4.00.2013.anm.dtr4d.png",sep=""))
-levelplot(var_slice_3d ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 
+cutpts <- c(-1000,-500,-200,0,50,100,200,500,1000,2000,3000)
+png(file=paste(out,"na10km_v2_cru_4.01.2014.anm.pre4d.png",sep=""))
+levelplot(var_slice_4d ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 
           col.regions=(rev(brewer.pal(10,"RdBu"))))
 dev.off()
 
 # read long-term mean data
-ltmnc <- "na10km_v2_dtr.nc"
+ltmnc <- "na10km_v2_pre.nc"
 ltmncfile <- paste(ltmpath,ltmnc,sep="")
 ltmncin <- nc_open(ltmncfile)
 print(ltmncin)
 
-ltm <- ncvar_get(ltmncin,"dtr")
+ltm <- ncvar_get(ltmncin,"pre")
 dim(ltm)
 
 # quick maps to check long-term means
 m <- 12
 var_slice_3d <- ltm[,,m]
 grid <- expand.grid(x=x, y=y)
-cutpts <- c(-50,-25,-10,-5,0,5,10,15,25,40,50)
-png(file=paste(out,"na10km_ltm.dtr3d.png",sep=""))
+cutpts <- c(-1000,-500,-200,0,50,100,200,500,1000,2000,3000)
+png(file=paste(out,"na10km_ltm.pre3d.png",sep=""))
 levelplot(var_slice_3d ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 
           col.regions=(rev(brewer.pal(10,"RdBu"))))
 dev.off()
@@ -121,11 +124,11 @@ for (n in 1:nyr) {
 proc.time() - ptm
 
 # quick maps to check data
-n <- nt
+n <- time_length
 var_slice_3d <- var3d[,,n]
 grid <- expand.grid(x=x, y=y)
-cutpts <- c(-50,-25,-10,-5,0,5,10,15,25,40,50)
-png(file=paste(out,"na10km_v2_cru_4.00.2015.abs.dtr3d.png",sep=""))
+cutpts <- c(-1000,-500,-200,0,50,100,200,500,1000,2000,3000)
+png(file=paste(out,"na10km_v2_cru_4.01.2016.abs.pre3d.png",sep=""))
 levelplot(var_slice_3d ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 
           col.regions=(rev(brewer.pal(10,"RdBu"))))
 dev.off()
@@ -134,8 +137,8 @@ dev.off()
 m <- 6; n <- nyr
 var_slice_4d <- var4d[,,m,n]
 grid <- expand.grid(x=x, y=y)
-cutpts <- c(-50,-25,-10,-5,0,5,10,15,25,40,50)
-png(file=paste(out,"na10km_v2_cru_4.00.2015.abs.dtr4d.png",sep=""))
+cutpts <- c(-1000,-500,-200,0,50,100,200,500,1000,2000,3000)
+png(file=paste(out,"na10km_v2_cru_4.01.2016.abs.pre4d.png",sep=""))
 levelplot(var_slice_4d ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 
           col.regions=(rev(brewer.pal(10,"RdBu"))))
 dev.off()
@@ -145,10 +148,14 @@ fillvalue <- 1e32
 var3d[is.na(var3d)] <- fillvalue
 var4d[is.na(var4d)] <- fillvalue
 
+# replace precipitation anomalies (below 0) with 0
+var3d[var3d<0] <- 0
+var4d[var4d<0] <- 0
+
 # write out absolute values -- 3d array (nx, ny, nt)
 
 ptm <- proc.time() # timer
-absfile <- "na10km_v2_cru_ts4.00.1901.2015.dtr.abs3d.nc"
+absfile <- paste0("na10km_v2_cru_ts4.01.",start_year,".",end_year,".pre.abs3d.nc")
 abs_ncfile <- paste(tspath,absfile,sep="")
 
 # define dimensions
@@ -166,8 +173,8 @@ projname <- crs_name
 proj_def <- ncvar_def(projname,"1",NULL,NULL,longname=dlname,prec="char")
 
 # create netCDF file and put data
-dname <- "dtr"
-var_def <- ncvar_def(dname,dunits$value,list(xdim,ydim,tdim),fillvalue,dlongname$value,prec="double")
+dname <- "pre"
+var_def <- ncvar_def(dname,dunits$value,list(xdim,ydim,tdim),fillvalue,dlongname,prec="double")
 ncout <- nc_create(abs_ncfile,list(lon_def,lat_def,var_def,proj_def),force_v4=TRUE, verbose=FALSE)
 #nc_close(ncout)
 
@@ -201,7 +208,7 @@ ncvar_put(ncout,var_def,var3d)
 # add global attributes
 ncatt_put(ncout,0,"title","CRU CL 2.0 absolute values on the na10km_v2 10-km Grid")
 ncatt_put(ncout,0,"institution","Dept. Geography; Univ_ Oregon")
-ncatt_put(ncout,0,"source","generated by cru_ts_4.00_regrid_abs.R")
+ncatt_put(ncout,0,"source","generated by cru_ts_4.01_regrid_abs.R")
 history <- paste("D. Chen", date(), sep=", ")
 ncatt_put(ncout,0,"history",history)
 ncatt_put(ncout,0,"base_period","1961-1990")
@@ -217,13 +224,13 @@ remove(var3d)
 # write 4d data
 
 ptm <- proc.time() # timer
-absfile <- "na10km_v2_cru_ts4.00.1901.2015.dtr.abs4d.nc"
+absfile <- paste0("na10km_v2_cru_ts4.01.",start_year,".",end_year,".pre.abs4d.nc")
 abs_ncfile <- paste(tspath,absfile,sep="")
 
 # define dimensions
 xdim <- ncdim_def("x",units="m",longname="x coordinate of projection",as.double(x))
 ydim <- ncdim_def("y",units="m",longname="y coordinate of projection",as.double(y))
-year <- seq(1901,2015, by=1)
+year <- seq(start_year,end_year, by=1)
 yeardim <- ncdim_def("year","year",as.integer(year))
 month <- seq(1,12, by=1)
 monthdim <- ncdim_def("month","month",as.integer(month))
@@ -238,7 +245,7 @@ projname <- crs_name
 proj_def <- ncvar_def(projname,"1",NULL,NULL,longname=dlname,prec="char")
 
 # create netCDF file and put data
-var_def <- ncvar_def(dname,dunits$value,list(xdim,ydim,monthdim,yeardim),fillvalue,dlongname$value,prec="float")
+var_def <- ncvar_def(dname,dunits$value,list(xdim,ydim,monthdim,yeardim),fillvalue,dlongname,prec="double")
 ncout <- nc_create(abs_ncfile,list(lon_def,lat_def,var_def,proj_def),force_v4=TRUE, verbose=FALSE)
 #nc_close(ncout)
 
@@ -269,7 +276,7 @@ ncvar_put(ncout,var_def,var4d)
 # add global attributes
 ncatt_put(ncout,0,"title","CRU CL 2.0 absolute values on the na10km_v2 10-km Grid")
 ncatt_put(ncout,0,"institution","Dept. Geography; Univ_ Oregon")
-ncatt_put(ncout,0,"source","generated by cru_ts_4.00_regrid_abs.R")
+ncatt_put(ncout,0,"source","generated by cru_ts_4.01_regrid_abs.R")
 history <- paste("D. Chen", date(), sep=", ")
 ncatt_put(ncout,0,"history",history)
 ncatt_put(ncout,0,"base_period","1961-1990")
