@@ -14,20 +14,30 @@ registerDoParallel(cores=28)
 path <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/ts/"
 out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/20180610/"
 
-# variables
-# winterTmin - minimum monthly average of daily mean temperature during winter
-# Tmin - mean of monthly average of minimum temperature from November to March
-# OctTmin - monthly average daily minimum temperature in October
-# JanTmin - monthly average daily minimum temperature in January
-# MarTmin - monthly average daily minimum temperature in March
+# variables (6)
+# winterTmin - minimum monthly average of daily minimum temperature during winter (from December in the prior year through February in the year of the outbreak)
+# Tmin - mean of monthly average of minimum temperature from November in the prior year through March in the year of the outbreak
+# OctTmin - monthly average daily minimum temperature in October in the year prior to the outbreak
+# fallTmean - mean of monthly average of daily mean temperature from September through November in the year prior to the outbreak
+# JanTmin - monthly average daily minimum temperature in January in the year of the outbreak
+# MarTmin - monthly average daily minimum temperature in March in the year of the outbreak
 
-print("read temperature minimum netCDF file")
+print("read minimum temperature netCDF file")
 ncfile <- "na10km_v2_cru_ts4.01.1901.2016.tmn.4d.nc"
 ncin <- nc_open(paste(path, ncfile, sep=""))
 print(ncin)
 dname <- "tmn"
 tmn <- ncvar_get(ncin,dname)
 dim(tmn)
+fillvalue <- ncatt_get(ncin,dname,"_FillValue")
+
+print("read mean temperature netCDF file")
+ncfile <- "na10km_v2_cru_ts4.01.1901.2016.tmp.abs4d.nc"
+ncin <- nc_open(paste(path, ncfile, sep=""))
+print(ncin)
+dname <- "tmp"
+tmp <- ncvar_get(ncin,dname)
+dim(tmp)
 fillvalue <- ncatt_get(ncin,dname,"_FillValue")
 
 # get common variables and attributes
@@ -66,6 +76,7 @@ crs_CRS.PROJ.4 <- ncatt_get(ncin, "lambert_azimuthal_equal_area", "CRS.PROJ.4")$
 
 nc_close(ncin)
 tmn[tmn==fillvalue$value] <- NA
+tmp[tmp==fillvalue$value] <- NA
 
 # make a missing data mask
 print("make a landmask...")
@@ -73,7 +84,7 @@ landmask <- array(1, dim=c(nx,ny))
 # # use last month of data to set data flag
 for (j in 1:nx) {
   for (k in 1:ny) {
-    if (is.na(tmn[j,k,1,1])) landmask[j,k]=NA
+    if (is.na(tmp[j,k,1,1])) landmask[j,k]=NA
   }
   #print(j);print(k)
 }
@@ -85,6 +96,7 @@ years = first_year:end_year; nyr <- length(years)
 nt <- end_year - start_year
 winterTmin_3d <- array(NA, dim=c(nx, ny, nt))
 Tmin_3d <- array(NA, dim=c(nx, ny, nt))
+fallTmean_3d <- array(NA, dim=c(nx, ny, (nt+1)))
 OctTmin_3d <- array(NA, dim=c(nx, ny, (nt+1)))
 JanTmin_3d <- array(NA, dim=c(nx, ny, (nt+1)))
 MarTmin_3d <- array(NA, dim=c(nx, ny, (nt+1)))
@@ -97,6 +109,7 @@ for (k in 1:nt){
 	print(k)
 }
 for (k in 1:(nt+1)){
+	fallTmean_3d[,,k] <- apply(abind(tmp[,,9:11,k],along=3),c(1,2),mean)
 	OctTmin_3d[,,k] <- tmn[,,10,k]
 	JanTmin_3d[,,k] <- tmn[,,1,k]
 	MarTmin_3d[,,k] <- tmn[,,3,k]
@@ -109,6 +122,8 @@ winterTmin_ltm <- apply(winterTmin_3d, c(1,2), mean, na.rm=TRUE)
 winterTmin_std <- apply(winterTmin_3d, c(1,2), sd, na.rm=TRUE)
 Tmin_ltm <- apply(Tmin_3d, c(1,2), mean, na.rm=TRUE)
 Tmin_std <- apply(Tmin_3d, c(1,2), sd, na.rm=TRUE)
+fallTmean_ltm <- apply(fallTmean_3d, c(1,2), mean, na.rm=TRUE)
+fallTmean_std <- apply(fallTmean_3d, c(1,2), sd, na.rm=TRUE)
 OctTmin_ltm <- apply(OctTmin_3d, c(1,2), mean, na.rm=TRUE)
 OctTmin_std <- apply(OctTmin_3d, c(1,2), sd, na.rm=TRUE)
 JanTmin_ltm <- apply(JanTmin_3d, c(1,2), mean, na.rm=TRUE)
@@ -117,7 +132,7 @@ MarTmin_ltm <- apply(MarTmin_3d, c(1,2), mean, na.rm=TRUE)
 MarTmin_std <- apply(MarTmin_3d, c(1,2), sd, na.rm=TRUE)
 
 # read vegetation and bettle presence data
-prs_path <- "/projects/bonelab/dongmeic/beetle/ncfiles/na10km_v2/prs/"
+prs_path <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/prs/"
 vgt_ncfile <- "na10km_v2_presence_pines.nc"
 ncin_vgt <- nc_open(paste(prs_path,vgt_ncfile,sep=""))
 print(ncin_vgt)
@@ -134,11 +149,12 @@ ptm <- proc.time()
 
 print("minimum winter temperatures...")
 for (yr in (nt-nyr+1):nt){
-	cat(yr)
 	winterTmin_slice <- apply(abind(tmn[,,12,yr],tmn[,,1:2,(yr+1)],along=3), c(1,2), min)
 	winterTmin_std_slice <- (winterTmin_slice - winterTmin_ltm)/winterTmin_std
 	OctTmin_slice <- tmn[,,10,yr]
 	OctTmin_std_slice <- (OctTmin_slice - OctTmin_ltm)/OctTmin_std
+	fallTmean_slice <- apply(abind(tmp[,,9:11,yr],along=3), c(1,2), mean)
+	fallTmean_std_slice <- (fallTmean_slice - fallTmean_ltm)/fallTmean_std
 	Tmin_slice <- apply(abind(tmn[,,11:12,yr],tmn[,,1:3,(yr+1)],along=3), c(1,2), mean)
 	Tmin_std_slice <- (Tmin_slice - Tmin_ltm)/Tmin_std
 	
@@ -146,6 +162,7 @@ for (yr in (nt-nyr+1):nt){
 	vgt[vgt==0] <- NA
 	winterTmin_vgt <- winterTmin_slice * vgt
 	OctTmin_vgt <- OctTmin_slice * vgt
+	fallTmean_vgt <- fallTmean_slice * vgt
 	Tmin_vgt <- Tmin_slice * vgt
 	
 	# get climate data with the presence of all mpb
@@ -154,35 +171,42 @@ for (yr in (nt-nyr+1):nt){
 	btl_slice[btl_slice==0] <- NA
 	winterTmin_btl <- winterTmin_slice * btl_slice
 	OctTmin_btl <- OctTmin_slice * btl_slice
+	fallTmean_btl <- fallTmean_slice * btl_slice
 	Tmin_btl <- Tmin_slice * btl_slice
 	
 	# get standard deviation
 	winterTmin_std_vgt <- winterTmin_std_slice * vgt
 	OctTmin_std_vgt <- OctTmin_std_slice * vgt
+	fallTmean_std_vgt <- fallTmean_std_slice * vgt
 	Tmin_std_vgt <- Tmin_std_slice * vgt
 	
 	winterTmin_std_btl <- winterTmin_std_slice * btl_slice
 	OctTmin_std_btl <- OctTmin_std_slice * btl_slice
+	fallTmean_std_btl <- fallTmean_std_slice * btl_slice
 	Tmin_std_btl <- Tmin_std_slice * btl_slice
 	
 	if (btlyr == 1){
 		print(paste0("start to reshape 2d to 3d in year ", years[btlyr]))
 		winterTmin <- abind(winterTmin_slice, winterTmin_vgt, winterTmin_btl, along=3)
 		OctTmin <- abind(OctTmin_slice, OctTmin_vgt, OctTmin_btl, along=3)
+		fallTmean <- abind(fallTmean_slice, fallTmean_vgt, fallTmean_btl, along=3)
 		Tmin <- abind(Tmin_slice, Tmin_vgt, Tmin_btl, along=3)
 		
 		winterTmin_std_all <- abind(winterTmin_std_slice, winterTmin_std_vgt, winterTmin_std_btl, along=3)
 		OctTmin_std_all <- abind(OctTmin_std_slice, OctTmin_std_vgt, OctTmin_std_btl, along=3)
+		fallTmean_std_all <- abind(fallTmean_std_slice, fallTmean_std_vgt, fallTmean_std_btl, along=3)
 		Tmin_std_all <- abind(Tmin_std_slice, Tmin_std_vgt, Tmin_std_btl, along=3)
 	}else{
 		print(paste0("start to reshape 2d to 3d in year ", years[btlyr]))
 		winterTmin <- abind(winterTmin, winterTmin_slice, winterTmin_vgt, winterTmin_btl, along=3)
 		OctTmin <- abind(OctTmin, OctTmin_slice, OctTmin_vgt, OctTmin_btl, along=3)
+		fallTmean <- abind(fallTmean, fallTmean_slice, fallTmean_vgt, fallTmean_btl, along=3)
 		Tmin <- abind(Tmin, Tmin_slice, Tmin_vgt, Tmin_btl, along=3)
 		
-		winterTmin_std_all <- abind(winterTmin_std, winterTmin_std_slice, winterTmin_std_vgt, winterTmin_std_btl, along=3)
-		OctTmin_std_all <- abind(OctTmin_std, OctTmin_std_slice, OctTmin_std_vgt, OctTmin_std_btl, along=3)
-		Tmin_std_all <- abind(Tmin_std, Tmin_std_slice, Tmin_std_vgt, Tmin_std_btl, along=3)
+		winterTmin_std_all <- abind(winterTmin_std_all, winterTmin_std_slice, winterTmin_std_vgt, winterTmin_std_btl, along=3)
+		OctTmin_std_all <- abind(OctTmin_std_all, OctTmin_std_slice, OctTmin_std_vgt, OctTmin_std_btl, along=3)
+		fallTmean_std_all <- abind(fallTmean_std_all, fallTmean_std_slice, fallTmean_std_vgt, fallTmean_std_btl, along=3)
+		Tmin_std_all <- abind(Tmin_std_all, Tmin_std_slice, Tmin_std_vgt, Tmin_std_btl, along=3)
 	}
 	print(paste0(years[btlyr], " is done!"))
 }
@@ -192,11 +216,13 @@ print("reshape 3d to 4d")
 # reshape 3d array to 4d
 nv <- 3 # three variables: land, tree, beetle
 winterTmin_4d <- array(winterTmin, dim=c(nx,ny,nv,nyr)) 
-OctTmin_4d <- array(OctTmin, dim=c(nx,ny,nv,nyr)) 
+OctTmin_4d <- array(OctTmin, dim=c(nx,ny,nv,nyr))
+fallTmean_4d <- array(fallTmean, dim=c(nx,ny,nv,nyr)) 
 Tmin_4d <- array(Tmin, dim=c(nx,ny,nv,nyr)) 
 
 winterTmin_std_4d <- array(winterTmin_std_all, dim=c(nx,ny,nv,nyr)) 
-OctTmin_std_4d <- array(OctTmin_std_all, dim=c(nx,ny,nv,nyr)) 
+OctTmin_std_4d <- array(OctTmin_std_all, dim=c(nx,ny,nv,nyr))
+fallTmean_std_4d <- array(fallTmean_std_all, dim=c(nx,ny,nv,nyr))
 Tmin_std_4d <- array(Tmin_std_all, dim=c(nx,ny,nv,nyr)) 
 
 print("quick maps...")
@@ -221,74 +247,27 @@ levelplot(Tmin_std_slice_4d ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T,
           col.regions=(rev(brewer.pal(10,"RdBu"))))
 dev.off()
 
-print("reshape 4d to 2d")
-# write to csvfiles (data example) - reshape 4d array to 2d, and then to vector
-winterTmin_m <- apply(winterTmin_4d[,,3,], c(1,2), mean, na.rm=TRUE)
-OctTmin_m <- apply(OctTmin_4d[,,3,], c(1,2), mean, na.rm=TRUE)
-Tmin_m <- apply(Tmin_4d[,,3,], c(1,2), mean, na.rm=TRUE)
-
-winterTmin_std_m <- apply(winterTmin_std_4d[,,3,], c(1,2), mean, na.rm=TRUE)
-OctTmin_std_m <- apply(OctTmin_std_4d[,,3,], c(1,2), mean, na.rm=TRUE)
-Tmin_std_m <- apply(Tmin_std_4d[,,3,], c(1,2), mean, na.rm=TRUE)
-print("reshape 4d to 2d DONE!")
-
-print("mask 2d in land")
-winterTmin_m <- winterTmin_m[!is.na(landmask)] 
-OctTmin_m <- OctTmin_m[!is.na(landmask)] 
-Tmin_m <- Tmin_m[!is.na(landmask)] 
-
-winterTmin_std_m <- winterTmin_std_m[!is.na(landmask)] 
-OctTmin_std_m <- OctTmin_std_m[!is.na(landmask)] 
-Tmin_std_m <- Tmin_std_m[!is.na(landmask)]
-print("mask 2d in land DONE")
-
-csvpath <- "/projects/bonelab/dongmeic/beetle/csvfiles/"
-na10km_2d <- read.csv(paste0(csvpath, "na10km_v2.csv"))
-
-if (all(sapply(list(c(winterTmin_m), c(OctTmin_m), c(Tmin_m), c(winterTmin_std_m), c(OctTmin_std_m), c(Tmin_std_m)), 
-	function(x) identical(length(x), dim(na10km_2d)[1])))){
-	
-	na10km_2d_n <- cbind(na10km_2d, c(winterTmin_m), c(OctTmin_m), c(Tmin_m), c(winterTmin_std_m), c(OctTmin_std_m), c(Tmin_std_m))
-	print("write a csvfile...")
-	write.csv(na10km_2d_n, paste0(csvpath,"bioclimatic_winter_monthly.csv"), row.names=FALSE)
-
-}else{
-
-	sapply(list(c(winterTmin_m), c(OctTmin_m), c(Tmin_m), c(winterTmin_std_m), c(OctTmin_std_m), c(Tmin_std_m)), 
-	function(x) identical(length(x), dim(na10km_2d)[1]))
-	
-}
-
-print("recode fillvalue")
-# recode fillvalues
-fillvalue <- 1e32
-winterTmin_m[is.na(winterTmin_m)] <- fillvalue
-OctTmin_m[is.na(OctTmin_m)] <- fillvalue
-Tmin_m[is.na(Tmin_m)] <- fillvalue
-
-winterTmin_std_m[is.na(winterTmin_std_m)] <- fillvalue
-OctTmin_std_m[is.na(OctTmin_std_m)] <- fillvalue
-Tmin_std_m[is.na(Tmin_std_m)] <- fillvalue
-
 # combine all 4d for a loop
-var_all_4d <- abind(winterTmin_4d, OctTmin_4d, Tmin_4d, winterTmin_std_4d, OctTmin_std_4d, Tmin_std_4d, along=4)
+var_all_4d <- abind(winterTmin_4d, OctTmin_4d, fallTmean_4d, Tmin_4d, winterTmin_std_4d, OctTmin_std_4d, fallTmean_std_4d, Tmin_std_4d, along=4)
 # write 4d data in a loop
 print("start to write 4d data")
 
-dnames <- c("winterTmin", "OctTmin", "Tmin", "winterTmin_std", "OctTmin_std", "Tmin_std")
-dlongnames <- c("Minimum monthly average of daily mean temperature during winter",
+dnames <- c("winterTmin", "OctTmin", "fallTmean", "Tmin", "winterTmin_std", "OctTmin_std", "fallTmean_std", "Tmin_std")
+dlongnames <- c("Minimum monthly average of daily minimum temperature during winter",
 				"Monthly average daily minimum temperature in October",
+				"Mean of monthly average of daily mean temperature from September to November",
 				"Mean of monthly average of minimum temperature from November to March",
-				"Departure from the long-term (1901-2016) mean of minimum monthly average of daily mean temperature during winter",
+				"Departure from the long-term (1901-2016) mean of minimum monthly average of daily minimum temperature during winter",
 				"Departure from the long-term (1901-2016) mean of monthly average daily minimum temperature in October",
+				"Departure from the long-term (1901-2016) mean of mean of monthly average of daily mean temperature from September to November",
 				"Departure from the long-term (1901-2016) mean of mean of monthly average of minimum temperature from November to March")
-dunits <- c("°C", "°C", "°C", "", "", "")
+dunits <- c("°C", "°C", "°C", "°C", "", "", "", "")
 
 d1 <- dim(var_all_4d)[1];d2 <- dim(var_all_4d)[2];d3 <- dim(var_all_4d)[3];d4 <- (dim(var_all_4d)[4])/(length(dnames))
 start_year <- 1997; end_year <- 2016
 nyr <- length(start_year:end_year)
 ptm <- proc.time() # timer
-foreach(i=1:6) %dopar%{
+foreach(i=1:length(dnames)) %dopar%{
 
 	filenm <- paste0("na10km_v2_",dnames[i],"_",start_year,".",end_year,".4d.nc")
 	ncfile <- paste0(path,"var/",filenm)
@@ -354,19 +333,20 @@ foreach(i=1:6) %dopar%{
 }
 proc.time() - ptm
 
-var_all_3d <- abind(winterTmin_3d, OctTmin_3d, Tmin_3d, along=3)
+var_all_3d <- abind(winterTmin_3d, OctTmin_3d, fallTmean_3d, Tmin_3d, along=3)
 # write 3d data in a loop
 print("start to write 3d data")
-dnames <- c("winterTmin", "OctTmin", "Tmin")
-dlongnames <- c("Minimum monthly average of daily mean temperature during winter",
+dnames <- c("winterTmin", "OctTmin", "fallTmean", "Tmin")
+dlongnames <- c("Minimum monthly average of daily minimum temperature during winter",
 				"Monthly average daily minimum temperature in October",
+				"Mean of monthly average of daily mean temperature from September to November",
 				"Mean of monthly average of minimum temperature from November to March")
-dunits <- c("°C","°C","°C")
+dunits <- c("°C", "°C", "°C", "°C")
 d1 <- dim(var_all_3d)[1];d2 <- dim(var_all_3d)[2]; d3 <- (dim(var_all_3d)[3])/(length(dnames))
 start_year <- 1902; end_year <- 2016
 nyr <- length(start_year:end_year)
 ptm <- proc.time()
-foreach(i=1:3) %dopar%{
+foreach(i=1:length(dnames)) %dopar%{
 
 	filenm <- paste0("na10km_v2_",dnames[i],"_",start_year,".",end_year,".3d.nc")
 	ncfile <- paste0(path,"var/",filenm)
@@ -495,7 +475,7 @@ grid <- expand.grid(x=x, y=y)
 cutpts <- c(-60,-40,-20,-10,0,5,10,15,25,30,35)
 options(bitmapType='cairo')
 png(file=paste(out,"na10km_v2_JanTmin_tree_",end_year,".png",sep=""))
-levelplot(winterTmin_slice_3d ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 
+levelplot(JanTmin_slice_3d ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 
           col.regions=(rev(brewer.pal(10,"RdBu"))))
 dev.off()
 
@@ -505,52 +485,9 @@ grid <- expand.grid(x=x, y=y)
 cutpts <- c(-5,-4,-3,-2,-1,0,1,2,3,4,5)
 options(bitmapType='cairo')
 png(file=paste(out,"na10km_v2_MarTmin_std_beetle_",end_year,".png",sep=""))
-levelplot(Tmin_std_slice_4d ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 
+levelplot(MarTmin_std_slice_4d ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 
           col.regions=(rev(brewer.pal(10,"RdBu"))))
 dev.off()
-
-print("reshape 4d to 2d")
-# write to csvfiles (data example) - reshape 4d array to 2d, and then to vector
-JanTmin_m <- apply(JanTmin_4d[,,3,], c(1,2), mean, na.rm=TRUE)
-MarTmin_m <- apply(MarTmin_4d[,,3,], c(1,2), mean, na.rm=TRUE)
-
-JanTmin_std_m <- apply(JanTmin_std_4d[,,3,], c(1,2), mean, na.rm=TRUE)
-MarTmin_std_m <- apply(MarTmin_std_4d[,,3,], c(1,2), mean, na.rm=TRUE)
-print("reshape 4d to 2d DONE!")
-
-print("mask 2d in land")
-JanTmin_m <- JanTmin_m[!is.na(landmask)] 
-MarTmin_m <- MarTmin_m[!is.na(landmask)] 
-
-JanTmin_std_m <- JanTmin_std_m[!is.na(landmask)] 
-MarTmin_std_m <- MarTmin_std_m[!is.na(landmask)] 
-print("mask 2d in land DONE")
-
-csvpath <- "/projects/bonelab/dongmeic/beetle/csvfiles/"
-na10km_2d <- read.csv(paste0(csvpath, "na10km_v2.csv"))
-
-if (all(sapply(list(c(JanTmin_m), c(MarTmin_m), c(JanTmin_std_m), c(MarTmin_std_m)), 
-	function(x) identical(length(x), dim(na10km_2d)[1])))){
-	
-	na10km_2d_n <- cbind(na10km_2d, c(JanTmin_m), c(MarTmin_m), c(JanTmin_std_m), c(MarTmin_std_m))
-	print("write a csvfile...")
-	write.csv(na10km_2d_n, paste0(csvpath,"bioclimatic_Jan_monthly.csv"), row.names=FALSE)
-
-}else{
-
-	sapply(list(c(JanTmin_m), c(MarTmin_m), c(JanTmin_std_m), c(MarTmin_std_m)), 
-	function(x) identical(length(x), dim(na10km_2d)[1]))
-	
-}
-
-print("recode fillvalue")
-# recode fillvalues
-fillvalue <- 1e32
-JanTmin_m[is.na(JanTmin_m)] <- fillvalue
-MarTmin_m[is.na(MarTmin_m)] <- fillvalue
-
-JanTmin_std_m[is.na(JanTmin_std_m)] <- fillvalue
-MarTmin_std_m[is.na(MarTmin_std_m)] <- fillvalue
 
 # combine all 4d for a loop
 var_all_4d <- abind(JanTmin_4d, MarTmin_4d, JanTmin_std_4d, MarTmin_std_4d, along=4)
@@ -568,7 +505,7 @@ d1 <- dim(var_all_4d)[1];d2 <- dim(var_all_4d)[2];d3 <- dim(var_all_4d)[3];d4 <-
 start_year <- 1997; end_year <- 2016
 nyr <- length(start_year:end_year)
 ptm <- proc.time() # timer
-foreach(i=1:4) %dopar%{
+foreach(i=1:length(dnames)) %dopar%{
 
 	filenm <- paste0("na10km_v2_",dnames[i],"_",start_year,".",end_year,".4d.nc")
 	ncfile <- paste0(path,"var/",filenm)
@@ -645,7 +582,7 @@ d1 <- dim(var_all_3d)[1];d2 <- dim(var_all_3d)[2]; d3 <- (dim(var_all_3d)[3])/(l
 start_year <- 1901; end_year <- 2016
 nyr <- length(start_year:end_year)
 ptm <- proc.time()
-foreach(i=1:2) %dopar%{
+foreach(i=1:length(dnames)) %dopar%{
 
 	filenm <- paste0("na10km_v2_",dnames[i],"_",start_year,".",end_year,".3d.nc")
 	ncfile <- paste0(path,"var/",filenm)
