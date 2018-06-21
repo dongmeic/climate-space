@@ -39,7 +39,7 @@ mean.n <- function(x){
 # function for layout
 vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
 
-out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/climate_space/times_series/plots/"
+out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/climate_space/times_series/"
 ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/ts/var/"
 setwd(out)
 
@@ -58,19 +58,17 @@ mpb.nc <- ncvar_get(ncin_btl,"chosts_mpb_prs") # with all core hosts
 nc_close(ncin_btl)
 
 # start_year:1901
-vargrp.a <- c("OctTmin", "fallTmean", "JanTmin", "MarTmin", "TMarAug", "summerTmean", 
+vargrp.a <- c("JanTmin", "MarTmin", "TMarAug", "summerTmean", 
 				"AugTmean", "AugTmax", "GSP", "PMarAug", "summerP0")
 # start_year:1902
-vargrp.b <- c("winterTmin", "Tmin", "Tmean", "Tvar", "TOctSep", "summerP1", "summerP2", "Pmean")
+vargrp.b <- c("OctTmin", "fallTmean", "winterTmin", "Tmin", "Tmean", "Tvar", "TOctSep", "summerP1", "summerP2", "Pmean")
 # start_year:1903
 vargrp.c <- c("POctSep", "PcumOctSep")
 # start_year:1907
 vargrp.d <- c("PPT")
 vargrp <- c(vargrp.a, vargrp.b, vargrp.c, vargrp.d)
 			
-varnms.a <- c("Minimum temperature in Oct",
-			  "Mean temperature from Sep to Nov",			  
-			  "Minimum temperature in Jan",
+varnms.a <- c("Minimum temperature in Jan",
 			  "Minimum temperature in Mar",
 			  "Mean temperature from Mar to Aug",
 			  "Mean temperature from Jun to Aug",
@@ -80,7 +78,9 @@ varnms.a <- c("Minimum temperature in Oct",
 			  "Sum of precipitation from Mar to Aug",
 			  "Sum of precipitation from Jun to Aug")
 
-varnms.b <- c("Minimum winter temperature", 
+varnms.b <- c("Minimum temperature in Oct",
+			  "Mean temperature from Sep to Nov",
+			  "Minimum winter temperature", 
 			  "Mean minimum temperature from Nov to Mar", 
 			  "Mean temperature from Aug to Jul",
 			  "Temperature variation from Aug to Jul",
@@ -113,6 +113,7 @@ get.dataframe <- function(varnm,start_yr){
   ndf <- data.frame(var=double(), prs=numeric(), yrs=factor())
   data <- get.data(varnm,start_yr)
   for (yr in 1:nyr){
+  	print(paste("processing", varnm, "in", years[yr]))
     na <- data[,,yr]
     navls <- na[!is.na(na)]
     
@@ -132,11 +133,10 @@ get.dataframe <- function(varnm,start_yr){
     yrs <- rep(toString(years[yr]),length(prs))
     df <- data.frame(var,prs,yrs)
     ndf <- rbind(ndf, df)
-    print(paste("processing", varnm, "in", years[yr]))
   }
+  write.csv(ndf, paste0(out, varnm, "_", start_yr, ".csv"), row.names = FALSE)
   return(ndf)
 }
-
 
 ptm <- proc.time()
 cols <- c("grey70", "#1b9e77", "#d95f02")
@@ -162,7 +162,7 @@ foreach(i=1:length(varnms)) %dopar% {
     labs(x="Time", y=varnms[i])+theme(axis.text.x=element_blank())+
     ggtitle("Climatic changes in areas where mountain pine beetles exist")
   
-  png(paste0(out,"temporal_plots_", vargrp[i], "_", startyrs[i], ".png"), width=16, height=12, units="in", res=300)
+  png(paste0(out,"plots/temporal_plots_", vargrp[i], "_", startyrs[i], ".png"), width=16, height=12, units="in", res=300)
   grid.newpage()
   par(mar=c(2,2,4,2))
   pushViewport(viewport(layout = grid.layout(3, 1))) # 3 rows, 1 column
