@@ -30,7 +30,7 @@ print(ncin)
 dname <- "tmp"
 tmp <- ncvar_get(ncin,dname)
 
-ncfile <- "na10km_v2_cru_ts4.01.1901.2016.tmx.4d.nc"
+ncfile <- "na10km_v2_cru_ts4.01.1901.2016.tmx.abs4d.nc"
 ncin <- nc_open(paste(path, ncfile, sep=""))
 print(ncin)
 dname <- "tmx"

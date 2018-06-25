@@ -23,7 +23,7 @@ out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/20180610/"
 # MarTmin - monthly average daily minimum temperature in March in the year of the outbreak
 
 print("read minimum temperature netCDF file")
-ncfile <- "na10km_v2_cru_ts4.01.1901.2016.tmn.4d.nc"
+ncfile <- "na10km_v2_cru_ts4.01.1901.2016.tmn.abs4d.nc"
 ncin <- nc_open(paste(path, ncfile, sep=""))
 print(ncin)
 dname <- "tmn"
