@@ -2,6 +2,7 @@
 # a revision from exploratory_plots_temporal.R
 library(ncdf4)
 library(ggplot2)
+library(grid)
 library(animation)
 library(parallel)
 library(doParallel)
@@ -96,7 +97,7 @@ varnms.d <- c("Cumulative monthly Oct-Aug precipitation")
 
 varnms <- c(varnms.a, varnms.b, varnms.c, varnms.d)
 
-startyrs <- c(rep(1901,11), rep(1902,8), rep(1903, 2), 1907)
+startyrs <- c(rep(1901,9), rep(1902,10), rep(1903, 2), 1907)
 
 get.data <- function(var, start_yr){
   ncfile <- paste0("na10km_v2_",var, "_", start_yr,".2016.3d.nc")
@@ -110,7 +111,7 @@ get.data <- function(var, start_yr){
 get.dataframe <- function(varnm,start_yr){
   years <- start_yr:2016
   nyr <- length(years)
-  ndf <- data.frame(var=double(), prs=numeric(), yrs=factor())
+  ndf <- data.frame(var=double(), prs=factor(), yrs=factor())
   data <- get.data(varnm,start_yr)
   for (yr in 1:nyr){
   	print(paste("processing", varnm, "in", years[yr]))
@@ -134,7 +135,7 @@ get.dataframe <- function(varnm,start_yr){
     df <- data.frame(var,prs,yrs)
     ndf <- rbind(ndf, df)
   }
-  write.csv(ndf, paste0(out, varnm, "_", start_yr, ".csv"), row.names = FALSE)
+  #write.csv(ndf, paste0(out, varnm, "_", start_yr, ".csv"), row.names = FALSE)
   return(ndf)
 }
 
@@ -142,6 +143,7 @@ ptm <- proc.time()
 cols <- c("grey70", "#1b9e77", "#d95f02")
 foreach(i=1:length(varnms)) %dopar% {
   df <- get.dataframe(vargrp[i], startyrs[i])
+  print(paste("plotting", vargrp[i]))
   df.ss.1 <- subset(df, prs == "continent")
   p1 <- ggplot(df.ss.1, aes(x = yrs, y = var)) +geom_boxplot(fill = cols[1], colour = "black", outlier.size = 0.75, 
                                                              outlier.shape = 1, outlier.alpha = 0.35)+
@@ -174,3 +176,4 @@ foreach(i=1:length(varnms)) %dopar% {
 }
 proc.time() - ptm
 
+print("all done!")

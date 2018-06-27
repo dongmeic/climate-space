@@ -11,7 +11,7 @@ library(geosphere)
 
 # open CRU netCDF file to get dimensions, etc.
 crupath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/cru_ts4.01/derived/"
-crufile <- "cru_ts4.01.1901.2016.pre.anm3d.nc"
+crufile <- "cru_ts4.01.1901.2016.tmn.anm3d.nc"
 out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/maps/"
 cru_ncfile <- paste(crupath,crufile,sep="")
 ncin <- nc_open(cru_ncfile)
@@ -26,7 +26,7 @@ print(c(ncrulon, ncrulat, nt))
 print(tunits)
 
 # get data
-dname <- "pre_anm"
+dname <- "tmn_anm"
 var3d <- ncvar_get(ncin,dname)
 dim(var3d)
 fillvalue <- ncatt_get(ncin,dname,"_FillValue")
@@ -94,9 +94,10 @@ ntarg
 n <- 1368
 var_slice_3d <- var3d[,,n]
 grid <- expand.grid(x=crulon, y=crulat)
-cutpts <- c(-1000,-500,-200,0,50,100,200,500,1000,2000,3000)
+cutpts <- c(-10,-5,-2,-1,-.5,0,.5,1,2,5,10)
 levelplot(var_slice_3d ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 
           col.regions=(rev(brewer.pal(10,"RdBu"))))
+          
 
 # define arrrays to hold interpolated anomaly values
 interp_mat <- array(NA, dim=c(nx, ny))
@@ -135,8 +136,8 @@ proc.time() - ptm
 n <- 1380
 test_slice1 <- interp_anm[,,n]
 grid <- expand.grid(x=x, y=y)
-cutpts <- c(-1000,-500,-200,0,50,100,200,500,1000,2000,3000)
-png(paste(out,"cru_ts4.01.pre.interp.2016.12.3d.png", sep=""))
+cutpts <- c(-10,-5,-2,-1,-.5,0,.5,1,2,5,10)
+png(paste(out,"cru_ts4.01.tmn.interp.2015.12.3d.png", sep=""))
 levelplot(test_slice1 ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 
   col.regions=(rev(brewer.pal(10,"RdBu"))))
 dev.off()
@@ -182,12 +183,12 @@ for (i in 1:nmiss) {
 }
 proc.time() - ptm
 
-# # quick map to check data
+# quick map to check data
 n <- 1380
 test_slice2 <- interp_anm[,,n]
 grid <- expand.grid(x=x, y=y)
-cutpts <- c(-1000,-500,-200,0,50,100,200,500,1000,2000,3000)
-png(paste(out,"cru_ts4.01.pre.nonmiss.2016.12.3d.png", sep=""))
+cutpts <- c(-10,-5,-2,-1,-.5,0,.5,1,2,5,10)
+png(paste(out,"cru_ts4.01.tmn.nonmiss.2015.12.3d.png", sep=""))
 levelplot(test_slice2 ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 
           col.regions=(rev(brewer.pal(10,"RdBu"))))
 dev.off()
@@ -197,8 +198,8 @@ sum(is.na(test_slice2))
 test_slice3 <- test_slice2
 test_slice3[!is.na(test_slice1)] <- NA
 grid <- expand.grid(x=x, y=y)
-cutpts <- c(-1000,-500,-200,0,50,100,200,500,1000,2000,3000)
-png(paste(out,"cru_ts4.01.pre.near.2016.12.3d.png", sep=""))
+cutpts <- c(-10,-5,-2,-1,-.5,0,.5,1,2,5,10)
+png(paste(out,"cru_ts4.01.tmn.near.2016.12.3d.png", sep=""))
 levelplot(test_slice3 ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 
           col.regions=(rev(brewer.pal(10,"RdBu"))))
 dev.off()
@@ -212,9 +213,9 @@ interp_anm[is.na(interp_anm)] <- fillvalue
 # write out interpolated anomalies -- 3d array (nx, ny, nt)
 
 ptm <- proc.time() # timer
-natspath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/ts/"
-interpfile <- "na10km_v2_cru_ts4.01.1901.2016.pre.anm3d.nc"
-interp_ncfile <- paste(natspath,interpfile,sep="")
+interppath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/ts/"
+interpfile <- "na10km_v2_cru_ts4.01.1901.2016.tmn.anm3d.nc"
+interp_ncfile <- paste(interppath,interpfile,sep="")
 
 # define dimensions
 xdim <- ncdim_def("x",units="m",longname="x coordinate of projection",as.double(x))
@@ -231,7 +232,7 @@ projname <- crs_name
 proj_def <- ncvar_def(projname,"1",NULL,NULL,longname=dlname,prec="char")
 
 # create netCDF file and put data
-var_def <- ncvar_def(dname,dunits$value,list(xdim,ydim,tdim),fillvalue,dlongname$value,prec="double")
+var_def <- ncvar_def(dname,dunits$value,list(xdim,ydim,tdim),fillvalue,dlongname$value,prec="float")
 ncout <- nc_create(interp_ncfile,list(lon_def,lat_def,var_def,proj_def),force_v4=TRUE, verbose=FALSE)
 #nc_close(ncout)
 
@@ -285,7 +286,7 @@ dim(interp_anm_4d)
 m <- 12; n <- nyr
 var_slice_4d <- interp_anm_4d[,,m,n]
 grid <- expand.grid(x=x, y=y)
-cutpts <- c(-1000,-500,-200,0,50,100,200,500,1000,2000,3000)
+cutpts <- c(-10,-5,-2,-1,-.5,0,.5,1,2,5,10)
 levelplot(var_slice_4d ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 
           col.regions=(rev(brewer.pal(10,"RdBu"))))
 
@@ -295,8 +296,8 @@ remove(interp_anm)
 # write 4d data
 
 ptm <- proc.time() # timer
-interpfile <- "na10km_v2_cru_ts4.01.1901.2016.pre.anm4d.nc"
-interp_ncfile <- paste(natspath,interpfile,sep="")
+interpfile <- "na10km_v2_cru_ts4.01.1901.2016.tmn.anm4d.nc"
+interp_ncfile <- paste(interppath,interpfile,sep="")
 
 # define dimensions
 xdim <- ncdim_def("x",units="m",longname="x coordinate of projection",as.double(x))
@@ -316,7 +317,7 @@ projname <- crs_name
 proj_def <- ncvar_def(projname,"1",NULL,NULL,longname=dlname,prec="char")
 
 # create netCDF file and put data
-var_def <- ncvar_def(dname,dunits$value,list(xdim,ydim,monthdim,yeardim),fillvalue,dlongname$value,prec="double")
+var_def <- ncvar_def(dname,dunits$value,list(xdim,ydim,monthdim,yeardim),fillvalue,dlongname$value,prec="float")
 ncout <- nc_create(interp_ncfile,list(lon_def,lat_def,var_def,proj_def),force_v4=TRUE, verbose=FALSE)
 #nc_close(ncout)
 
