@@ -27,6 +27,10 @@ crs <- proj4string(us.states)
 lrglakes <- readOGR(dsn = shppath, layer = "na10km_lrglakes")
 proj4string(lrglakes) <- crs
 
+hostpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/shapefiles/corehost"
+corehost <- readOGR(dsn=hostpath, layer="MPB_corehost_proj_disall")
+corehost <- spTransform(corehost, crs)
+
 myColors <- c('grey', 'red')
 myKey <- list(text=list(lab=c("North America","Beetle affected"), cex=c(1.2,1.2)), 
               rectangles=list(col = myColors), space="inside", width = 0.5, columns=1)
@@ -34,7 +38,6 @@ years <- 1997:2016
 
 grid <- expand.grid(x=x, y=y)
 for(i in 1:length(years)){
-  png(paste0(out,"beetle_presence_", years[i],".png"), width=4, height=8, units="in", res=300)
   btl_slice <- btl[,,i]
   p <- levelplot(btl_slice ~ x * y, data=grid, xlim=c(-2050000,20000), ylim=c(-2000000,2000000),
                  par.settings = list(axis.line = list(col = "transparent")), scales = list(draw = FALSE), margin=F, 
@@ -43,6 +46,8 @@ for(i in 1:length(years)){
   p <- p + latticeExtra::layer(sp.polygons(canada.prov, lwd=0.8, col='dimgray'))
   p <- p + latticeExtra::layer(sp.polygons(us.states, lwd=0.8, col='dimgray'))
   p <- p + latticeExtra::layer(sp.polygons(lrglakes, lwd=0.8, col='lightblue'))
+  p <- p + latticeExtra::layer(sp.polygons(corehost, lwd=0.8, col=rgb(0,1,0,0.5)))
+  png(paste0(out,"beetle_presence_", years[i],".png"), width=4, height=8, units="in", res=300)
   print(p)
   dev.off()
   print(years[i])
@@ -59,6 +64,7 @@ plotbtl <- function(i){
   p <- p + latticeExtra::layer(sp.polygons(canada.prov, lwd=0.8, col='dimgray'))
   p <- p + latticeExtra::layer(sp.polygons(us.states, lwd=0.8, col='dimgray'))
   p <- p + latticeExtra::layer(sp.polygons(lrglakes, lwd=0.8, col='lightblue'))
+  p <- p + latticeExtra::layer(sp.polygons(corehost, lwd=0.8, col=rgb(0,1,0,0.5)))
   print(p)
 }
 
@@ -97,7 +103,7 @@ print.plotlist<-function(xx, layout=matrix(1:length(xx), nrow=1), more=F) {
 
 plots<-lapply(1:20, function(i) plotbtl(i))
 
-png(paste0(out,"beetle_presence.png"), width=10, height=12, units="in", res=300)
+png(paste0(out,"beetle_presence_host.png"), width=8, height=12, units="in", res=300)
 par(mfrow=c(4,5), xpd=FALSE, mar=rep(0.5,4))
 print.plotlist(plots, layout=matrix(1:20, ncol=5))
 dev.off()

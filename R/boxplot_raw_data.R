@@ -53,12 +53,12 @@ df2 <- read.csv(paste0(out, "na10km_dtr.csv"))
 p1 <- ggplot(df1, aes(x = time, y = tmp)) +geom_boxplot(colour = "black", outlier.size = 0.75, 
 	outlier.shape = 1, outlier.alpha = 0.35)+
     labs(x="Time", y="Mean temperature")+
-    ggtitle("Mean temperature in selected months")    
+    ggtitle("Mean temperature in the selected months")    
     
 p2 <- ggplot(df2, aes(x = time, y = dtr)) +geom_boxplot(colour = "black", outlier.size = 0.75, 
 	outlier.shape = 1, outlier.alpha = 0.35)+
     labs(x="Time", y="Diurnal temperature range")+
-    ggtitle("Diurnal temperature range in selected months")
+    ggtitle("Diurnal temperature range in the selected months")
     
 png(paste0(out,"temporal_plots_checking_data.png"), width=14, height=8, units="in", res=300)
 grid.newpage()

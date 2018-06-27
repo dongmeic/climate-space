@@ -135,7 +135,7 @@ get.dataframe <- function(varnm,start_yr){
     df <- data.frame(var,prs,yrs)
     ndf <- rbind(ndf, df)
   }
-  #write.csv(ndf, paste0(out, varnm, "_", start_yr, ".csv"), row.names = FALSE)
+  write.csv(ndf, paste0(out, varnm, "_", start_yr, ".csv"), row.names = FALSE)
   return(ndf)
 }
 
