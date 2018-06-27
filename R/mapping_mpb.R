@@ -1,6 +1,5 @@
 # Created by Dongmei Chen
 # Mapping: MPB grids in North America
-# There are issues in bash script running; use an interactive mode to run this script
 
 library(maptools)
 library(sp)
@@ -65,16 +64,16 @@ shade_clr <- rgb(shade_rgb)
 shade_int <- as.integer(((shade$shade+1)/2)*40)+1
 shade_colnum <- shade_clr[shade_int]
 
-pdf(file = "na_shade01b.pdf")
-plot(bb_shp, col="gray95")
-points(shade_pixels, pch=15, cex=0.09, col=shade_colnum)
-plot(can_shp, lwd=0.2, col="gray50", add=TRUE)
-plot(us_shp, lwd=0.2, col="gray50", add=TRUE)
-plot(lrglakes_shp, lwd=0.2, bor="black", col="gray90", add=TRUE)
-plot(coast_shp, lwd=0.3, add=TRUE)
-text(-5770000, 4620000, pos=c(4), offset=0.0, cex=1.0, "NA10km_v2 -- 10m Natural Earth Outlines")
-plot(bb_shp, add=TRUE)
-dev.off()
+# pdf(file = "na_shade01b.pdf")
+# plot(bb_shp, col="gray95")
+# points(shade_pixels, pch=15, cex=0.09, col=shade_colnum)
+# plot(can_shp, lwd=0.2, col="gray50", add=TRUE)
+# plot(us_shp, lwd=0.2, col="gray50", add=TRUE)
+# plot(lrglakes_shp, lwd=0.2, bor="black", col="gray90", add=TRUE)
+# plot(coast_shp, lwd=0.3, add=TRUE)
+# text(-5770000, 4620000, pos=c(4), offset=0.0, cex=1.0, "NA10km_v2 -- 10m Natural Earth Outlines")
+# plot(bb_shp, add=TRUE)
+# dev.off()
 
 btl_csvfile <- "na10km_presence_details_all.csv"
 csvin_btl <- read.csv(paste0(csvpath, btl_csvfile))
@@ -114,7 +113,7 @@ head(csvin_btl)
 
 foreach(yr=1997:2016)%dopar%{
   #pdf(file=paste0(out,"map_of_mpb_", yr,".pdf"))
-  png(file=paste0(out,"map_of_mpb_", yr,".png"),width=9, height=8, units="in", res=300)
+  png(file=paste0(out,"map_of_mpb_", yr,".png"),width=9, height=8, units="in", res=900)
   par(mar=c(0.1,0.1,2,0.1))
   plot(bb_shp, col="gray95")
   points(shade_pixels, pch=15, cex=0.09, col=shade_colnum)
@@ -168,7 +167,7 @@ im.convert(paste(out,"map_of_mpb_*.png", sep=""),output=paste(out,"maps_of_mpb.g
 # dev.off()
 
 #pdf(file=paste0(out,"map_of_mpb.pdf"))
-png(file=paste0(out,"map_of_mpb.png"),width=9, height=8, units="in", res=300)
+png(file=paste0(out,"map_of_mpb.png"),width=9, height=8, units="in", res=900)
 par(mar=c(0.1,0.1,2,0.1))
 plot(bb_shp, col="gray95")
 points(shade_pixels, pch=15, cex=0.09, col=shade_colnum)
