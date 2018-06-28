@@ -42,7 +42,7 @@ for year in range(1997,2001):
     print(arcpy.GetMessages(0))
     print('{0} year selection finished'.format(year))
         
-for year in range(2001,2016):
+for year in range(2001,2017):
     abfc = "ab_mpb_points_" + str(year)+".shp"
     bcfc = "bc_mpb_points_" + str(year)+".shp"
     bcpoly = "bc_mpb_poly_" + str(year) + ".shp"
