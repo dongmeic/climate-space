@@ -1,5 +1,4 @@
 # Created by Dongmei Chen
-# running issue on talapas; use an interactive mode to run this script
 library(ncdf4)
 library(lattice)
 library(rgdal)

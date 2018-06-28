@@ -112,8 +112,8 @@ head(csvin_btl)
 # }
 
 foreach(yr=1997:2016)%dopar%{
-  #pdf(file=paste0(out,"map_of_mpb_", yr,".pdf"))
-  png(file=paste0(out,"map_of_mpb_", yr,".png"),width=9, height=8, units="in", res=900)
+  pdf(file=paste0(out,"map_of_mpb_", yr,".pdf"))
+  #png(file=paste0(out,"map_of_mpb_", yr,".png"),width=9, height=8, units="in", res=900)
   par(mar=c(0.1,0.1,2,0.1))
   plot(bb_shp, col="gray95")
   points(shade_pixels, pch=15, cex=0.09, col=shade_colnum)
@@ -166,8 +166,8 @@ im.convert(paste(out,"map_of_mpb_*.png", sep=""),output=paste(out,"maps_of_mpb.g
 # plot(bb_shp, add=TRUE)
 # dev.off()
 
-#pdf(file=paste0(out,"map_of_mpb.pdf"))
-png(file=paste0(out,"map_of_mpb.png"),width=9, height=8, units="in", res=900)
+pdf(file=paste0(out,"map_of_mpb.pdf"))
+#png(file=paste0(out,"map_of_mpb.png"),width=9, height=8, units="in", res=900)
 par(mar=c(0.1,0.1,2,0.1))
 plot(bb_shp, col="gray95")
 points(shade_pixels, pch=15, cex=0.09, col=shade_colnum)

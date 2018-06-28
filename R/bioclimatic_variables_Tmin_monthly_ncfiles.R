@@ -230,7 +230,7 @@ print("quick maps...")
 n <- nyr
 winterTmin_slice_3d <- winterTmin_4d[,,2,n]
 grid <- expand.grid(x=x, y=y)
-cutpts <- c(-60,-40,-20,-10,0,5,10,15,25,30,35)
+cutpts <- c(-50,-40,-30,-20,-15,-10,-5,0,5,15,30)
 options(bitmapType='cairo')
 png(file=paste(out,"na10km_v2_winterTmin_tree_",end_year,".png",sep=""))
 levelplot(winterTmin_slice_3d ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 

@@ -357,7 +357,7 @@ print("quick maps...")
 n <- nyr
 Pmean_slice_3d <- Pmean_4d[,,2,n]
 grid <- expand.grid(x=x, y=y)
-cutpts <- c(-1000,-500,-200,0,50,100,200,500,1000,2000,3000)
+cutpts <- c(0,10,20,30,40,50,80,100,150,200,250)
 options(bitmapType='cairo')
 png(file=paste(out,"na10km_v2_Pmean_tree_",end_year,".png",sep=""))
 levelplot(Pmean_slice_3d ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 

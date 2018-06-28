@@ -52,7 +52,7 @@ get.yearly.table <- function(yr){
 	  colnames(nadf) <- vargrp[i]
 	  ndf <- cbind(ndf, nadf)
 	}
-	write.csv(ndf, paste0(outcsvpath, "bioclimatic_values_", years[yr],".csv"))
+	write.csv(ndf, paste0(outcsvpath, "bioclimatic_values_", years[yr],".csv"), row.names = FALSE)
 }
 
 foreach(i=1:length(years))%dopar%{

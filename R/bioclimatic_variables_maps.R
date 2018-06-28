@@ -79,7 +79,7 @@ c(-40,-30,-20,-10,-5,0,5,10,15,25,30),
 #MarTmin
 c(-40,-30,-20,-15,-10,-5,0,5,10,20,30),
 #Tmin
-c(-50,-40,-20,-15,-10,-5,0,5,10,15,25),
+c(-50,-30,-15,-10,-5,0,5,10,15,25,35),
 #Tmean
 c(-35,-10,-5,0,5,10,15,20,25,30,35),
 #Tvar
@@ -95,23 +95,23 @@ c(-20,-10,-5,0,5,10,15,20,25,30,35),
 #AugTmax
 c(-20,-10,0,5,10,15,20,25,30,35,45),
 #PcumOctSep
-c(0,100,300,500,800,1000,1200,1500,2000,3000,4000),
+c(0,100,300,500,800,1000,1200,1500,2000,6000,10000),
 #summerP0
-c(0,30,50,80,100,150,250,400,600,800,1600),
+c(0,30,50,80,100,150,250,500,1000,2000,3000),
 #summerP1
-c(0,30,50,80,100,150,250,400,600,800,1600),
+c(0,30,50,80,100,150,250,500,1000,2000,3000),
 #summerP2
-c(0,50,100,200,300,500,600,800,1000,1500,5000),
+c(0,50,100,200,300,500,600,800,1000,2000,3500),
 #PPT
-c(0,500,1000,1500,2000,2500,3000,3500,4000,6000,8000),
+c(0,500,1000,1500,2000,2500,3000,4000,6000,8000,30000),
 #Pmean 
-c(0,10,20,30,40,50,80,100,150,200,250),
+c(0,10,20,30,40,50,80,100,200,400,800),
 #GSP
-c(0,25,50,100,150,200,250,300,500,800,1000),
+c(0,25,50,100,150,200,250,300,500,1000,2000),
 #POctSep
-c(0,100,200,300,500,800,1000,1500,2000,2500,3000),
+c(0,100,200,300,500,800,1000,1500,2000,4000,8000),
 #PMarAug
-c(0,50,100,200,300,400,600,800,1000,1200,1500))
+c(0,50,100,200,300,400,600,800,1000,2000,5000))
 
 get.data <- function(var){
   ncfile <- paste0("na10km_v2_",var, "_1997.2016.4d.nc")
@@ -155,15 +155,17 @@ foreach(i=1:length(vargrp)) %dopar% {
 	  #dev.off()
   }
   plots <- lapply(1:20, function(i) plotclm(i))
-  png(paste0("bioclimatic_maps_",vargrp[i],".png"), width=18, height=12, units="in", res=300)
+  png(paste0("bioclimatic_maps_",vargrp[i],".png"), width=20, height=12, units="in", res=300)
   par(mfrow=c(4,5), xpd=FALSE, mar=rep(0.5,4))
   print.plotlist(plots, layout=matrix(1:20, ncol=5))
   dev.off()
 }
 
-foreach(i=1:length(vargrp)) %dopar% {
+
+
+for(i in 1:length(vargrp)){
   var_4d <- get.data(vargrp[i])
-  foreach(j=1:length(years)) %dopar% {
+  for(j in 1:length(years)){
     var_4d_slice <- var_4d[,,1,j]
     if(i<=13){
 	  p <- levelplot(var_4d_slice ~ x * y, data=grid, at=cutpts[,i], cuts=11, pretty=T, 
@@ -194,6 +196,7 @@ foreach(i=1:length(vargrp)) %dopar% {
     png(paste0("bioclimatic_map_",vargrp[i],"_",years[j],".png"), width=9, height=8, units="in", res=300)
     print(p)
     dev.off()
+    print(paste("mapping", vargrp[i], "in", years[j], "is done!"))
   }
 }
 
