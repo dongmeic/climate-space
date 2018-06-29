@@ -6,7 +6,7 @@ library(lattice)
 library(RColorBrewer)
 
 # define time parameters
-start_year = 1997; end_year = 2016; start_time = 1153; time_length = 240
+start_year = 1996; end_year = 2015; start_time = 1141; time_length = 240
 #start_year = 1961; end_year = 1990; start_time = 721; end_time = 1080; time_length = 30*12
 
 # open points netCDF file to get dimensions, etc.

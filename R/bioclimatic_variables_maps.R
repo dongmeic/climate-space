@@ -13,7 +13,7 @@ library(doParallel)
 library(foreach)
 registerDoParallel(cores=28)
 
-years <- 1997:2016
+years <- 1996:2015
 ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/ts/var/"
 out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/maps/"
 setwd(out)
@@ -114,7 +114,7 @@ c(0,100,200,300,500,800,1000,1500,2000,4000,8000),
 c(0,50,100,200,300,400,600,800,1000,2000,5000))
 
 get.data <- function(var){
-  ncfile <- paste0("na10km_v2_",var, "_1997.2016.4d.nc")
+  ncfile <- paste0("na10km_v2_",var, "_",years[1],".",years[nyr],".4d.nc")
   ncin <- nc_open(paste0(ncpath, ncfile))
   data <- ncvar_get(ncin,var)
   fillvalue <- ncatt_get(ncin,var,"_FillValue")
@@ -160,8 +160,6 @@ foreach(i=1:length(vargrp)) %dopar% {
   print.plotlist(plots, layout=matrix(1:20, ncol=5))
   dev.off()
 }
-
-
 
 for(i in 1:length(vargrp)){
   var_4d <- get.data(vargrp[i])

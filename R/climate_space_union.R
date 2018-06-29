@@ -42,7 +42,7 @@ mean.n <- function(x){
 # function for layout
 vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
 
-years <- 1997:2016
+years <- 1996:2015; nyr <- length(years)
 out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/climate_space/paired/"
 outcsvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/climate_space/times_series/"
 ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/ts/var/"
@@ -112,7 +112,7 @@ varnms <- c("Minimum temperature in Oct",
 cols <- c("grey70", "#1b9e77", "#d95f02")
 
 get.data <- function(var){
-  ncfile <- paste0("na10km_v2_",var, "_1997.2016.4d.nc")
+  ncfile <- paste0("na10km_v2_",var, "_",years[1],".",years[nyr],".4d.nc")
   ncin <- nc_open(paste0(ncpath, ncfile))
   data <- ncvar_get(ncin,var)
   fillvalue <- ncatt_get(ncin,var,"_FillValue")
@@ -123,7 +123,7 @@ get.data <- function(var){
 get.dtcol <- function(var){
   ndf <- data.frame(var=double(), prs=character(), yrs=numeric())
   data <- get.data(var)
-  for (yr in 1:length(years)){
+  for (yr in 1:nyr){
   	na <- data[,,1,yr]
   	na <- na[!is.na(na)]
   	vgt <- data[,,2,yr]
@@ -137,7 +137,7 @@ get.dtcol <- function(var){
   	ndf <- rbind(ndf, df)
   }
   colnames(ndf)[1] <- var
-  write.csv(ndf, paste0(outcsvpath, var, "_",years[1], "_",years[length(years)], ".csv"), row.names = FALSE)
+  write.csv(ndf, paste0(outcsvpath, var, "_",years[1], "_",years[nyr], ".csv"), row.names = FALSE)
 }
 
 foreach(i = 1:length(vargrp))%dopar%{
@@ -145,19 +145,19 @@ foreach(i = 1:length(vargrp))%dopar%{
 }
 
 # reorganize the data table
-df <- read.csv(paste0(outcsvpath, vargrp[1], "_",years[1], "_",years[length(years)], ".csv"))
+df <- read.csv(paste0(outcsvpath, vargrp[1], "_",years[1], "_",years[nyr], ".csv"))
 df1 <- data.frame(df[,vargrp[1]])
 colnames(df1) <- vargrp[1]
 df2 <- df[,2:3]
 for(i in 2:length(vargrp)){
-	df3 <- read.csv(paste0(outcsvpath, vargrp[i], "_",years[1], "_",years[length(years)], ".csv"))
+	df3 <- read.csv(paste0(outcsvpath, vargrp[i], "_",years[1], "_",years[nyr], ".csv"))
 	df4 <- data.frame(df3[,vargrp[i]])
 	colnames(df4) <- vargrp[i]
 	df1 <- cbind(df1, df4)
 	print(paste("adding the variable", vargrp[i]))
 }
 df5 <- cbind(df1, df2)
-write.csv(df5, "bioclimatic_variables_1997_2016.csv", row.names = FALSE)
+write.csv(df5, "bioclimatic_variables_1996_2015.csv", row.names = FALSE)
 
 climate.space.paired <- function(i){
   df <- df5[,c(vargrp.t[i], vargrp.p[i], "prs")]
@@ -184,5 +184,24 @@ foreach(i = 1:length(vargrp.t))%dopar%{
   climate.space.paired(i)
   print(paste("The union climate space with variables", vargrp.t[i], "and", vargrp.p[i], "is done!"))
 }
+
+n1 <- c(rep(1,3),rep(2,3),rep(3,3),rep(4,3),rep(5,3)); n2 <- rep(c(1,2,3),5)
+climate.space <- function(i){
+  df <- df5[,c(vargrp.t[i], vargrp.p[i], "prs")]
+  colnames(df)[1:2] <- c("tmp", "pre")
+  p <- qplot(tmp, pre, data=df, color=factor(prs), alpha=I(0.7), xlab = vargrp.t[i], ylab = vargrp.p[i], main = paste0(vargrp.t[i],"-",vargrp.p[i]))
+  p <- p + scale_colour_manual(values = cols)
+  p <- p + xlim(min(df$tmp), max(df$tmp)) + ylim(min(df$pre), max(df$pre))
+  p <- p + theme(title =element_text(size=14, face='bold'), axis.text=element_text(size=10),axis.title=element_text(size=12,face="bold"),legend.position="none")
+  return(p) 
+}
+png("cs_monthly_var_union.png", width=15, height=10, units="in", res=300)
+grid.newpage()
+par(mar=c(2,2,4,2))
+pushViewport(viewport(layout = grid.layout(3, 5)))
+for(i in 1:length(vargrp.t)){
+  print(climate.space(i), vp = vplayout(n1[i], n2[i]))
+}
+dev.off()
 
 print("all done!")		  

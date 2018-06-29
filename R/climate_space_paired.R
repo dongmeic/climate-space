@@ -42,7 +42,7 @@ mean.n <- function(x){
 # function for layout
 vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
 
-years <- 1997:2016
+years <- 1996:2015; nyr <- length(years)
 out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/climate_space/paired/"
 ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/ts/var/"
 setwd(out)
@@ -83,7 +83,7 @@ varnms.p <- c("Cumulative precipitation from Oct to Sep",
 cols <- c("grey70", "#1b9e77", "#d95f02")
 			  
 get.data <- function(var){
-  ncfile <- paste0("na10km_v2_",var, "_1997.2016.4d.nc")
+  ncfile <- paste0("na10km_v2_",var, "_",years[1],".",years[nyr],".4d.nc")
   ncin <- nc_open(paste0(ncpath, ncfile))
   data <- ncvar_get(ncin,var)
   fillvalue <- ncatt_get(ncin,var,"_FillValue")

@@ -102,14 +102,14 @@ startyrs <- c(rep(1901,9), rep(1902,10), rep(1903, 2), 1907)
 get.data <- function(var, start_yr){
   ncfile <- paste0("na10km_v2_",var, "_", start_yr,".2016.3d.nc")
   ncin <- nc_open(paste0(ncpath, ncfile))
-  data <- ncvar_get(ncin,var)
+  data <- ncvar_get(ncin,var,start=c(x=1,y=1,time=1),count=c(x=1078,y=900,time=1380))
   fillvalue <- ncatt_get(ncin,var,"_FillValue")
   data[data==fillvalue$value] <- NA
   return(data)
 }
 
 get.dataframe <- function(varnm,start_yr){
-  years <- start_yr:2016
+  years <- start_yr:2015
   nyr <- length(years)
   ndf <- data.frame(var=double(), prs=factor(), yrs=factor())
   data <- get.data(varnm,start_yr)
@@ -157,7 +157,7 @@ foreach(i=1:length(varnms)) %dopar% {
     ggtitle("Climatic changes in areas where core hosts exist")
   
   df.ss.3 <- subset(df, prs == "mpb")
-  df.ss.3$btl <- ifelse(as.numeric(as.character(df.ss.3$yrs)) > 1996, c('Presence with one year'), c('Presence with all years')) 
+  df.ss.3$btl <- ifelse(as.numeric(as.character(df.ss.3$yrs)) > 1995, c('Presence with one year'), c('Presence with all years')) 
   p3 <- ggplot(df.ss.3, aes(x = yrs, y = var)) +geom_boxplot(fill = cols[3], colour = "black", outlier.size = 0.75, 
                                                              outlier.shape = 1, outlier.alpha = 0.35)+
     facet_grid(. ~ btl, scales = "free", space = "free")+

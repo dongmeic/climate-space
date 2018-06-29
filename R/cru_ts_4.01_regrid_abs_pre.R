@@ -6,7 +6,7 @@ library(lattice)
 library(RColorBrewer)
 
 # define time parameters
-start_year = 1997; end_year = 2016; start_time = 1153; time_length = 240
+start_year = 1996; end_year = 2015; start_time = 1141; time_length = 240
 
 # open points netCDF file to get dimensions, etc.
 tspath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/ts/"
@@ -71,7 +71,7 @@ n <- time_length
 var_slice_3d <- var3d[,,n]
 grid <- expand.grid(x=x, y=y)
 cutpts <- c(-1000,-500,-200,0,50,100,200,500,1000,2000,3000)
-png(file=paste(out,"na10km_v2_cru_4.01.2016.anm.pre3d.png",sep=""))
+png(file=paste(out,"na10km_v2_cru_4.01.",end_year,".anm.pre3d.png",sep=""))
 levelplot(var_slice_3d ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 
           col.regions=(rev(brewer.pal(10,"RdBu"))))
 dev.off()
@@ -128,7 +128,7 @@ n <- time_length
 var_slice_3d <- var3d[,,n]
 grid <- expand.grid(x=x, y=y)
 cutpts <- c(-1000,-500,-200,0,50,100,200,500,1000,2000,3000)
-png(file=paste(out,"na10km_v2_cru_4.01.2016.abs.pre3d.png",sep=""))
+png(file=paste(out,"na10km_v2_cru_4.01.",end_year,".abs.pre3d.png",sep=""))
 levelplot(var_slice_3d ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 
           col.regions=(rev(brewer.pal(10,"RdBu"))))
 dev.off()
@@ -138,7 +138,7 @@ m <- 6; n <- nyr
 var_slice_4d <- var4d[,,m,n]
 grid <- expand.grid(x=x, y=y)
 cutpts <- c(-1000,-500,-200,0,50,100,200,500,1000,2000,3000)
-png(file=paste(out,"na10km_v2_cru_4.01.2016.abs.pre4d.png",sep=""))
+png(file=paste(out,"na10km_v2_cru_4.01.",end_year,".abs.pre4d.png",sep=""))
 levelplot(var_slice_4d ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 
           col.regions=(rev(brewer.pal(10,"RdBu"))))
 dev.off()
