@@ -1,5 +1,6 @@
 # Created by Dongmei Chen
-# generate 
+# generate yearly tables for bioclimatic values
+
 library(ncdf4)
 library(parallel)
 library(doParallel)
@@ -7,10 +8,9 @@ library(foreach)
 registerDoParallel(cores=28)
 
 years <- 1907:2016
-out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/climate_space/paired/"
 outcsvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
 ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/ts/var/"
-setwd(out)
+setwd(outcsvpath)
 
 # start_year:1901
 vargrp.a <- c("JanTmin", "MarTmin", "TMarAug", "summerTmean", 
@@ -52,12 +52,12 @@ get.yearly.table <- function(yr){
 	  colnames(nadf) <- vargrp[i]
 	  ndf <- cbind(ndf, nadf)
 	}
-	write.csv(ndf, paste0(outcsvpath, "bioclimatic_values_", years[yr],".csv"), row.names = FALSE)
+	write.csv(ndf, paste0("bioclimatic_values_", years[yr],".csv"), row.names = FALSE)
 }
 
 foreach(i=1:length(years))%dopar%{
   get.yearly.table(i)
-  print(paste("...got data for", vargrp[i]), "...")
+  print(paste("...got data for", years[i]), "...")
 }
 
 print("all done")

@@ -1,7 +1,7 @@
 # Created by Dongmei Chen
 
 csvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
-csvfile <- "bioclimatic_values_1996_2015.csv"
+csvfile <- "bioclimatic_values_1996_2015.csv" # from PCA_bioclimatic_variables.R
 ndf <- read.csv(paste0(csvpath,csvfile))
 out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/plots"
 setwd(out)

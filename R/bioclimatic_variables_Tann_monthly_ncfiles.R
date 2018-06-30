@@ -146,7 +146,6 @@ btl <- ncvar_get(ncin_btl,"mpb_prs")
 
 print("get 3d array for climatic variables")
 ptm <- proc.time()
-
 for (yr in (nt-nyr):(nt-1)){
 	Tmean_slice <- apply(abind(tmp[,,8:12,yr],tmp[,,1:7,(yr+1)],along=3), c(1,2), mean)
 	Tmean_std_slice <- (Tmean_slice - Tmean_ltm)/Tmean_std
@@ -163,7 +162,7 @@ for (yr in (nt-nyr):(nt-1)){
 	
 	
 	# get climate data with the presence of all mpb
-	btlyr <- yr - (nt - nyr)
+	btlyr <- yr - (nt - 1 - nyr)
 	btl_slice <- btl[,,btlyr]
 	btl_slice[btl_slice==0] <- NA
 	Tmean_btl <- Tmean_slice * btl_slice
@@ -397,7 +396,7 @@ proc.time() - ptm
 
 # repeat the same process as above for the rest four bioclimatic variables
 start_year = 1901; end_year = 2016; first_year = 1996; last_year = 2015
-years = first_year:end_year; nyr <- length(years)
+years = first_year:last_year; nyr <- length(years)
 for (yr in (nt-nyr+1):nt){
 
 	TMarAug_slice <- apply(abind(tmp[,,3:8,yr],along=3),c(1,2),mean)
@@ -417,7 +416,7 @@ for (yr in (nt-nyr+1):nt){
 	AugTmax_vgt <- AugTmax_slice * vgt
 	
 	# get climate data with the presence of all mpb
-	btlyr <- yr - (nt - nyr + 1)
+	btlyr <- yr - (nt - nyr)
 	btl_slice <- btl[,,btlyr]
 	btl_slice[btl_slice==0] <- NA
 	TMarAug_btl <- TMarAug_slice * btl_slice

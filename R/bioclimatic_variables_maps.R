@@ -1,4 +1,5 @@
 # Created by Dongmei Chen
+
 library(ncdf4)
 library(lattice)
 library(rgdal)
@@ -13,7 +14,7 @@ library(doParallel)
 library(foreach)
 registerDoParallel(cores=28)
 
-years <- 1996:2015
+years <- 1996:2015; nyr <- length(years)
 ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/ts/var/"
 out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/maps/"
 setwd(out)
@@ -181,7 +182,7 @@ for(i in 1:length(vargrp)){
     p <- p + latticeExtra::layer(sp.polygons(canada.prov, lwd=0.8, col='dimgray', alpha=0.3))
     p <- p + latticeExtra::layer(sp.polygons(us.states, lwd=0.8, col='dimgray', alpha=0.3))
     p <- p + latticeExtra::layer(sp.polygons(lrglakes, lwd=0.8, col='dimgray', fill='lightblue', alpha=0.3))	  
-    df <- btlprs[,c("x","y",paste0("prs_",years[j]))]
+    df <- btlprs[,c("x","y",paste0("prs_",(years[j]+1)))]
     coordinates(df) <- c("x","y")
     points2grid(df)
     btl_pixels <- as(df, "SpatialPixelsDataFrame")

@@ -168,7 +168,7 @@ for (yr in (nt-nyr-5):(nt-6)){
 	PPT_vgt <- PPT_slice * vgt
 	
 	# get climate data with the presence of all mpb
-	btlyr <- yr - (nt - nyr - 5)
+	btlyr <- yr - (nt - nyr - 6)
 	btl_slice <- btl[,,btlyr]
 	btl_slice[btl_slice==0] <- NA
 	PPT_btl <- PPT_slice * btl_slice
@@ -198,7 +198,7 @@ for (yr in (nt-nyr-1):(nt-2)){
 	PcumOctSep_vgt <- PcumOctSep_slice * vgt
 	
 	# get climate data with the presence of all mpb
-	btlyr <- yr - (nt - nyr - 1)
+	btlyr <- yr - (nt - nyr - 2)
 	btl_slice <- btl[,,btlyr]
 	btl_slice[btl_slice==0] <- NA
 	POctSep_btl <- POctSep_slice * btl_slice
@@ -239,7 +239,7 @@ for (yr in (nt-nyr):(nt-1)){
 	summerP2_vgt <- summerP2_slice * vgt
 	
 	# get climate data with the presence of all mpb
-	btlyr <- yr - (nt - nyr)
+	btlyr <- yr - (nt - nyr -1)
 	btl_slice <- btl[,,btlyr]
 	btl_slice[btl_slice==0] <- NA
 	Pmean_btl <- Pmean_slice * btl_slice
@@ -291,7 +291,7 @@ for (yr in (nt-nyr+1):nt){
 	PMarAug_vgt <- PMarAug_slice * vgt
 	
 	# get climate data with the presence of all mpb
-	btlyr <- yr - (nt - nyr + 1)
+	btlyr <- yr - (nt - nyr)
 	btl_slice <- btl[,,btlyr]
 	btl_slice[btl_slice==0] <- NA
 	GSP_btl <- GSP_slice * btl_slice

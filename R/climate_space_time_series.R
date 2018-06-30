@@ -21,7 +21,7 @@ vargrp.p <- c("PcumOctSep", "PcumOctSep", "summerP0", "summerP1", "summerP2", "P
 				"GSP", "POctSep", "PMarAug", "summerP0", "summerP1", "summerP2")
 cols <- c("grey70", "#1b9e77", "#d95f02")
 
-csvfile <- "bioclimatic_variables_1996_2015.csv"
+csvfile <- "bioclimatic_variables_1996_2015.csv" # from climate_space_union.R
 indata <- read.csv(csvfile)
 n1 <- rep(c(1,2,3,4),5); n2 <- c(rep(1,4),rep(2,4),rep(3,4),rep(4,4),rep(5,4))
 foreach(i=1:length(c(vargrp.t, vargrp.p))) %dopar% {

@@ -144,8 +144,8 @@ btl <- ncvar_get(ncin_btl,"mpb_prs")
 
 print("get 3d array for climatic variables")
 ptm <- proc.time()
-# winterTmin, OctTmin, Tmin: year from first_year to end_year-1
-# JanTmin, MarTmin: year from first_year to end_year
+# winterTmin, OctTmin, Tmin: year from first_year to lastyear-1
+# JanTmin, MarTmin: year from first_year to last_year
 
 print("minimum winter temperatures...")
 for (yr in (nt-nyr):(nt-1)){
@@ -166,7 +166,7 @@ for (yr in (nt-nyr):(nt-1)){
 	Tmin_vgt <- Tmin_slice * vgt
 	
 	# get climate data with the presence of all mpb
-	btlyr <- yr - (nt - nyr)
+	btlyr <- yr - (nt - 1 - nyr)
 	btl_slice <- btl[,,btlyr]
 	btl_slice[btl_slice==0] <- NA
 	winterTmin_btl <- winterTmin_slice * btl_slice
@@ -412,7 +412,7 @@ proc.time() - ptm
 
 # repeat the same process as above for the rest two bioclimatic variables
 start_year = 1901; end_year = 2016; first_year = 1996; last_year = 2015
-years = first_year:end_year; nyr <- length(years)
+years = first_year:last_year; nyr <- length(years)
 for (yr in (nt-nyr+1):nt){
 
 	JanTmin_slice <- tmn[,,1,yr]
@@ -426,7 +426,7 @@ for (yr in (nt-nyr+1):nt){
 	MarTmin_vgt <- MarTmin_slice * vgt
 	
 	# get climate data with the presence of all mpb
-	btlyr <- yr - (nt - nyr + 1)
+	btlyr <- yr - (nt - nyr)
 	btl_slice <- btl[,,btlyr]
 	btl_slice[btl_slice==0] <- NA
 	JanTmin_btl <- JanTmin_slice * btl_slice

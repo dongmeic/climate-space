@@ -102,7 +102,7 @@ startyrs <- c(rep(1901,9), rep(1902,10), rep(1903, 2), 1907)
 get.data <- function(var, start_yr){
   ncfile <- paste0("na10km_v2_",var, "_", start_yr,".2016.3d.nc")
   ncin <- nc_open(paste0(ncpath, ncfile))
-  data <- ncvar_get(ncin,var,start=c(x=1,y=1,time=1),count=c(x=1078,y=900,time=1380))
+  data <- ncvar_get(ncin,var,start=c(x=1,y=1,time=1),count=c(x=1078,y=900,time=(2016-start_yr)))
   fillvalue <- ncatt_get(ncin,var,"_FillValue")
   data[data==fillvalue$value] <- NA
   return(data)
