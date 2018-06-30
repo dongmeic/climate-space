@@ -1,5 +1,4 @@
 # Created by Dongmei Chen
-library(ncdf4)
 library(ggplot2)
 library(grid)
 library(parallel)
@@ -7,7 +6,7 @@ library(doParallel)
 library(foreach)
 registerDoParallel(cores=28)
 
-years <- 1996:2015
+years <- 1996:2015; nyr <- length(years)
 csvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/climate_space/times_series/"
 out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/climate_space/paired/"
 setwd(out)
@@ -21,15 +20,16 @@ vargrp.p <- c("PcumOctSep", "PcumOctSep", "summerP0", "summerP1", "summerP2", "P
 				"GSP", "POctSep", "PMarAug", "summerP0", "summerP1", "summerP2")
 cols <- c("grey70", "#1b9e77", "#d95f02")
 
-csvfile <- "bioclimatic_variables_1996_2015.csv" # from climate_space_union.R
-indata <- read.csv(csvfile)
+#csvfile <- "bioclimatic_variables_1996_2015.csv" # from climate_space_union.R
+#indata <- read.csv(csvfile)
 n1 <- rep(c(1,2,3,4),5); n2 <- c(rep(1,4),rep(2,4),rep(3,4),rep(4,4),rep(5,4))
-foreach(i=1:length(c(vargrp.t, vargrp.p))) %dopar% {
-  df <- indata[,c(vargrp.t[i], vargrp.p[i], "prs", "yrs")]
-  colnames(df)[1:2] <- c("tmp", "pre") 
+foreach(i=1:length(vargrp.t))%dopar%{
+  #df <- indata[,c(vargrp.t[i], vargrp.p[i], "prs", "yrs")]
+  df.t <- read.csv(paste0(csvpath, vargrp.t[i], "_",years[1], "_",years[nyr], ".csv"))
+  df.p <- read.csv(paste0(csvpath, vargrp.p[i], "_",years[1], "_",years[nyr], ".csv"))
+  df <- cbind(data.frame(tmp=df.t[,1]),data.frame(pre=df.p[,1]),data.frame(prs=df.t[,2]),data.frame(yrs=df.t[,3]))
   climate.space <- function(j){
     df.ss <- subset(df, yrs==years[j])
-    colnames(df.ss)[1:2] <- c("tmp", "pre")
     p <- qplot(tmp, pre, data=df.ss, color=factor(prs), alpha=I(0.7), xlab = vargrp.t[i], ylab = vargrp.p[i], main = years[j])
     p <- p + scale_colour_manual(values = cols)
     p <- p + xlim(min(df$tmp), max(df$tmp)) + ylim(min(df$pre), max(df$pre))

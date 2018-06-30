@@ -53,11 +53,12 @@ get.yearly.table <- function(yr){
 	  ndf <- cbind(ndf, nadf)
 	}
 	write.csv(ndf, paste0("bioclimatic_values_", years[yr],".csv"), row.names = FALSE)
+	print("done writing the data table!")
 }
 
 foreach(i=1:length(years))%dopar%{
   get.yearly.table(i)
-  print(paste("...got data for", years[i]), "...")
+  print(paste0("...got data for ", years[i], "..."))
 }
 
 print("all done")

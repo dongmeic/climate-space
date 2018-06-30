@@ -180,27 +180,28 @@ climate.space.paired <- function(i){
   dev.off()
 }
 
-foreach(i = 1:length(vargrp.t))%dopar%{
-  climate.space.paired(i)
-  print(paste("The union climate space with variables", vargrp.t[i], "and", vargrp.p[i], "is done!"))
-}
+# foreach(i = 1:length(vargrp.t))%dopar%{
+#   climate.space.paired(i)
+#   print(paste("The union climate space with variables", vargrp.t[i], "and", vargrp.p[i], "is done!"))
+# }
 
-n1 <- c(rep(1,3),rep(2,3),rep(3,3),rep(4,3),rep(5,3)); n2 <- rep(c(1,2,3),5)
+n1 <- rep(c(1,2,3),5); n2 <- c(rep(1,3),rep(2,3),rep(3,3),rep(4,3),rep(5,3))
 climate.space <- function(i){
   df <- df5[,c(vargrp.t[i], vargrp.p[i], "prs")]
   colnames(df)[1:2] <- c("tmp", "pre")
-  p <- qplot(tmp, pre, data=df, color=factor(prs), alpha=I(0.7), xlab = vargrp.t[i], ylab = vargrp.p[i], main = paste0(vargrp.t[i],"-",vargrp.p[i]))
+  p <- qplot(tmp, pre, data=df, color=factor(prs), alpha=I(0.7), xlab = vargrp.t[i], ylab = vargrp.p[i], main = i)
   p <- p + scale_colour_manual(values = cols)
   p <- p + xlim(min(df$tmp), max(df$tmp)) + ylim(min(df$pre), max(df$pre))
   p <- p + theme(title =element_text(size=14, face='bold'), axis.text=element_text(size=10),axis.title=element_text(size=12,face="bold"),legend.position="none")
   return(p) 
 }
-png("cs_monthly_var_union.png", width=15, height=10, units="in", res=300)
+png("cs_monthly_var_union.png", width=16, height=10, units="in", res=300)
 grid.newpage()
 par(mar=c(2,2,4,2))
 pushViewport(viewport(layout = grid.layout(3, 5)))
 for(i in 1:length(vargrp.t)){
   print(climate.space(i), vp = vplayout(n1[i], n2[i]))
+  print(paste0("plotting climate space with ", vargrp.t[i], " and ", vargrp.p[i]))
 }
 dev.off()
 
