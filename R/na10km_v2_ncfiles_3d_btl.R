@@ -1,8 +1,6 @@
 # netCDF files of beetle presence data
 
 library(ncdf4)
-
-# path in ACISS
 csvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/csvfiles/"
 
 # open points netCDF file to get dimensions, etc.
