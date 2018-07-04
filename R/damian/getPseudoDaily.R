@@ -15,10 +15,10 @@ get.b.j <- function(Y, j) {
 }
 
 
-interpolate.daily <- function(a0, A, B, days.in.year=365) {
-  y <- numeric(days.in.year)
+interpolate.daily <- function(a0, A, B, n.days) {
+  y <- numeric(n.days)
   i <- 1
-  for (t in seq(1, 12, length=days.in.year)) {
+  for (t in seq(1, 12, length=n.days)) {
     harmonic <- 0
     for (j in c(1:6)) {
       harmonic <- (harmonic 
@@ -31,7 +31,7 @@ interpolate.daily <- function(a0, A, B, days.in.year=365) {
   y
 }
 
-get.daily.from.monthly <- function(monthly.means, days.in.year=365) {
+get.daily.from.monthly <- function(monthly.means, n.days) {
   a0 <- get.a.nought(monthly.means)
   A <- numeric(6)
   B <- numeric(6)
@@ -40,5 +40,5 @@ get.daily.from.monthly <- function(monthly.means, days.in.year=365) {
     A[j] <- get.a.j(monthly.means, j)
     B[j] <- get.b.j(monthly.means, j)
   }  
-  interpolate.daily(a0, A, B, days.in.year)
+  interpolate.daily(a0, A, B, n.days)
 }
