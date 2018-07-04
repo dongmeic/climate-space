@@ -227,7 +227,7 @@ ncvar_put(ncout,lon_def,lon)
 ncvar_put(ncout,lat_def,lat)
 
 # add global attributes
-ncatt_put(ncout,0,"title","vegetation presence on the na10km_v2 10-km Grid")
+ncatt_put(ncout,0,"title","beetle presence statistics on the na10km_v2 10-km Grid")
 ncatt_put(ncout,0,"institution","Dept. Geography; Univ_ Oregon")
 history <- paste("D.Chen", date(), sep=", ")
 ncatt_put(ncout,0,"history",history)
