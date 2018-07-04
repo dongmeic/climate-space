@@ -102,9 +102,9 @@ print.plotlist<-function(xx, layout=matrix(1:length(xx), nrow=1), more=F) {
 
 plots<-lapply(1:20, function(i) plotbtl(i))
 
-png(paste0(out,"beetle_presence_host.png"), width=8, height=12, units="in", res=300)
+png(paste0(out,"composite_beetle_presence.png"), width=8, height=12, units="in", res=300)
 par(mfrow=c(4,5), xpd=FALSE, mar=rep(0.5,4))
 print.plotlist(plots, layout=matrix(1:20, ncol=5))
 dev.off()
 
-print("done!")
+print("all done!")
