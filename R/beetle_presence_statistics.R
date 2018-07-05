@@ -83,7 +83,7 @@ for (i in 1:dim(prs.df)[1]){
     prs.df$alter10 <- stats[[9]]
     prs.df$alter <- stats[[10]]
   }
-  prs.df$nbhyrs[i] <- get.neighbor.sum(prs.df,i)
+  prs.df$ngbyrs[i] <- get.neighbor.sum(prs.df,i)
   # comment below line if the script is run in bash
   #print(paste("row", rownames(prs.df)[i]))	
 }
@@ -102,7 +102,7 @@ abs.df$meanprs <- rep(NA, dim(abs.df)[1])
 abs.df$alter01 <- rep(NA, dim(abs.df)[1])
 abs.df$alter10 <- rep(NA, dim(abs.df)[1])
 abs.df$alter <- rep(NA, dim(abs.df)[1])
-abs.df$nbhyrs <- rep(NA, dim(abs.df)[1])
+abs.df$ngbyrs <- rep(NA, dim(abs.df)[1])
 df <- rbind(abs.df, prs.df)
 
 # double check the possible neighboring presence
@@ -115,32 +115,32 @@ abs.df.ss <- subset(df, x >= Xmin & x <= Xmax & y >= Ymin & y <= Ymax)
 ptm <- proc.time()
 for (i in 1:dim(abs.df.ss)[1]){
   if (is.na(abs.df.ss$sumprs[i])){
-    abs.df.ss$nbhyrs[i] <- get.neighbor.sum(abs.df.ss,i)
+    abs.df.ss$ngbyrs[i] <- get.neighbor.sum(abs.df.ss,i)
   }
   # comment below line if the script is run in bash
   #print(paste("row", rownames(abs.df.ss)[i]))	
 }
 proc.time() - ptm
 print("looping done!")
-summary(abs.df.ss$nbhyrs)
-abs.df.ss$nbhyrs[abs.df.ss$nbhyrs==0] <- NA
-summary(abs.df.ss$nbhyrs[!is.na(abs.df.ss$nbhyrs)])
+summary(abs.df.ss$ngbyrs)
+abs.df.ss$ngbyrs[abs.df.ss$ngbyrs==0] <- NA
+summary(abs.df.ss$ngbyrs[!is.na(abs.df.ss$ngbyrs)])
 # update the dataframe
 ptm <- proc.time()
 t=0
 for(i in 1:length(abs.df.ss$key)){
-  print(paste("the original value is", df$nbhyrs[which(df$key == abs.df.ss$key[i])],
-  "and the replacement is", abs.df.ss$nbhyrs[i]))
-  if (is.na(df$nbhyrs[which(df$key == abs.df.ss$key[i])]) && is.na(abs.df.ss$nbhyrs[i])){
+  print(paste("the original value is", df$ngbyrs[which(df$key == abs.df.ss$key[i])],
+  "and the replacement is", abs.df.ss$ngbyrs[i]))
+  if (is.na(df$ngbyrs[which(df$key == abs.df.ss$key[i])]) && is.na(abs.df.ss$ngbyrs[i])){
   	#print("keeping NA value")
   	t=t+0
-  }else if(!is.na(df$nbhyrs[which(df$key == abs.df.ss$key[i])]) && !is.na(abs.df.ss$nbhyrs[i]) 
-           && df$nbhyrs[which(df$key == abs.df.ss$key[i])] == abs.df.ss$nbhyrs[i]){
+  }else if(!is.na(df$ngbyrs[which(df$key == abs.df.ss$key[i])]) && !is.na(abs.df.ss$ngbyrs[i]) 
+           && df$ngbyrs[which(df$key == abs.df.ss$key[i])] == abs.df.ss$ngbyrs[i]){
     #print("keeping the same value")
     t=t+0
   }else{
     #print("updating the value")
-    df$nbhyrs[which(df$key == abs.df.ss$key[i])] <- abs.df.ss$nbhyrs[i]
+    df$ngbyrs[which(df$key == abs.df.ss$key[i])] <- abs.df.ss$ngbyrs[i]
     t=t+1
   } 
 }
