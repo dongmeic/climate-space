@@ -342,7 +342,7 @@ dlongnames <- c("Minimum of monthly average of daily minimum temperature during 
 				"Mean of monthly average of daily mean temperature from September to November",
 				"Mean of monthly average of minimum temperature from November to March")
 dunits <- c("°C", "°C", "°C", "°C")
-d1 <- dim(var_all_3d)[1];d2 <- dim(var_all_3d)[2]; d3 <- (dim(var_all_3d)[3])/(length(dnames))
+d1 <- dim(var_all_3d)[1]; d2 <- dim(var_all_3d)[2]; d3 <- (dim(var_all_3d)[3])/(length(dnames))
 start_year <- 1902; end_year <- 2016
 nyr <- length(start_year:end_year)
 ptm <- proc.time()
@@ -451,8 +451,8 @@ for (yr in (nt-nyr+1):nt){
 		JanTmin <- abind(JanTmin, JanTmin_slice, JanTmin_vgt, JanTmin_btl, along=3)
 		MarTmin <- abind(MarTmin, MarTmin_slice, MarTmin_vgt, MarTmin_btl, along=3)
 		
-		JanTmin_std_all <- abind(JanTmin_std, JanTmin_std_slice, JanTmin_std_vgt, JanTmin_std_btl, along=3)
-		MarTmin_std_all <- abind(MarTmin_std, MarTmin_std_slice, MarTmin_std_vgt, MarTmin_std_btl, along=3)
+		JanTmin_std_all <- abind(JanTmin_std_all, JanTmin_std_slice, JanTmin_std_vgt, JanTmin_std_btl, along=3)
+		MarTmin_std_all <- abind(MarTmin_std_all, MarTmin_std_slice, MarTmin_std_vgt, MarTmin_std_btl, along=3)
 	}
 	print(paste0(years[btlyr], " is done!"))
 }
