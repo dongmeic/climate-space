@@ -24,11 +24,13 @@ alteration <- function(df, yr){
 }
 
 n <- length(years) - 1
+print("...writing alteration data...")
 for (i in 1:n){
   colnm <- paste0("alt",years[i+1])
   df[,colnm] <- alteration(df, i)
   print(paste("got", years[i+1]))
 }
+print("...finished writing alteration...")
 
 d <- dim(df)[1]
 # calculate neighboring cell sums of years
@@ -51,6 +53,7 @@ neighboring.sum <- function(df, k, yr, m){
 }
 
 for(k in yr.runs){
+  print(paste("running k", k))
   for(yr in 1:(n-k)){
     colnm <- paste0("ngb",k,years[yr+k-1])
     v <- vector()
@@ -61,7 +64,8 @@ for(k in yr.runs){
     }
     df[,colnm] <- v
     print(paste("got", years[yr+k-1]))
-  }  
+  }
+  print(paste("finished running k", k))  
 }
 
 write.csv(df, paste0(csvpath, "ts_beetle_presence_statistics.csv"), row.names=FALSE)
