@@ -136,20 +136,20 @@ climate.space.paired <- function(yr,i){
   dev.off()
 }
 
-ptm <- proc.time()
-print("start plotting climate space")
-foreach(i=1:length(years)) %dopar%{
-  foreach(j=1:length(vargrp.t)) %dopar%{
-    climate.space.paired(i,j)
-    print(paste("processed year", years[i], "and variable pair", vargrp.t[j], "and", vargrp.p[j]))
-  }
-}
-
-print("making an animation")
-foreach(i=1:length(vargrp.t)) %dopar%{
-  im.convert(paste0(out,"cs_",vargrp.t[i],"_",vargrp.p[i],"_*.png"), output = paste0(out,"cs_",vargrp.t[i],"_",vargrp.p[i],".gif"))
-}
-proc.time() - ptm
+# ptm <- proc.time()
+# print("start plotting climate space")
+# foreach(i=1:length(years)) %dopar%{
+#   foreach(j=1:length(vargrp.t)) %dopar%{
+#     climate.space.paired(i,j)
+#     print(paste("processed year", years[i], "and variable pair", vargrp.t[j], "and", vargrp.p[j]))
+#   }
+# }
+# 
+# print("making an animation")
+# foreach(i=1:length(vargrp.t)) %dopar%{
+#   im.convert(paste0(out,"cs_",vargrp.t[i],"_",vargrp.p[i],"_*.png"), output = paste0(out,"cs_",vargrp.t[i],"_",vargrp.p[i],".gif"))
+# }
+# proc.time() - ptm
 
 # departure from long-term means
 vargrp1 <- c("fallTmean", "winterTmin", "Tmin", "Tmean", "Tvar", "JanTmin", "PcumOctSep", "summerP0", "summerP1", "summerP2")
@@ -242,16 +242,18 @@ climate.space.departure <- function(yr, i){
 }
 
 print("start plotting climate space of departure")
+j = 6
 foreach(i=1:length(years)) %dopar%{
-  foreach(j=1:length(vargrp1)) %dopar%{
+  #foreach(j=1:length(vargrp1)) %dopar%{
     print(paste("processed year", years[i], "and variable pair", vargrp1[j], "and", vargrp2[j]))
     climate.space.departure(i,j)
-  }
+  #}
 }
 
 print("making an animation again")
-foreach(i=1:length(vargrp1)) %dopar%{
+i = 6
+#foreach(i=1:length(vargrp1)) %dopar%{
   im.convert(paste0(out,"cs_",vargrp1[i],"_",vargrp2[i],"_std_*.png"), output = paste0(out,"cs_",vargrp1[i],"_",vargrp2[i],"_std.gif"))
-}
+#}
 
 print("all done!")

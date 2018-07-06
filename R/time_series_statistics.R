@@ -24,11 +24,13 @@ alteration <- function(df, yr){
 }
 
 n <- length(years) - 1
+print("...writing alteration data...")
 for (i in 1:n){
   colnm <- paste0("alt",years[i+1])
   df[,colnm] <- alteration(df, i)
   print(paste("got", years[i+1]))
 }
+print("...finished writing alteration...")
 
 d <- dim(df)[1]
 # calculate neighboring cell sums of years
@@ -50,7 +52,9 @@ neighboring.sum <- function(df, k, yr, m){
   ifelse(length(total), total, 0)
 }
 
+print("writing neighboring cell years")
 for(k in yr.runs){
+  print(paste("running k", k))
   for(yr in 1:(n-k)){
     colnm <- paste0("ngb",k,years[yr+k-1])
     v <- vector()
@@ -61,10 +65,12 @@ for(k in yr.runs){
     }
     df[,colnm] <- v
     print(paste("got", years[yr+k-1]))
-  }  
+  }
+  print(paste("finished running k", k))  
 }
 
 write.csv(df, paste0(csvpath, "ts_beetle_presence_statistics.csv"), row.names=FALSE)
+print("finished CSV writing")
 
 # open points netCDF file to get dimensions, etc.
 ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/"
@@ -200,6 +206,7 @@ for (i in yr.runs[-1]){
   time_def <- ncvar_def(dlname,tunits,list(tdim),NULL,dlname,prec="integer")
   
   varnm = paste0("ngbyrs_",i)
+  print(paste("start writing", varnm))
   varlnm = paste("number of years of presence in the nearest eight cells every", i, "years")
   ncfname <- paste0(ncpath,"prs/time_series_presence_statistics_",i,".nc")
   var_def <- ncvar_def(varnm, dunits, list(xdim, ydim, tdim), fillvalue,varlnm, prec = "float")
@@ -217,7 +224,6 @@ for (i in yr.runs[-1]){
   ncvar_put(ncout, var_def, temp_array)
   
   # put additional attributes into dimension and data variables
-  print("writing output")
   ncatt_put(ncout,"x","axis","X")
   ncatt_put(ncout,"x","standard_name","projection_x_coordinate")
   ncatt_put(ncout,"x","grid_spacing","10000 m")
@@ -244,5 +250,6 @@ for (i in yr.runs[-1]){
   ncatt_put(ncout,0,"base_period","1997-2016")
   # close the file, writing data to disk
   nc_close(ncout)
+  print(paste("wrote", varnm, "into a netCDF file"))
 }
 print("all done!")

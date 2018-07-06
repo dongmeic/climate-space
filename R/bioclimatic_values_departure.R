@@ -52,7 +52,8 @@ get.dtcol <- function(var){
   write.csv(ndf, paste0(outcsvpath, var, "_std_",years[1], "_",years[nyr], ".csv"), row.names = FALSE)
 }
 
-foreach(i = 1:length(vargrp))%dopar%{
+#foreach(i = 1:length(vargrp))%dopar%{
+foreach(i = 1:2)%dopar%{
   get.dtcol(vargrp[i])
   print(paste("...got bioclimatic values from", vargrp[i], "..."))
 }
