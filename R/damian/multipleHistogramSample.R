@@ -28,5 +28,8 @@ all.bars <- c()
 for (i in 1:10) {
   all.bars <- c(all.bars, a.bars[i], b.bars[i])
 }
+mn <- min(all.bars, na.rm=T)
+mx <- max(all.bars, na.rm=T)
 
-barplot(all.bars, col=c(2, 4))
+barplot(all.bars, col=c(2, 4), space=0, xaxt='n')
+axis(1, at=seq(1, 2*(mx - mn) + 1, 2), labels=mn:mx, tick=F)
