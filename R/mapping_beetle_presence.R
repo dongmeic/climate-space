@@ -42,7 +42,7 @@ for(i in 1:length(years)){
   p <- levelplot(btl_slice ~ x * y, data=grid, xlim=c(-2050000,20000), ylim=c(-2000000,2000000),
                  par.settings = list(axis.line = list(col = "transparent")), scales = list(draw = FALSE), margin=F, 
                  col.regions=myColors, main=list(label=paste0("Beetle presence in ", toString(years[i])), cex=1.5), 
-                 xlab="",ylab="", colorkey = FALSE, key=myKey, aspect="iso")
+                 xlab="",ylab="", colorkey = FALSE, key=myKey)
   p <- p + latticeExtra::layer(sp.polygons(canada.prov, lwd=0.8, col='dimgray'))
   p <- p + latticeExtra::layer(sp.polygons(us.states, lwd=0.8, col='dimgray'))
   p <- p + latticeExtra::layer(sp.polygons(lrglakes, lwd=0.8, col='lightblue'))
@@ -60,7 +60,7 @@ plotbtl <- function(i){
   p <- levelplot(btl_slice ~ x * y, data=grid, xlim=c(-2050000,20000), ylim=c(-2000000,2000000),
                  par.settings = list(axis.line = list(col = "transparent")), scales = list(draw = FALSE), margin=F, 
                  col.regions=myColors, main=list(label=toString(years[i]), cex=1.5), 
-                 xlab="",ylab="", colorkey = FALSE, aspect="iso")
+                 xlab="",ylab="", colorkey = FALSE)
   p <- p + latticeExtra::layer(sp.polygons(canada.prov, lwd=0.8, col='dimgray'))
   p <- p + latticeExtra::layer(sp.polygons(us.states, lwd=0.8, col='dimgray'))
   p <- p + latticeExtra::layer(sp.polygons(lrglakes, lwd=0.8, col='lightblue'))
