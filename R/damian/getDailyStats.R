@@ -194,6 +194,7 @@ get.daily.stats <- function(
                                      monthly.means[aug.jul.range], 
                                      monthly.lows[aug.jul.range])
   out <- c(unlist(t.data), unlist(two.year.data))
-  names(out) <- gsub('coldsnap.stats.|drop.data.|degree.days.data.', '', )
+  names(out) <- gsub(
+    'coldsnap.stats.|drop.data.|degree.days.data.', '', names(out))
   out
 }
