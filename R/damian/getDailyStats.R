@@ -95,7 +95,7 @@ get.single.year.data <- function(year, monthly.lows, monthly.highs) {
     summer.range <- summer.range + 1
   }
   Lcs <- is.coldsnap(daily.lows[Lcs.range])
-  maxAugT <- max(daily.highs[aug.range])
+  maxAugT <- sum(daily.highs[aug.range] >= 18.3)
   summerT40 <- get.summer.t40(daily.highs[summer.range])
   list(Lcs=Lcs, maxAugT=maxAugT, summerT40=summerT40)
 }
