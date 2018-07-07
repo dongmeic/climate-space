@@ -141,8 +141,9 @@ get.drop.stats <- function(daily.means) {
 get.degree.days <- function(daily.means) {
   n <- length(daily.means)
   above5.5.aug.jul <- daily.means > 5.5
-  ddAugJul <- sum(above5.5.aug.jul)
-  ddAugJun <- sum(above5.5.aug.jul[1:(n-31)])
+  above5.5.aug.jun <- above5.5.aug.jul[1:(n-31)]
+  ddAugJul <- sum(daily.means[which(above5.5.aug.jul)])
+  ddAugJun <- sum(daily.means[which(above5.5.aug.jun)])
   list(ddAugJul=ddAugJul, ddAugJun=ddAugJun)
 }
 
