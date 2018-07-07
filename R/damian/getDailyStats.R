@@ -138,6 +138,15 @@ get.drop.stats <- function(daily.means) {
 }
 
 
+get.degree.days <- function(daily.means) {
+  n <- length(daily.means)
+  above5.5.aug.jul <- daily.means > 5.5
+  ddAugJul <- sum(above5.5.aug.jul)
+  ddAugJun <- sum(above5.5.aug.jul[1:(n-31)])
+  list(ddAugJul=ddAugJul, ddAugJun=ddAugJun)
+}
+
+
 get.two.year.data <- function(start.year, monthly.means, monthly.lows) {
   y2.leap <- is.leap.year(start.year + 1)
   n.days <- ifelse(y2.leap, 366, 365)
@@ -152,17 +161,18 @@ get.two.year.data <- function(start.year, monthly.means, monthly.lows) {
   }
   daily.means <- get.daily.from.monthly(monthly.means, n.days)
   daily.lows  <- get.daily.from.monthly(monthly.lows,  n.days)
-
   winterTmin <- min(daily.lows[winter.range])
   Ecs <- is.coldsnap(daily.lows[Ecs.range])
   coldsnap.stats <- get.coldsnap.stats(daily.lows[winter.range])
   drop.data <- get.drop.stats(daily.means[winter.range])
+  degree.days.data <- get.degree.days(daily.means)
   list(winterTmin=winterTmin, Ecs=Ecs, coldsnap.stats=coldsnap.stats,
-       drop.data=drop.data)
+       drop.data=drop.data, degree.days.data=degree.days.data)
 }
 
 
-# get.daily.stats requires 2 years of monthly statistics from Jan (t-1) # to Dec (t)
+# get.daily.stats requires 2 years of monthly statistics from Jan (t-1) 
+# to Dec (t)
 # Args:
 #   start.year: numeric; year of t-1
 #   monthly.highs: numeric vector; 24 data points of monthly highs
@@ -184,6 +194,6 @@ get.daily.stats <- function(
                                      monthly.means[aug.jul.range], 
                                      monthly.lows[aug.jul.range])
   out <- c(unlist(t.data), unlist(two.year.data))
-  names(out) <- gsub('coldsnap.stats.|drop.data.', '', names(out))
+  names(out) <- gsub('coldsnap.stats.|drop.data.|degree.days.data.', '', 
   out
 }
