@@ -31,12 +31,6 @@ proj_def <- ncvar_def(projname,"1",NULL,NULL,longname=dlname,prec="char")
 dlname <- "year"
 time_def <- ncvar_def(dlname,tunits,list(tdim),NULL,dlname,prec="integer")
 
-print("set j and k index")
-j2 <- sapply(x, function(xy) which.min(abs(x-xy)))
-k2 <- sapply(y, function(xy) which.min(abs(y-xy)))
-head(cbind(x,y,j2,k2))
-print("done!")
-
 print("calculating the biocliamtic variables using daily data")
 ptm <- proc.time()
 dim1 <- 277910; dim2 <- nt
@@ -88,7 +82,7 @@ for (i in 1:nt){
   for(j in 1:dim1){
     df.j <- indata[j,]
     for(m in 1:23){
-      df.m <- rbind(df.j, indata[j+dim*m,])
+      df.m <- rbind(df.j, indata[j+dim1*m,])
       df.j <- df.m
       #print(m)
     }
@@ -119,6 +113,12 @@ print("done!")
 print("combine all matrix...")
 matrix.all <- cbind(Lcs, maxAugT, summerT40, winterTmin, Ecs, Ncs, Acs, drop0, drop5, drop10, 
                     drop15, drop20, drop20plus, max.drop, ddAugJul, ddAugJun)
+print("done!")
+
+print("set j and k index")
+j2 <- sapply(x, function(xy) which.min(abs(x-xy)))
+k2 <- sapply(y, function(xy) which.min(abs(y-xy)))
+head(cbind(x,y,j2,k2))
 print("done!")
 
 print("writing 3D netCDF files")
