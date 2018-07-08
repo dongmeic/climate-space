@@ -2,6 +2,10 @@
 # Writing netCDFfiles for daily bioclimatic variables
 
 library(ncdf4)
+library(parallel)
+library(doParallel)
+library(foreach)
+registerDoParallel(cores=28)
 
 source("/gpfs/projects/gavingrp/dongmeic/climate-space/R/damian/getDailyStats.R")
 inpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
@@ -71,7 +75,7 @@ varlnms <- c("late cold snap occurring between March through mid-April",
              "accumulated degree days above 5.5 °C from August to June")
 dunits <- c("binary", "day", "day", "°C", "binary", "one", "one", "day", "day", "day", "day", 
             "day", "day", "°C", "°C", "°C")
-for (i in 1:nt){
+foreach(i = 1:nt)%dopar%{
   indata1 <- read.csv(paste0(inpath, "na10km_v2_climatic_values_",years[i],".csv"))
   indata2 <- read.csv(paste0(inpath, "na10km_v2_climatic_values_",years[i+1],".csv"))
   indata <- rbind(indata1, indata2)
@@ -116,14 +120,15 @@ matrix.all <- cbind(Lcs, maxAugT, summerT40, winterTmin, Ecs, Ncs, Acs, drop0, d
 print("done!")
 
 print("set j and k index")
-j2 <- sapply(x, function(xy) which.min(abs(x-xy)))
-k2 <- sapply(y, function(xy) which.min(abs(y-xy)))
-head(cbind(x,y,j2,k2))
+na10km <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/csvfiles/na10km_v2.csv")
+j2 <- sapply(na10km$x, function(xy) which.min(abs(x-xy)))
+k2 <- sapply(na10km$y, function(xy) which.min(abs(y-xy)))
+head(cbind(na10km$x,na10km$y,j2,k2))
 print("done!")
 
 print("writing 3D netCDF files")
 ptm <- proc.time()
-for(k in 1:nvar){
+foreach(k = 1:nvar)%dopar%{
   m <- rep(1:nt,each=dim1)
   temp_array <- array(fillvalue, dim=c(nx,ny,nt))
   temp_array[cbind(j2,k2,m)] <- matrix.all[1:dim1,1+(nt*(k-1)):(nt*k)]
@@ -188,8 +193,7 @@ print(ncin_btl)
 btl <- ncvar_get(ncin_btl,"mpb_prs")
 
 nv <- 3 # three variables: land, tree, beetle
-
-for (j in 1:nvar){
+foreach(j = 1:nvar)%dopar%{
   dname <- varnms[j]
   print(paste("running for", dname))
   if(j != 1 & j != 5){
@@ -237,7 +241,7 @@ for (j in 1:nvar){
 	  }else{
 	    filenm <- paste0("na10km_v2_",dname,"_std_",first_year,".",last_year,".4d.nc")
 	  }
-	 ncfile <- paste0(ncpath,"ts/var/",filenm)
+	  ncfile <- paste0(ncpath,"ts/var/",filenm)
 	  # define dimensions
 	  xdim <- ncdim_def("x",units="m",longname="x coordinate of projection",as.double(x))
 	  ydim <- ncdim_def("y",units="m",longname="y coordinate of projection",as.double(y))

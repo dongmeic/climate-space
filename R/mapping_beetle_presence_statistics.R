@@ -18,7 +18,6 @@ print(ncin)
 x <- ncvar_get(ncin, varid="x"); nx <- length(x)
 y <- ncvar_get(ncin, varid="y"); ny <- length(y)
 grid <- expand.grid(x=x, y=y)
-nc_close(ncin)
 
 shppath <- "/gpfs/projects/gavingrp/dongmeic/beetle/shapefiles"
 canada.prov <- readOGR(dsn = shppath, layer = "na10km_can_prov")

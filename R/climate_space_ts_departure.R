@@ -1,10 +1,6 @@
 # Created by Dongmei Chen
 library(ggplot2)
 library(grid)
-library(parallel)
-library(doParallel)
-library(foreach)
-registerDoParallel(cores=28)
 
 years <- 1996:2015; nyr <- length(years)
 csvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
