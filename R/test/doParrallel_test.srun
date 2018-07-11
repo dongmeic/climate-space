@@ -1,0 +1,23 @@
+#!/bin/bash
+#SBATCH --partition=short       ### Partition (like a queue in PBS)
+#SBATCH --job-name=dopartest    ### Job Name
+#SBATCH --output=dopartest.out       ### File in which to store job output
+#SBATCH --error=dopartest.err        ### File in which to store job error messages
+#SBATCH --time=0-00:30:00      ### Wall clock time limit in Days-HH:MM:SS
+#SBATCH --nodes=1              ### Node count required for the job
+#SBATCH --ntasks-per-node=28    ### Number of tasks to be launched per Node
+##SBATCH --cpus-per-tasks=28
+#SBATCH --workdir=/gpfs/projects/gavingrp/dongmeic/beetle/output/daily/20180710 ###Set the working directory of the batch script to directory before it is executed
+#SBATCH --mail-type=END,FAIL
+#SBATCH --mail-user=dongmeic@uoregon.edu
+
+echo "starting job on doParrallel_test at " `date` >> job.log
+echo "loading R module" >> job.log
+module unload intel
+module load R/3.4.3
+module load bright
+
+echo "preparing for job on doParrallel_test" >> job.log
+Rscript /gpfs/projects/gavingrp/dongmeic/climate-space/R/test/doParrallel_test.R >> r-dopartest.out
+echo "job on doParrallel_test finished" >> job.log
+echo "job on doParrallel_test completed at " `date` >> job.log
