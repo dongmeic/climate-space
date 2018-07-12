@@ -1,11 +1,6 @@
 # Created by Damian Satterthwaite-Phillips
 # Modified by Dongmei Chen, from PCA_bioclimatic_variables.R
 
-library(parallel)
-library(doParallel)
-library(foreach)
-registerDoParallel(cores=28)
-
 csvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
 out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/plots/"
 setwd(out)
@@ -14,7 +9,7 @@ na10km_btl_df <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/output/tables
 head(na10km_btl_df)
 years <- 1996:2015
 
-pca_plot <- function(df,i){
+pca_plot <- function(df,i,pca){
 	png(paste0("PCA_variable_selection_",years[i],".png"), width=12, height=9, units="in", res=300)
 	par(mfrow=c(2, 2))
 	par(mar=c(4, 4, 3, 3))
@@ -50,18 +45,18 @@ pca_plot <- function(df,i){
 	dev.off()
 }
 
-foreach(i in 1:length(years)){
+for(i in 1:length(years)){
   df <- read.csv(paste0(csvpath,"bioclimatic_values_",years[i],".csv"))
   df <- cbind(df,na10km_btl_df[,c(paste0("prs_",(years[i]+1)),"vegetation")])
   colnames(df)[23:24] <- c("beetles","hosts")
   vars <- 1:22
-  pca <- princomp(ndf[, vars], cor=T)
+  pca <- princomp(df[, vars], cor=T)
   summary(pca, loadings <- T)
 	sink(paste0(csvpath,"pca_summary_",years[i],".txt"))
 	summary(pca)
 	sink()
 	write.csv(x = unclass(loadings(pca)), file = paste0(csvpath,"pca_loading_",years[i],".csv"))
-  pca_plot(df,i)
+  pca_plot(df,i,pca)
 	print(paste(years[i], "done!"))
 }
 
