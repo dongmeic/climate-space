@@ -9,11 +9,11 @@ get.percent.sunshine <- function(cloud.coverage) {
   } else {
   	sun.percent <- 0.15 - (((cloud.coverage / 1.25) - 70) / 100)
   }
-  sun.percent
+  100 * sun.percent
 }
 
 # NOTE: To apply the function to a vector of cloud.coverage values, e.g.: use:
 cloud.coverage.vector <- c(72, 47, 0, 0, 66)
 
 # ...you can use:
-unlist(lapply(cloud.coverage.vector, get.percent.sunshin))
+unlist(lapply(cloud.coverage.vector, get.percent.sunshine))
