@@ -5,9 +5,8 @@ library(ncdf4)
 csvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
 btlprs <- read.csv(paste0(csvpath, "beetle_presence.csv"))
 
-btlprs$key <- seq(1,dim(btlprs)[1])
-target_columns <- colnames(btlprs[,grepl("prs_", colnames(btlprs))])
-df <- btlprs[,target_columns]
+target_columns <- c("x", "y", colnames(btlprs[,grepl("prs_", colnames(btlprs))]))
+ndf <- btlprs[,target_columns]
 yr.runs <- seq(2,10,2) # time-series neighboring cell sums of years
 years <- 1997:2016
 
@@ -32,16 +31,15 @@ for (i in 1:n){
 }
 print("...finished writing alteration...")
 
-df <- cbind(btlprs[,c("x", "y")], df)
-
 d <- dim(df)[1]
 # calculate neighboring cell sums of years
 neighboring.sum <- function(df, k, yr, m){
-  tar_cols <- c(paste0("prs_",years[yr+1:k-1]))
-  df <- df[,tar_cols]
-  df$sumprs <- rowSums(df)
+  tar_cols <- c("x", "y", paste0("prs_",years[yr+1:k-1]))
+  df <- ndf[,tar_cols]
+  df$sumprs <- rowSums(df[,-2:-1])
   df$sumprs[df$sumprs==0] <- NA
-  x <- df$x[i]; y <- df$y[i]
+  
+  x <- df$x[m]; y <- df$y[m]
   total <- 0
   for(i in c(-10000, 0, 10000)){
     for(j in c(-10000, 0, 10000)){
@@ -60,10 +58,10 @@ for(k in yr.runs){
   for(yr in 1:(n-k+2)){
     colnm <- paste0("ngb",k,years[yr+k-1])
     v <- vector()
-    for( m in 1:d){      
+    for(m in 1:d){      
       v[m] <- neighboring.sum(df, k, yr, m)
       # comment below line if the script is run in bash
-      # print(paste("row", rownames(df)[m]))	
+      print(paste("row", rownames(df)[m]))	
     }
     df[,colnm] <- v
     print(paste("got", years[yr+k-1]))
@@ -213,9 +211,9 @@ for (i in yr.runs[-1]){
   ncfname <- paste0(ncpath,"prs/time_series_presence_statistics_",i,".nc")
   var_def <- ncvar_def(varnm, dunits, list(xdim, ydim, tdim), fillvalue,varlnm, prec = "float")
   ncout <- nc_create(ncfname,list(lon_def,lat_def,var_def,proj_def),force_v4=TRUE, verbose=FALSE)  
-  p <- p + nt + 1
+  p <- p + nt
   temp_array <- array(fillvalue, dim = c(nx,ny,nt))
-  temp_array[cbind(j2,k2,m)] <- as.matrix(indata[1:nobs,p:(p-1+length((1997+i-1):2016))])
+  temp_array[cbind(j2,k2,m)] <- as.matrix(indata[1:nobs,(p+1):(p+length((1997+i-1):2016))])
   t <- i
   # put variables
   ncvar_put(ncout,lon_def,lon)

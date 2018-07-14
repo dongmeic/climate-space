@@ -64,7 +64,7 @@ crs_CRS.PROJ.4 <- ncatt_get(ncin, "lambert_azimuthal_equal_area", "CRS.PROJ.4")$
 # close the input file
 nc_close(ncin)
 
-# calculate abosulte values
+# calculate absolute values
 
 # quick map to check data
 n <- time_length

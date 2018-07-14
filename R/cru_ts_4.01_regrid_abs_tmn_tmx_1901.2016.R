@@ -66,7 +66,7 @@ crs_CRS.PROJ.4 <- ncatt_get(ncin_tmp, "lambert_azimuthal_equal_area", "CRS.PROJ.
 nc_close(ncin_tmp)
 nc_close(ncin_dtr)
 
-# calculate abosulte values
+# calculate absolute values
 
 # quick map to check data
 n <- nt

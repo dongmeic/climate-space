@@ -8,7 +8,7 @@ cru_ts_ltms_anomalies <- function(varname, varlname, varunit){
 	ncoutpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/cru_ts4.01/derived/"
 	print("open points netCDF file to get dimensions, etc.")
 	ncinfile <- paste0("cru_ts4.01.1901.2016.",varname,".dat.nc")
-	ncin <- nc_open(paste(ncpath,ncinfile,sep=""))
+	ncin <- nc_open(paste0(ncpath,ncinfile))
 
 	print("get dimension variables")
 	lon <- ncvar_get(ncin, varid="lon"); nlon <- length(lon)
@@ -17,14 +17,18 @@ cru_ts_ltms_anomalies <- function(varname, varlname, varunit){
 	tunits <- ncatt_get(ncin,"time","units")
 
 	var3d <- ncvar_get(ncin,varname)
-	fillvalue <- ncatt_get(ncin,varname,"_FillValue")
-	fillvalue <- fillvalue$value
+	fillvalue <- ncatt_get(ncin,varname,"_FillValue")$value
 
 	print("close the input file")
 	nc_close(ncin)
 
 	print("replace netCDF _FillValues with R NA's")
 	var3d[var3d==fillvalue] <- NA
+	
+	print("reshape 3d array to 4d")
+	nm <- 12 # number of months in year
+	ny <- nt/12 # number of years in CRU data set
+	var4d <- array(var3d, dim=c(nlon,nlat,nm,ny))
 
 	print("make a missing data mask")
 	landmask <- array(1, dim=c(nlon,nlat))
@@ -44,7 +48,6 @@ cru_ts_ltms_anomalies <- function(varname, varlname, varunit){
 
 	print("define array for long-term means")
 	ltm <- array(NA, dim=c(nlon,nlat,nm))
-	dim(ltm)
 	# long-term means
 	for (j in 1:nlon) {
 		for (k in 1:nlat) {
@@ -105,7 +108,6 @@ cru_ts_ltms_anomalies <- function(varname, varlname, varunit){
 	history <- paste("D. Chen", date(), sep=", ")
 	ncatt_put(ncout,0,"history",history)
 	ncatt_put(ncout,0,"base_period","1961-1990")
-	ncatt_put(ncout,0,"Conventions","CF-1_6")
 
 	print("close the file, writing data to disk")
 	nc_close(ncout)
@@ -159,7 +161,6 @@ cru_ts_ltms_anomalies <- function(varname, varlname, varunit){
 	history <- paste("D. Chen", date(), sep=", ")
 	ncatt_put(ncout,0,"history",history)
 	ncatt_put(ncout,0,"anomaly_base_period","1961-1990")
-	ncatt_put(ncout,0,"Conventions","CF-1_6")
 
 	print("close the file, writing data to disk")
 	nc_close(ncout)
@@ -196,7 +197,6 @@ cru_ts_ltms_anomalies <- function(varname, varlname, varunit){
 	history <- paste("D. Chen", date(), sep=", ")
 	ncatt_put(ncout,0,"history",history)
 	ncatt_put(ncout,0,"anomaly_base_period","1961-1990")
-	ncatt_put(ncout,0,"Conventions","CF-1_6")
 
 	print("close the file, writing data to disk")
 	nc_close(ncout)
@@ -231,7 +231,6 @@ cru_ts_regrid_anomalies <- function(varname){
 	nafile <- "na10km_v2.nc"
 	na_ncfile <- paste(napath,nafile,sep="")
 	ncin <- nc_open(na_ncfile)
-	print(ncin)
 
 	print("get dimension variables and attributes")
 	x <- ncvar_get(ncin, varid="x"); nx <- length(x)
@@ -316,12 +315,11 @@ cru_ts_regrid_anomalies <- function(varname){
 	sum(is.na(cru_nonmiss))
 
 	miss_id <- seq(1:length(interp_var))[is.na(interp_var)]
-	head(miss_id)
 	nmiss <- length(miss_id)
 	dist <- rep(1,nmiss)
 
 	print("find closest nonmissing CRU point to each missing target point")
-	ptm <- proc.time() # timer
+	ptm <- proc.time()
 	for (i in 1:nmiss) {
 		print(i)
 		id <- miss_id[i]
@@ -351,10 +349,10 @@ cru_ts_regrid_anomalies <- function(varname){
 
 	print("write out interpolated anomalies -- 3d array (nx, ny, nt)")
 
-	ptm <- proc.time() # timer
+	ptm <- proc.time()
 	natspath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/ts/"
-	interpfile <- "na10km_v2_cru_ts4.01.1901.2016.",varname,".anm3d.nc"
-	interp_ncfile <- paste(natspath,interpfile,sep="")
+	interpfile <- paste0("na10km_v2_cru_ts4.01.1901.2016.",varname,".anm3d.nc")
+	interp_ncfile <- paste0(natspath,interpfile)
 
 	print("define dimensions")
 	xdim <- ncdim_def("x",units="m",longname="x coordinate of projection",as.double(x))
@@ -362,7 +360,6 @@ cru_ts_regrid_anomalies <- function(varname){
 	tdim <- ncdim_def("time", units=tunits$value, longname="time", as.double(time))
 
 	print("define common variables")
-	fillvalue <- 1e32
 	dlname <- "Longitude of cell center"
 	lon_def <- ncvar_def("lon","degrees_east",list(xdim,ydim),NULL,dlname,prec="double")
 	dlname <- "Latitude of cell center"
@@ -371,7 +368,7 @@ cru_ts_regrid_anomalies <- function(varname){
 	proj_def <- ncvar_def(projname,"1",NULL,NULL,longname=dlname,prec="char")
 
 	print("create netCDF file and put data")
-	var_def <- ncvar_def(varname,dunits$value,list(xdim,ydim,tdim),fillvalue,dlongname$value,prec="double")
+	var_def <- ncvar_def(paste0(varname,"_anm"),dunits$value,list(xdim,ydim,tdim),fillvalue,dlongname$value,prec="double")
 	ncout <- nc_create(interp_ncfile,list(lon_def,lat_def,var_def,proj_def),force_v4=TRUE, verbose=FALSE)
 
 	print("put additional attributes into dimension and data variables")
@@ -408,7 +405,6 @@ cru_ts_regrid_anomalies <- function(varname){
 	history <- paste("D. Chen", date(), sep=", ")
 	ncatt_put(ncout,0,"history",history)
 	ncatt_put(ncout,0,"base_period","1961-1990")
-	ncatt_put(ncout,0,"Conventions","CF-1_6")
 
 	print("close the file, writing data to disk")
 	nc_close(ncout)
@@ -424,9 +420,9 @@ cru_ts_regrid_anomalies <- function(varname){
 	remove(interp_anm)
 
 	print("write 4d data")
-	ptm <- proc.time() # timer
+	ptm <- proc.time()
 	interpfile <- paste0("na10km_v2_cru_ts4.01.1901.2016.",varname,".anm4d.nc")
-	interp_ncfile <- paste(natspath,interpfile,sep="")
+	interp_ncfile <- paste0(natspath,interpfile)
 
 	print("define dimensions")
 	xdim <- ncdim_def("x",units="m",longname="x coordinate of projection",as.double(x))
@@ -437,7 +433,6 @@ cru_ts_regrid_anomalies <- function(varname){
 	monthdim <- ncdim_def("month","month",as.integer(month))
 
 	print("define common variables")
-	fillvalue <- 1e32
 	dlname <- "Longitude of cell center"
 	lon_def <- ncvar_def("lon","degrees_east",list(xdim,ydim),NULL,dlname,prec="double")
 	dlname <- "Latitude of cell center"
@@ -446,7 +441,7 @@ cru_ts_regrid_anomalies <- function(varname){
 	proj_def <- ncvar_def(projname,"1",NULL,NULL,longname=dlname,prec="char")
 
 	print("create netCDF file and put data")
-	var_def <- ncvar_def(varname,dunits$value,list(xdim,ydim,monthdim,yeardim),fillvalue,dlongname$value,prec="double")
+	var_def <- ncvar_def(paste0(varname,"_anm"),dunits$value,list(xdim,ydim,monthdim,yeardim),fillvalue,dlongname$value,prec="double")
 	ncout <- nc_create(interp_ncfile,list(lon_def,lat_def,var_def,proj_def),force_v4=TRUE, verbose=FALSE)
 
   print("put additional attributes into dimension and data variables")
@@ -480,7 +475,6 @@ cru_ts_regrid_anomalies <- function(varname){
 	history <- paste("D. Chen", date(), sep=", ")
 	ncatt_put(ncout,0,"history",history)
 	ncatt_put(ncout,0,"base_period","1961-1990")
-	ncatt_put(ncout,0,"Conventions","CF-1_6")
 
 	print("close the file, writing data to disk")
 	nc_close(ncout)
@@ -501,7 +495,7 @@ cru_ts_regrid_abs <- function(varname, varlname){
 	dname <- paste0(varname,"_anm")
 	var3d <- ncvar_get(ncin,dname,start=c(x=1,y=1,time=start_time),count=c(x=1078,y=900,time=time_length))
 	var3d.lt <- ncvar_get(ncin,dname)
-	fillvalue <- ncatt_get(ncin,dname,"_FillValue")
+	fillvalue <- ncatt_get(ncin,dname,"_FillValue")$value
 	dunits <- ncatt_get(ncin,dname,"units")
 
 	print("get dimension variables and attributes")
@@ -544,11 +538,11 @@ cru_ts_regrid_abs <- function(varname, varlname){
 	print("close the input file")
 	nc_close(ncin)
 
-	print("calculate abosulte values")
+	print("calculate absolute values")
 
 	print("replace netCDF _FillValues with R NA's")
-	var3d[var3d==fillvalue$value] <- NA
-  var3d.lt[var3d.lt==fillvalue$value] <- NA
+	var3d[var3d==fillvalue] <- NA
+  var3d.lt[var3d.lt==fillvalue] <- NA
   
 	print("reshape to 4d")
 	nm <- 12 # number of months in year
@@ -561,7 +555,6 @@ cru_ts_regrid_abs <- function(varname, varlname){
 	ltmnc <- paste0("na10km_v2_",varname,".nc")
 	ltmncfile <- paste(ltmpath,ltmnc,sep="")
 	ltmncin <- nc_open(ltmncfile)
-	print(ltmncin)
 
 	ltm <- ncvar_get(ltmncin,varname)
 
