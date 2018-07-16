@@ -26,14 +26,14 @@ n <- length(years) - 1
 print("...writing alteration data...")
 for (i in 1:n){
   colnm <- paste0("alt",years[i+1])
-  df[,colnm] <- alteration(df, i)
+  ndf[,colnm] <- alteration(ndf, i)
   print(paste("got", years[i+1]))
 }
 print("...finished writing alteration...")
 
-d <- dim(df)[1]
+d <- dim(ndf)[1]
 # calculate neighboring cell sums of years
-neighboring.sum <- function(df, k, yr, m){
+neighboring.sum <- function(k, yr, m){
   tar_cols <- c("x", "y", paste0("prs_",years[yr+1:k-1]))
   df <- ndf[,tar_cols]
   df$sumprs <- rowSums(df[,-2:-1])
@@ -58,25 +58,25 @@ for(k in yr.runs){
   for(yr in 1:(n-k+2)){
     colnm <- paste0("ngb",k,years[yr+k-1])
     v <- vector()
-    for(m in 1:d){      
-      v[m] <- neighboring.sum(df, k, yr, m)
+    for(m in 1:d){
+      v[m] <- neighboring.sum(k, yr, m)
       # comment below line if the script is run in bash
-      print(paste("row", rownames(df)[m]))	
+      print(paste("row", rownames(ndf)[m]))	
     }
-    df[,colnm] <- v
+    ndf[,colnm] <- v
     print(paste("got", years[yr+k-1]))
   }
   print(paste("finished running k", k))  
 }
 
-write.csv(df, paste0(csvpath, "ts_beetle_presence_statistics.csv"), row.names=FALSE)
+write.csv(ndf, paste0(csvpath, "ts_beetle_presence_statistics.csv"), row.names=FALSE)
 print("finished CSV writing")
 
 # open points netCDF file to get dimensions, etc.
 ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/"
-ncin <- nc_open(paste(ncpath,"na10km_v2.nc",sep=""))
+ncin <- nc_open(paste0(ncpath,"na10km_v2.nc"))
 x <- ncvar_get(ncin, varid="x"); nx <- length(x)
-y <- ncvar_get(ncin, varid="y"); ny <- length(y)
+y <- ncvar_get(ncin, varid="y"); ny <- length(y
 lon <- ncvar_get(ncin, varid="lon")
 lat <- ncvar_get(ncin, varid="lat")
 nc_close(ncin)

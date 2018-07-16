@@ -1,6 +1,8 @@
 # @param cloud.coverage: numeric value between 0 and 100 (= % coverage)
-get.percent.sunshine <- function(cloud.coverage) {
-  if (cloud.coverage == 0) {
+get.percent.sunshine <- function(cloud.coverage) {  
+  if (is.na(cloud.coverage)) {
+    return (NA)
+  } else if (cloud.coverage == 0) {
   	sun.percent <- runif(1, 0.95, 1)
   } else if (cloud.coverage <= 75) {
   	sun.percent <- 0.95 - (cloud.coverage / 125)
