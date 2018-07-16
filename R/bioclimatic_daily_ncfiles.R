@@ -12,6 +12,9 @@ ncin <- nc_open(ncfile)
 print(ncin)
 x <- ncvar_get(ncin, varid="x"); nx <- length(x)
 y <- ncvar_get(ncin, varid="y"); ny <- length(y)
+lon <- ncvar_get(ncin, varid="lon")
+lat <- ncvar_get(ncin, varid="lat")
+nc_close(ncin)
 tunits <- "year"
 
 # define dimensions
@@ -60,7 +63,7 @@ foreach(k = 1:nvar)%dopar%{
   indata <- read.csv(paste0("bioclimatic_variables_daily_",years[1],".csv"))
   df <- data.frame(indata[,varnms[k]])
   colnames(df) <- years[1]
-  for(i=2:nt){
+  for(i in 2:nt){
     indata <- read.csv(paste0("bioclimatic_variables_daily_",years[i],".csv"))
     ndf <- data.frame(indata[,varnms[k]])
     colnames(ndf) <- years[i]
