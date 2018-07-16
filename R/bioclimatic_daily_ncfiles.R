@@ -1,4 +1,5 @@
 library(ncdf4)
+library(abind)
 library(parallel)
 library(doParallel)
 library(foreach)
@@ -12,8 +13,41 @@ ncin <- nc_open(ncfile)
 print(ncin)
 x <- ncvar_get(ncin, varid="x"); nx <- length(x)
 y <- ncvar_get(ncin, varid="y"); ny <- length(y)
-lon <- ncvar_get(ncin, varid="lon")
-lat <- ncvar_get(ncin, varid="lat")
+
+# get common variables and attributes
+# get dimension variables and attributes
+x <- ncvar_get(ncin, varid="x"); nx <- length(x)
+x_long_name <- ncatt_get(ncin, "x", "long_name")$value
+x_axis <- ncatt_get(ncin, "x", "axis")$value
+x_standard_name <- ncatt_get(ncin, "x", "standard_name")$value
+x_grid_spacing <- ncatt_get(ncin, "x", "grid_spacing")$value
+x_CoordinatAxisType <- ncatt_get(ncin, "x", "CoordinateAxisType")$value
+
+y <- ncvar_get(ncin, varid="y"); ny <- length(y)
+y_long_name <- ncatt_get(ncin, "x", "long_name")$value
+y_axis <- ncatt_get(ncin, "x", "axis")$value
+y_standard_name <- ncatt_get(ncin, "x", "standard_name")$value
+y_grid_spacing <- ncatt_get(ncin, "x", "grid_spacing")$value
+y_CoordinatAxisType <- ncatt_get(ncin, "x", "CoordinateAxisType")$value
+
+# get longitude and latitude and attributes
+lon <- ncvar_get(ncin,"lon"); 
+lon_units <- ncatt_get(ncin, "lon", "units")$value
+lat <- ncvar_get(ncin,"lat"); 
+lat_units <- ncatt_get(ncin, "lat", "units")$value
+
+# get CRS attributes
+crs_units <- ncatt_get(ncin, "lambert_azimuthal_equal_area", "units")$value
+crs_name <- ncatt_get(ncin, "lambert_azimuthal_equal_area", "name")$value
+crs_long_name <- ncatt_get(ncin, "lambert_azimuthal_equal_area", "long_name")$value
+crs_grid_mapping_name <- ncatt_get(ncin, "lambert_azimuthal_equal_area", "grid_mapping_name")$value
+crs_longitude_of_projection_origin <- ncatt_get(ncin, "lambert_azimuthal_equal_area", "longitude_of_projection_origin")$value
+crs_latitude_of_projection_origin <- ncatt_get(ncin, "lambert_azimuthal_equal_area", "latitude_of_projection_origin")$value
+crs_earth_shape <- ncatt_get(ncin, "lambert_azimuthal_equal_area", "earth_shape")$value
+crs_CoordinateTransformType <- ncatt_get(ncin, "lambert_azimuthal_equal_area", "_CoordinateTransformType")$value
+crs_CoordinateAxisTypes <- ncatt_get(ncin, "lambert_azimuthal_equal_area", "_CoordinateAxisTypes")$value
+crs_CRS.PROJ.4 <- ncatt_get(ncin, "lambert_azimuthal_equal_area", "CRS.PROJ.4")$value
+
 nc_close(ncin)
 tunits <- "year"
 
@@ -233,7 +267,7 @@ foreach(k = 1:nvar)%dopar%{
 			ncvar_put(ncout,lon_def,lon)
 			ncvar_put(ncout,lat_def,lat)
 			if(j==1){
-				ncvar_put(ncout,var_def,var4d)
+				ncvar_put(ncout,var_def,var_4d)
 			}else{
 				ncvar_put(ncout,var_def,var_std_4d)
 			}
@@ -319,7 +353,7 @@ foreach(k = 1:nvar)%dopar%{
 		# put variables
 		ncvar_put(ncout,lon_def,lon)
 		ncvar_put(ncout,lat_def,lat)
-		ncvar_put(ncout,var_def,var4d)
+		ncvar_put(ncout,var_def,var_4d)
 
 		# add global attributes
 		ncatt_put(ncout,0,"title","CRU TS 4.01 interpolated values on the na10km_v2 10-km Grid")
