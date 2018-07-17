@@ -14,6 +14,8 @@ library(doParallel)
 library(foreach)
 registerDoParallel(cores=28)
 
+source("/gpfs/projects/gavingrp/dongmeic/climate-space/R/plotlist.R")
+
 years <- 1996:2015; nyr <- length(years)
 ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/ts/var/"
 out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/maps/"
@@ -98,13 +100,13 @@ for(i in 1:length(vargrp)){
     if(i == 1 | i == 4 | i == 5){
 		  p <- levelplot(var_4d_slice ~ x * y, data=grid, 
 			  par.settings = list(axis.line = list(col = "transparent")), col.regions=myColors,
-			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr]), cex=1.5),
+			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[j]), cex=1.5),
 			  xlab="",ylab="", colorkey = FALSE, key=myKey)
 	  }else{
 	    p <- levelplot(var_4d_slice ~ x * y, data=grid, at=cutpts[,vargrp[i]], cuts=11, pretty=T, 
 			  col.regions=rev(brewer.pal(10,"RdBu")),
 			  par.settings = list(axis.line = list(col = "transparent")), 
-			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr]), cex=1.5),
+			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[j]), cex=1.5),
 			  xlab="",ylab="")
 	}
     p <- p + latticeExtra::layer(sp.polygons(canada.prov, lwd=0.8, col='dimgray', alpha=0.3))
