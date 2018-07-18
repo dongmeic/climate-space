@@ -77,7 +77,7 @@ get.dtcol <- function(var){
     ndf <- rbind(ndf, df)
   }
   colnames(ndf)[1] <- var
-  write.csv(ndf, paste0(outcsvpath, var, "_",years[1], "_",years[nyr], ".csv"), row.names = FALSE)
+  #write.csv(ndf, paste0(outcsvpath, var, "_",years[1], "_",years[nyr], ".csv"), row.names = FALSE)
 }
 
 foreach(i = 1:length(vargrp))%dopar%{
@@ -97,7 +97,7 @@ for(i in 2:length(vargrp)){
   print(paste("adding the variable", vargrp[i]))
 }
 df5 <- cbind(df1, df2)
-write.csv(df5, "bioclimatic_variables_1996_2015.csv", row.names = FALSE)
+#write.csv(df5, "bioclimatic_variables_1996_2015.csv", row.names = FALSE)
 
 climate.space.paired <- function(i){
   df <- df5[,c(vargrp.t[i], vargrp.p[i], "prs")]

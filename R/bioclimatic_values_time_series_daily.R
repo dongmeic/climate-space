@@ -37,7 +37,7 @@ get.yearly.table <- function(yr){
 	  colnames(nadf) <- vargrp[i]
 	  ndf <- cbind(ndf, nadf)
 	}
-	write.csv(ndf, paste0("bioclimatic_values_", years[yr],".csv"), row.names = FALSE)
+	write.csv(ndf, paste0("bioclimatic_values_", years[yr],"_daily.csv"), row.names = FALSE)
 	print("done writing the data table!")
 }
 

@@ -31,7 +31,7 @@ foreach(i=1:length(vargrp1))%dopar%{
     p <- p + theme(title =element_text(size=14, face='bold'), axis.text=element_text(size=10),axis.title=element_text(size=12,face="bold"),legend.position="none")
     return(p) 
   }
-  png(paste0("cs_",vargrp1[i],"_",vargrp2[i],".png"), width=15, height=12, units="in", res=300)
+  png(paste0("cs_",vargrp1[i],"_",vargrp2[i],"_ts.png"), width=15, height=12, units="in", res=300)
   grid.newpage()
   par(mar=c(2,2,4,2))
   pushViewport(viewport(layout = grid.layout(4, 5)))

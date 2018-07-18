@@ -54,7 +54,7 @@ get.dtcol <- function(var){
     ndf <- rbind(ndf, df)
   }
   colnames(ndf)[1] <- var
-  write.csv(ndf, paste0(outcsvpath, var, "_",years[1], "_",years[nyr], ".csv"), row.names = FALSE)
+  #write.csv(ndf, paste0(outcsvpath, var, "_",years[1], "_",years[nyr], ".csv"), row.names = FALSE)
 }
 
 foreach(i = 1:length(vargrp))%dopar%{
@@ -74,7 +74,7 @@ for(i in 2:length(vargrp)){
   print(paste("adding the variable", vargrp[i]))
 }
 df5 <- cbind(df1, df2)
-write.csv(df5, "bioclimatic_variables_1996_2015.csv", row.names = FALSE)
+write.csv(df5, "bioclimatic_variables_1996_2015_daily.csv", row.names = FALSE)
 
 climate.space.paired <- function(i){
   df <- df5[,c(vargrp1[i], vargrp2[i], "prs")]
@@ -113,14 +113,12 @@ climate.space <- function(i){
   df.btl <- subset(df, prs=="mpb")
   points(df.btl$drop, df.btl$dd, pch=16, cex=0.1, col = alpha(cols[3], 0.2))  
 }
-png("cs_monthly_var_union.png", width=16, height=10, units="in", res=300)
-par(mfrow=c(1,3),mar=c(5,5,3,1))
+png("cs_daily_var_union.png", width=8, height=5, units="in", res=300)
+par(mfrow=c(1,2),mar=c(5,5,3,1))
 for(i in 1:length(vargrp1)){
   climate.space(i)
   print(paste("plotting climate space with", vargrp1[i], "and", vargrp2[i]))
 }
-plot(0,type='n',axes=FALSE,ann=FALSE)
-legend('center', pch=16, col=cols, legend=c("Continent", "Hosts", "Beetles"), cex = 2, bty='n')
 dev.off()
 
 print("all done!")
