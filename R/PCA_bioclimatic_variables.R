@@ -26,6 +26,20 @@ setwd(out)
 na10km_btl_df <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/beetle_presence.csv")
 head(na10km_btl_df)
 years <- 1996:2015
+
+ndf <- read.csv(paste0(csvpath,"bioclimatic_values_",years[1],"_daily.csv")) # from bioclimatic_values_time_series.R
+ndf <- cbind(ndf, na10km_btl_df[,c(paste0("prs_",(years[1]+1)),"vegetation")])
+colnames(ndf)[5:6] <- c("beetles","hosts")
+for(i in 2:length(years)){
+  df <- read.csv(paste0(csvpath,"bioclimatic_values_",years[i],"_daily.csv"))
+  df <- cbind(df,na10km_btl_df[,c(paste0("prs_",(years[i]+1)),"vegetation")])
+  colnames(df)[5:6] <- c("beetles","hosts")
+  ndf <- rbind(ndf,df)
+  print(paste(years[i], "done!"))
+}
+ndf <- cbind(ndf, year=unlist(lapply(1996:2015,function(i) rep(i,dim(ndf)[1]/length(1996:2015)))))
+write.csv(ndf, paste0(csvpath, "bioclimatic_values_1996_2015_daily.csv"), row.names=FALSE)
+
 ndf <- read.csv(paste0(csvpath,"bioclimatic_values_",years[1],".csv")) # from bioclimatic_values_time_series.R
 ndf <- cbind(ndf, na10km_btl_df[,c(paste0("prs_",(years[1]+1)),"vegetation")])
 colnames(ndf)[23:24] <- c("beetles","hosts")

@@ -1,7 +1,7 @@
 # Created by Dongmei Chen
 
 csvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
-csvfile <- "bioclimatic_values_1996_2015.csv" # from PCA_bioclimatic_variables.R
+csvfile <- "bioclimatic_values_1996_2015_daily.csv" # from PCA_bioclimatic_variables.R
 ndf <- read.csv(paste0(csvpath,csvfile))
 out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/plots"
 setwd(out)
@@ -78,7 +78,7 @@ for(i in 1:length(vargrp)){
   print(paste(vargrp[i], "is done!"))
 }
 
-png("presence_boxplot_bioclm.png", width=6, height=6, units="in", res=300)
+png("presence_boxplot_bioclm_daily.png", width=6, height=6, units="in", res=300)
 layout(matrix(c(seq(1,3,by=2),seq(2,4,by=2),seq(5,7,by=2),seq(6,8,by=2),4,2,byrow = TRUE))
 par(mar=c(3,3,3,1))
 for (i in 1:length(vargrp)){
