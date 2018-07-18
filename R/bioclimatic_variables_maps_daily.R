@@ -74,7 +74,7 @@ foreach(i=1:length(vargrp)) %dopar% {
 		  p <- levelplot(var_4d_slice ~ x * y, data=grid, 
 			  par.settings = list(axis.line = list(col = "transparent")), col.regions=myColors,
 			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr]), cex=1.5),
-			  xlab="",ylab="", colorkey = FALSE, key=myKey)
+			  xlab="",ylab="", colorkey = FALSE)
 	  }else{
 	    p <- levelplot(var_4d_slice ~ x * y, data=grid, at=cutpts[,vargrp[i]], cuts=11, pretty=T, 
 			  col.regions=rev(brewer.pal(10,"RdBu")),

@@ -114,7 +114,7 @@ foreach(k = 1:nvar)%dopar%{
   dunit <- dunits[k]
   var_def <- ncvar_def(dname,dunit,list(xdim,ydim,tdim),fillvalue,dlname,prec="float")
   ncout <- nc_create(ncfname,list(lon_def,lat_def,var_def,proj_def),force_v4=TRUE,verbose=FALSE)
-  
+
   print(paste("writing output for", dname))
   ncatt_put(ncout,"x","axis","X")
   ncatt_put(ncout,"x","standard_name","projection_x_coordinate")
@@ -240,7 +240,7 @@ foreach(k = 1:nvar)%dopar%{
 				var_def <- ncvar_def(dname,dunits[k],list(xdim,ydim,vardim,yeardim),fillvalue,varlnms[k],prec="double")
 			}else{
 				dlname <- paste("departure from long-term mean in the",varlnms[k])
-				var_def <- ncvar_def(dname,dunits[k],list(xdim,ydim,vardim,yeardim),fillvalue,dlname,prec="double")
+				var_def <- ncvar_def(paste0(dname,"_std"),"",list(xdim,ydim,vardim,yeardim),fillvalue,dlname,prec="double")
 			}
 			ncout <- nc_create(ncfile,list(lon_def,lat_def,var_def,proj_def),force_v4=TRUE, verbose=FALSE)
 
@@ -282,22 +282,22 @@ foreach(k = 1:nvar)%dopar%{
 			nc_close(ncout)
 		}
   }else{
-    ncinfile <- paste0(ncpath,"ts/var/na10km_v2_",dname,"_1902.2016.3d.nc")
+		ncinfile <- paste0(ncpath,"ts/var/na10km_v2_",dname,"_1902.2016.3d.nc")
 		ncin <- nc_open(ncinfile)
 		var3d <- ncvar_get(ncin,dname,start=c(x=1,y=1,time=start_time),count=c(x=1078,y=900,time=time_length))
 		var3d[var3d==fillvalue] <- NA 
 		for (i in 1:nyr){
 			var_slice <- var3d[,,i]
-
+		
 			# get climate data with the presence of vegetation
 			vgt[vgt==0] <- NA
 			var_vgt <- var_slice * vgt
-
+		
 			# get climate data with the presence of mpb
 			btl_slice <- btl[,,i]
 			btl_slice[btl_slice==0] <- NA
 			var_btl <- var_slice * btl_slice
-
+		
 			if(i == 1){
 				print(paste("start to reshape 2d to 3d in year", years[i]))
 				var <- abind(var_slice, var_vgt, var_btl, along=3)
@@ -317,7 +317,7 @@ foreach(k = 1:nvar)%dopar%{
 		yeardim <- ncdim_def("year","year",as.integer(year))
 		vars <- seq(1,3, by=1)
 		vardim <- ncdim_def("variable","variable",as.integer(vars))
-
+	
 		# define common variables
 		fillvalue <- 1e32
 		dlname <- "Longitude of cell center"
@@ -326,11 +326,11 @@ foreach(k = 1:nvar)%dopar%{
 		lat_def <- ncvar_def("lat","degrees_north",list(xdim,ydim),NULL,dlname,prec="double")
 		projname <- crs_name
 		proj_def <- ncvar_def(projname,"1",NULL,NULL,longname=dlname,prec="char")
-
+	
 		# create netCDF file and put data
 		var_def <- ncvar_def(dname,dunits[k],list(xdim,ydim,vardim,yeardim),fillvalue,varlnms[k],prec="double")
 		ncout <- nc_create(ncfile,list(lon_def,lat_def,var_def,proj_def),force_v4=TRUE, verbose=FALSE)
-
+	
 		# put additional attributes into dimension and data variables
 		ncatt_put(ncout,"x","axis",x_axis)
 		ncatt_put(ncout,"x","standard_name",x_standard_name)
@@ -340,7 +340,7 @@ foreach(k = 1:nvar)%dopar%{
 		ncatt_put(ncout,"y","standard_name",y_standard_name)
 		ncatt_put(ncout,"y","grid_spacing",y_grid_spacing)
 		ncatt_put(ncout,"y","_CoordinateAxisType",y_CoordinatAxisType)
-
+	
 		ncatt_put(ncout,crs_name,"name",crs_name)
 		ncatt_put(ncout,crs_name,"long_name",crs_long_name)
 		ncatt_put(ncout,crs_name,"grid_mapping_name",crs_grid_mapping_name)
@@ -349,12 +349,12 @@ foreach(k = 1:nvar)%dopar%{
 		ncatt_put(ncout,crs_name,"_CoordinateTransformType",crs_CoordinateTransformType)
 		ncatt_put(ncout,crs_name,"_CoordinateAxisTypes",crs_CoordinateAxisTypes)
 		ncatt_put(ncout,crs_name,"CRS.PROJ.4",crs_CRS.PROJ.4)
-
+	
 		# put variables
 		ncvar_put(ncout,lon_def,lon)
 		ncvar_put(ncout,lat_def,lat)
 		ncvar_put(ncout,var_def,var_4d)
-
+	
 		# add global attributes
 		ncatt_put(ncout,0,"title","CRU TS 4.01 interpolated values on the na10km_v2 10-km Grid")
 		ncatt_put(ncout,0,"institution","Dept. Geography; Univ_ Oregon")
@@ -364,8 +364,8 @@ foreach(k = 1:nvar)%dopar%{
 		ncatt_put(ncout,0,"base_period",paste0(first_year,"-",last_year))
 		# close the file, writing data to disk
 		nc_close(ncout)
-		}
-		print(paste("writing netCDF file for", dname, "is done!"))  
+	 }
+	 print(paste("writing netCDF file for", dname, "is done!"))  
 }
 
 print("all done!")
