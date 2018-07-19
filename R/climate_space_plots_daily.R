@@ -79,7 +79,7 @@ for(i in 1:length(vargrp)){
 }
 
 png("presence_boxplot_bioclm_daily.png", width=6, height=6, units="in", res=300)
-layout(matrix(c(seq(1,3,by=2),seq(2,4,by=2),seq(5,7,by=2),seq(6,8,by=2),4,2,byrow = TRUE))
+layout(matrix(c(seq(1,3,by=2),seq(2,4,by=2),seq(5,7,by=2),seq(6,8,by=2)),4,2,byrow = TRUE))
 par(mar=c(3,3,3,1))
 for (i in 1:length(vargrp)){
   presence.boxplot(i)

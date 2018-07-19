@@ -61,7 +61,7 @@ for(k in yr.runs){
     for(m in 1:d){
       v[m] <- neighboring.sum(k, yr, m)
       # comment below line if the script is run in bash
-      print(paste("row", rownames(ndf)[m]))	
+      # print(paste("row", rownames(ndf)[m]))	
     }
     ndf[,colnm] <- v
     print(paste("got", years[yr+k-1]))
