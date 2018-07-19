@@ -40,9 +40,10 @@ png("bioclimatic_density_plots_daily.png", width=6, height=6, units="in", res=30
 par(mfrow=c(2,2),mar=c(3.5,3.5,3,1))
 for (i in 1:length(vargrp)){
   density.plot(i)
+  if(i==length(vargrp)){
+   legend('topright', lty=1, lwd=4, col=c("grey", "green", "red"), legend=c("Continent", "Hosts", "Beetles"),bty='n')
+  }
 }
-plot(0,type='n',axes=FALSE,ann=FALSE)
-legend('center', lty=1, lwd=4, col=c("grey", "green", "red"), legend=c("Continent", "Hosts", "Beetles"), cex = 2, bty='n')
 dev.off()
 
 # boxplot
