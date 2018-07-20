@@ -148,6 +148,18 @@ get.degree.days <- function(daily.means) {
 }
 
 
+get.min.data <- function(daily.lows) {
+  min30 <- sum(daily.lows <= -30)
+  min32 <- sum(daily.lows <= -32)
+  min34 <- sum(daily.lows <= -34)
+  min36 <- sum(daily.lows <= -36)
+  min38 <- sum(daily.lows <= -38)
+  min40 <- sum(daily.lows <= -40)
+  list(min30=min30, min32=min32, min34=min34, min36=min36, min38=min38,
+       min40=min40)
+}
+
+
 get.two.year.data <- function(start.year, monthly.means, monthly.lows) {
   y2.leap <- is.leap.year(start.year + 1)
   n.days <- ifelse(y2.leap, 366, 365)
@@ -162,15 +174,17 @@ get.two.year.data <- function(start.year, monthly.means, monthly.lows) {
   }
   daily.means <- get.daily.from.monthly(monthly.means, n.days)
   daily.lows  <- get.daily.from.monthly(monthly.lows,  n.days)
-  winterTmin <- min(daily.lows[winter.range])
-  Ecs <- is.coldsnap(daily.lows[Ecs.range])
-  coldsnap.stats <- get.coldsnap.stats(daily.lows[winter.range])
-  drop.data <- get.drop.stats(daily.means[winter.range])
-  degree.days.data <- get.degree.days(daily.means)
-  list(winterTmin=winterTmin, Ecs=Ecs, coldsnap.stats=coldsnap.stats,
-       drop.data=drop.data, degree.days.data=degree.days.data)
-}
 
+  #winterTmin <- min(daily.lows[winter.range])
+  #Ecs <- is.coldsnap(daily.lows[Ecs.range])
+  #coldsnap.stats <- get.coldsnap.stats(daily.lows[winter.range])
+  #drop.data <- get.drop.stats(daily.means[winter.range])
+  #degree.days.data <- get.degree.days(daily.means)
+  min.data <- get.min.data(daily.lows[winter.range])
+  list(#winterTmin=winterTmin, Ecs=Ecs, coldsnap.stats=coldsnap.stats,
+       #drop.data=drop.data, degree.days.data=degree.days.data, 
+       min.data=min.data)
+}
 
 # get.daily.stats requires 2 years of monthly statistics from Jan (t-1) 
 # to Dec (t)
@@ -184,18 +198,22 @@ get.daily.stats <- function(
   t <- start.year + 1
   AUG <- 8
   YEAR <- 12
+  
   # Months Aug (t-1)- Jul (t)
   aug.jul.range <- AUG:(AUG + YEAR - 1)
   # Months Jan (t) - Dec (t)
   jan.dec.range <- (YEAR + 1):(2*YEAR)
   
-  t.data <- get.single.year.data(
-    t, monthly.lows[jan.dec.range], monthly.highs[jan.dec.range]) 
+  #t.data <- get.single.year.data(
+  #  t, monthly.lows[jan.dec.range], monthly.highs[jan.dec.range]) 
   two.year.data <- get.two.year.data(start.year, 
                                      monthly.means[aug.jul.range], 
                                      monthly.lows[aug.jul.range])
-  out <- c(unlist(t.data), unlist(two.year.data))
+  out <- c(#unlist(t.data), 
+           unlist(two.year.data))
   names(out) <- gsub(
-    'coldsnap.stats.|drop.data.|degree.days.data.', '', names(out))
+      'coldsnap.stats.|drop.data.|degree.days.data.|min.data.', 
+      '', 
+      names(out))
   out
 }
