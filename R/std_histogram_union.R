@@ -26,6 +26,17 @@ std.histogram <- function(i){
   a.bars <- table(na)
   b.bars <- table(vgt)
   c.bars <- table(btl)
+  a <- as.numeric(names(a.bars))
+  b <- as.numeric(names(b.bars))
+  c <- as.numeric(names(c.bars))
+  n1 <- which(a==min(b))
+  if (n1 > 1){
+    b.bars <- c(rep(NA, n1-1), b.bars)
+  }
+  n2 <- which(a==min(c))
+  if (n2 > 1){
+    c.bars <- c(rep(NA, n2-1), c.bars)
+  }
   r <- range(c(na, vgt, btl))  
   mn <- r[1]
   mx <- r[2]

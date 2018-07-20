@@ -49,22 +49,22 @@ foreach(i = 1:(nt-1))%dopar%{
 			#print(m)
 		}
 		df[j,] <- get.daily.stats(years[i], df.m$tmx, df.m$tmp, df.m$tmn)
-		Lcs[j,i] <- df[j,1]
-		maxAugT[j,i] <- df[j,2]
-		summerT40[j,i] <- df[j,3]
-		winterTmin[j,i] <- df[j,4]
-		Ecs[j,i] <- df[j,5]
-		Ncs[j,i] <- df[j,6]
-		Acs[j,i] <- df[j,7]
-		drop0[j,i] <- df[j,8]
-		drop5[j,i] <- df[j,9]
-		drop10[j,i] <- df[j,10]
-		drop15[j,i] <- df[j,11]
-		drop20[j,i] <- df[j,12]
-		drop20plus[j,i] <- df[j,13]
-		max.drop[j,i] <- df[j,14]
-		ddAugJul[j,i] <- df[j,15]
-		ddAugJun[j,i] <- df[j,16]
+		# Lcs[j,i] <- df[j,1]
+		# maxAugT[j,i] <- df[j,2]
+		# summerT40[j,i] <- df[j,3]
+		# winterTmin[j,i] <- df[j,4]
+		# Ecs[j,i] <- df[j,5]
+		# Ncs[j,i] <- df[j,6]
+		# Acs[j,i] <- df[j,7]
+		# drop0[j,i] <- df[j,8]
+		# drop5[j,i] <- df[j,9]
+		# drop10[j,i] <- df[j,10]
+		# drop15[j,i] <- df[j,11]
+		# drop20[j,i] <- df[j,12]
+		# drop20plus[j,i] <- df[j,13]
+		# max.drop[j,i] <- df[j,14]
+		# ddAugJul[j,i] <- df[j,15]
+		# ddAugJun[j,i] <- df[j,16]
 	}
 	print(paste("got data from", years[i+1]))
 	write.csv(df, paste0("bioclimatic_variables_daily_",years[i+1],".csv"), row.names = FALSE)  
