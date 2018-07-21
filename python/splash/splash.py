@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 # splash.py
@@ -98,6 +98,7 @@ class Splash:
         self.pet = 0.     # daily potential ET, mm
         self.aet = 0.     # daily actual ET, mm
         self.wn_vec = numpy.array([])  # daily soil moisture array
+        self.aet_vec = numpy.array([]) 
 
     def spin_up(self, d):
         """
@@ -115,6 +116,7 @@ class Splash:
             n = d.num_lines[0]
             if (numpy.array(d.num_lines) == n).all():
                 wn_vec = numpy.zeros((n,))
+                self.aet_vec = numpy.zeros((n,))
             else:
                 self.logger.error(
                     "Inconsistent number of lines read from Data class!")
@@ -123,6 +125,7 @@ class Splash:
         else:
             n = d.num_lines
             wn_vec = numpy.zeros((n,))
+            aet_vec = numpy.zeros((n,))
             self.logger.info("Created soil moisture array of length %d"
                              % len(wn_vec))
 
@@ -136,23 +139,25 @@ class Splash:
                 wn = wn_vec[i-1]
 
             # Calculate soil moisture and runoff:
-            sm, ro = self.quick_run(n=i + 1,
+            sm, ro, aet = self.quick_run(n=i + 1,
                                     y=d.year,
                                     wn=wn,
                                     sf=d.sf_vec[i],
                                     tc=d.tair_vec[i],
                                     pn=d.pn_vec[i])
             wn_vec[i] = sm
+            #aet_vec[i] = aet
+            #print('1:', aet)
         self.logger.info("completed first year")
 
         # 3. Calculate change in starting soil moisture--------------------
         start_sm = wn_vec[0]
-        end_sm, ro = self.quick_run(n=1,
-                                    y=d.year,
-                                    wn=wn_vec[-1],
-                                    sf=d.sf_vec[0],
-                                    tc=d.tair_vec[0],
-                                    pn=d.pn_vec[0])
+        end_sm, ro, aet = self.quick_run(n=1,
+                                         y=d.year,
+                                         wn=wn_vec[-1],
+                                         sf=d.sf_vec[0],
+                                         tc=d.tair_vec[0],
+                                         pn=d.pn_vec[0])
         diff_sm = numpy.abs(end_sm - start_sm)
 
         # 4. Equilibrate--------------------------------------------------
@@ -167,25 +172,28 @@ class Splash:
                 else:
                     wn = wn_vec[i - 1]
                 # Calculate soil moisture and runoff:
-                sm, ro = self.quick_run(n=i + 1,
-                                        y=d.year,
-                                        wn=wn,
-                                        sf=d.sf_vec[i],
-                                        tc=d.tair_vec[i],
-                                        pn=d.pn_vec[i])
+                sm, ro, aet = self.quick_run(n=i + 1,
+                                             y=d.year,
+                                             wn=wn,
+                                             sf=d.sf_vec[i],
+                                             tc=d.tair_vec[i],
+                                             pn=d.pn_vec[i])
                 wn_vec[i] = sm
+                aet_vec[i] = aet
+                #print(' 2:', aet) 
             start_sm = wn_vec[0]
-            end_sm, ro = self.quick_run(n=1,
-                                        y=d.year,
-                                        wn=wn_vec[-1],
-                                        sf=d.sf_vec[0],
-                                        tc=d.tair_vec[0],
-                                        pn=d.pn_vec[0])
+            end_sm, ro, aet = self.quick_run(n=1,
+                                             y=d.year,
+                                             wn=wn_vec[-1],
+                                             sf=d.sf_vec[0],
+                                             tc=d.tair_vec[0],
+                                             pn=d.pn_vec[0])
             diff_sm = numpy.abs(end_sm - start_sm)
             self.logger.info("soil moisture differential: %f" % diff_sm)
             spin_count += 1
         self.logger.info("equilibrated after %d iterations" % spin_count)
         self.wn_vec = wn_vec
+        self.aet_vec = aet_vec
         self.wn = wn_vec[-1]
 
     def quick_run(self, n, y, wn, sf, tc, pn):
@@ -243,7 +251,7 @@ class Splash:
         else:
             ro = 0
             self.logger.debug("excess runoff: %d mm", ro)
-        return(sm, ro)
+        return(sm, ro, aet)
 
     def run_one_day(self, n, y, wn, sf, tc, pn):
         """
@@ -340,6 +348,10 @@ class Splash:
         for i in range(len(self.wn_vec)):
             print("%d,%0.6f" % (i, self.wn_vec[i]))
 
+    def print_daily_aet(self):
+        print('Day,Actual ET (mm)')
+        for i in range(len(self.aet_vec)):
+            print('%d,%0.6f' % (i, self.aet_vec[i]))
 
 
 def main():
@@ -368,6 +380,8 @@ def main():
     my_class = Splash(my_lat, my_elv)
     my_class.run_one_day(my_day, my_year, my_sm, my_sf, my_temp, my_precip)
     my_class.print_vals()
+    my_class.print_daily_sm()
+    my_class.print_daily_aet()
 
 
 

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#! /usr/bin/env python3
 #
 # evap.py
 #
@@ -81,7 +81,7 @@ class Evap:
         
         # Create Solar class:
         try:
-            self.solar = SOLAR(lat, elv)
+            self.solar = Solar(lat, elv)
         except:
             self.logger.exception("failed to initialize SOLAR class")
         else:
@@ -144,7 +144,7 @@ class Evap:
         lv = self.enthalpy_vap(tc)
         self.lv = lv
         self.logger.info("enthalpy of vaporization set to %f MJ/kg"
-                         % (1e - 6)*lv)
+                         % (1e-6*lv))
         
         # Density of water, kg/m^3
         pw = self.density_h2o(tc, self.elv2pres(self.elv))
@@ -157,7 +157,7 @@ class Evap:
         self.logger.info("psychrometric constant set to %f Pa/K" % g)
         econ = s/(lv*pw*(s + g))
         self.econ = econ
-        self.logger.info("Econ set to %f mm^3/J" % (1e9) * econ)
+        self.logger.info("Econ set to %f mm^3/J" % (1e9 * econ))
     
         # 4. Calculate daily condensation (cn), mm-------------------------
         cn = (1e3) * econ * numpy.abs(rnn_d)
@@ -330,7 +330,7 @@ class Evap:
         # Calculate latent heat of vaporization, J/kg
         lv = self.enthalpy_vap(tc)
         self.logger.info(
-            "enthalpy of vaporization calculated as %f MJ/kg" % (1e-6)*lv)
+            "enthalpy of vaporization calculated as %f MJ/kg" % (1e-6*lv))
         
         # Calculate psychrometric constant, Pa/K
         # Eq. 8, Allen et al. (1998)
