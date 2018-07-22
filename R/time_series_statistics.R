@@ -87,7 +87,8 @@ for(k in yr.runs){
   print(paste("finished running k", k))  
 }
 ndf <- btlprs.df[, -grep("prs_", colnames(btlprs.df))]
-write.csv(ndf, paste0(csvpath, "ts_presence_statistics.csv"), row.names=FALSE)
+df <- ndf[,-which(names(ndf) %in% c("key"))]
+write.csv(df, paste0(csvpath, "ts_presence_statistics.csv"), row.names=FALSE)
 print("finished CSV writing")
 
 # open points netCDF file to get dimensions, etc.
