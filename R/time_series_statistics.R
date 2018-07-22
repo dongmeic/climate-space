@@ -32,12 +32,26 @@ for (i in 1:n){
 print("...finished writing alteration...")
 
 d <- dim(ndf)[1]
+ndf$key <- seq(1,d)
+ndf$sumprs <- rowSums(ndf[,target_columns][,-2:-1])
+ndf$sumprs[ndf$sumprs==0] <- NA
+prs.df <- ndf[!is.na(ndf$sumprs),]
+# make a bounding box
+Xmin <- min(prs.df$x) - 10000;
+Xmax <- max(prs.df$x) + 10000;
+Ymin <- min(prs.df$y) - 10000;
+Ymax <- max(prs.df$y) + 10000;
+
+btlprs.df <- ndf[,c(target_columns,"key")]
+target.df <- subset(btlprs.df, x >= Xmin & x <= Xmax & y >= Ymin & y <= Ymax)
+rest.df <- subset(btlprs.df, !(key %in% target.df$key))
+nobs <- dim(target.df)[1]
+
 # calculate neighboring cell sums of years
 neighboring.sum <- function(k, yr, m){
   tar_cols <- c("x", "y", paste0("prs_",years[yr+1:k-1]))
-  df <- ndf[,tar_cols]
+  df <- target.df[,tar_cols]
   df$sumprs <- rowSums(df[,-2:-1])
-  df$sumprs[df$sumprs==0] <- NA
   
   x <- df$x[m]; y <- df$y[m]
   total <- 0
@@ -58,18 +72,22 @@ for(k in yr.runs){
   for(yr in 1:(n-k+2)){
     colnm <- paste0("ngb",k,years[yr+k-1])
     v <- vector()
-    for(m in 1:d){
+    for(m in 1:nobs){
       v[m] <- neighboring.sum(k, yr, m)
       # comment below line if the script is run in bash
-      # print(paste("row", rownames(ndf)[m]))	
+      # print(paste("row", rownames(target.df)[m]))	
     }
-    ndf[,colnm] <- v
+    target.df[,colnm] <- v
+    rest.df[,colnm] <- rep(0,dim(rest.df)[1])
+    df <- rbind(target.df, rest.df)
+    df <- df[order(df$key),]
+    btlprs.df[,colnm] <- df[,colnm]
     print(paste("got", years[yr+k-1]))
   }
   print(paste("finished running k", k))  
 }
-
-write.csv(ndf, paste0(csvpath, "ts_beetle_presence_statistics.csv"), row.names=FALSE)
+ndf <- btlprs.df[, -grep("prs_", colnames(btlprs.df))]
+write.csv(ndf, paste0(csvpath, "ts_presence_statistics.csv"), row.names=FALSE)
 print("finished CSV writing")
 
 # open points netCDF file to get dimensions, etc.
