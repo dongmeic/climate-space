@@ -25,6 +25,10 @@ density.df <- density.shp@data
 # combine input as a dataframe
 indata <- cbind(age.df$RASTERVALU, age.std.df$RASTERVALU, density.df$RASTERVALU)
 colnames(indata) <- c("age","age_std","density")
+#indata[indata==-9999] <- NA
+#csvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
+#write.csv(indata, paste0(csvpath, "stand_age_density.csv"), row.names=FALSE)
+#indata[is.na(indata)] <- -9999
 
 # open points netCDF file to get dimensions, etc.
 ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/"

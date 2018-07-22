@@ -2,6 +2,16 @@
 # generate data for beetle neighboring resources
 # adapted from beetle_presence_statistics.R
 
+library(ncdf4)
+library(lattice)
+library(rgdal)
+library(raster)
+library(rasterVis)
+library(latticeExtra)
+library(gridExtra)
+library(RColorBrewer)
+library(animation)
+
 years <- 1997:2016; nyr <- length(years)
 csvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
 setwd(csvpath)
@@ -58,7 +68,7 @@ print("finished CSV writing")
 ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/"
 ncin <- nc_open(paste0(ncpath,"na10km_v2.nc"))
 x <- ncvar_get(ncin, varid="x"); nx <- length(x)
-y <- ncvar_get(ncin, varid="y"); ny <- length(y
+y <- ncvar_get(ncin, varid="y"); ny <- length(y)
 lon <- ncvar_get(ncin, varid="lon")
 lat <- ncvar_get(ncin, varid="lat")
 nc_close(ncin)
@@ -150,5 +160,76 @@ history <- paste("D.Chen", date(), sep=", ")
 ncatt_put(ncout,0,"history",history)
 ncatt_put(ncout,0,"base_period","1998-2016")
 nc_close(ncout)
+
+print("mapping...")
+source("/gpfs/projects/gavingrp/dongmeic/climate-space/R/plotlist.R")
+out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/maps/"
+
+setwd(out)
+ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/prs/"
+ncfile <- paste0(ncpath, "ts_presence_sum9.nc")
+ncin <- nc_open(ncfile)
+print(ncin)
+x <- ncvar_get(ncin, varid="x"); nx <- length(x)
+y <- ncvar_get(ncin, varid="y"); ny <- length(y)
+grid <- expand.grid(x=x, y=y)
+
+shppath <- "/gpfs/projects/gavingrp/dongmeic/beetle/shapefiles"
+canada.prov <- readOGR(dsn = shppath, layer = "na10km_can_prov")
+us.states <- readOGR(dsn = shppath, layer = "na10km_us_state")
+crs <- proj4string(us.states)
+lrglakes <- readOGR(dsn = shppath, layer = "na10km_lrglakes")
+proj4string(lrglakes) <- crs
+
+hostpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/shapefiles/corehost"
+corehost <- readOGR(dsn=hostpath, layer="MPB_corehost_proj_disall")
+corehost <- spTransform(corehost, crs)
+
+var <- "sum9"
+var3d <- ncvar_get(ncin,var)
+fillvalue <- ncatt_get(ncin,var,"_FillValue")$value
+var3d[var3d==fillvalue] <- NA
+# mask out the locations with all zeros over years
+m <- apply(var3d, c(1,2), sum)
+m[m==0] <- NA
+var3d[is.na(m)] <- NA
+cutpts <- seq(1,9,by=1)
+for(i in 1:(nyr-1)){
+  sum9slice <- var3d[,,i]
+  p <- levelplot(sum9slice ~ x * y, data=grid, xlim=c(-2050000,20000), ylim=c(-2000000,2000000),
+               par.settings = list(axis.line = list(col = "transparent")), scales = list(draw = FALSE), 
+               margin=F, at=cutpts, cuts=9, pretty=T, col.regions=rev(brewer.pal(8,"RdBu")), 
+               main=list(label=years[i], cex=1.5), xlab="",ylab="", aspect="iso")
+  p <- p + latticeExtra::layer(sp.polygons(canada.prov, lwd=0.8, col='dimgray'))
+  p <- p + latticeExtra::layer(sp.polygons(us.states, lwd=0.8, col='dimgray'))
+  p <- p + latticeExtra::layer(sp.polygons(lrglakes, lwd=0.8, col='lightblue'))
+  p <- p + latticeExtra::layer(sp.polygons(corehost, lwd=0.8, col=rgb(0,0.3,0,0.5)))
+  png(paste0("presence_sum9_", years[i],".png"), width=4, height=8, units="in", res=300)
+  print(p)
+  dev.off()
+  print(years[i])
+}
+
+im.convert("presence_sum9_*.png",output="presence_sum9_ts.gif")
+
+plotalt <- function(i){
+  sum9slice <- var3d[,,i]
+  p <- levelplot(sum9slice ~ x * y, data=grid, xlim=c(-2050000,20000), ylim=c(-2000000,2000000),
+                 par.settings = list(axis.line = list(col = "transparent")), scales = list(draw = FALSE), margin=F, 
+                 col.regions=rev(brewer.pal(8,"RdBu")), main=list(label=years[i], cex=1.5), 
+                 xlab="",ylab="", colorkey = FALSE)
+  p <- p + latticeExtra::layer(sp.polygons(canada.prov, lwd=0.8, col='dimgray'))
+  p <- p + latticeExtra::layer(sp.polygons(us.states, lwd=0.8, col='dimgray'))
+  p <- p + latticeExtra::layer(sp.polygons(lrglakes, lwd=0.8, col='lightblue'))
+  p <- p + latticeExtra::layer(sp.polygons(corehost, lwd=0.8, col=rgb(0,0.3,0,0.5)))
+  print(p)
+}
+
+plots <- lapply(1:(nyr-1), function(i) plotalt(i))
+
+png("composite_presence_sum9.png", width=8, height=12, units="in", res=300)
+par(mfrow=c(4,5), xpd=FALSE, mar=rep(0.5,4))
+print.plotlist(plots, layout=matrix(1:20, ncol=5))
+dev.off()
 
 print("all done!")
