@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#! /usr/bin/env python3
 #
 # solar.py
 #
@@ -76,6 +76,7 @@ class Solar:
         # Assign default public variables:
         self.elv = elv
         self.logger.info("elevation set to %0.3f m" % elv)
+        self.kN = 365 # init; implemented in calculate_daily_fluxes() 
         
         # Error handle and assign required public variables:
         if lat > 90.0 or lat < -90.0:
@@ -240,7 +241,7 @@ class Solar:
         ra_d = (86400.0/numpy.pi) *kGsc *dr * (ru*pir*hs + rv*dsin(hs))
         self.ra_d = ra_d
         self.logger.info("daily ET radiation set to %f MJ/m^2"
-                         % (1.0e - 6)*ra_d)
+                         % ((1.0e-6)*ra_d))
 
         # 9. Calculate transmittivity (tau), unitless----------------------
         # Eq. 11, Linacre (1968); Eq. 2, Allen (1996)
@@ -286,7 +287,7 @@ class Solar:
         rn_d = (86400.0/numpy.pi) * (hn*pir*(rw*ru - rnl) + rw*rv*dsin(hn))
         self.rn_d = rn_d
         self.logger.info(
-            "daytime net radiation set to %f MJ/m^2" % (1.0e-6)*rn_d)
+            "daytime net radiation set to %f MJ/m^2" % (1.0e-6*rn_d))
 
         # 15. Calculate nighttime net radiation (rnn_d), J/m^2-------------
         rnn_d = rw*rv*(dsin(hs) - dsin(hn))
@@ -295,7 +296,7 @@ class Solar:
         rnn_d *= (86400.0/numpy.pi)
         self.rnn_d = rnn_d
         self.logger.info(
-            "nighttime net radiation set to %f MJ/m^2" % (1.0e-6)*rnn_d)
+            "nighttime net radiation set to %f MJ/m^2" % (1.0e-6*rnn_d))
 
     def julian_day(self, y, m, i):
         """
