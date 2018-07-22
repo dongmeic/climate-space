@@ -204,7 +204,7 @@ for(i in 1:nyr){
   p <- p + latticeExtra::layer(sp.polygons(us.states, lwd=0.8, col='dimgray'))
   p <- p + latticeExtra::layer(sp.polygons(lrglakes, lwd=0.8, col='lightblue'))
   p <- p + latticeExtra::layer(sp.polygons(corehost, lwd=0.8, col=rgb(0,0.3,0,0.5)))
-  png(paste0("presence_sum9_", years[i],".png"), width=4, height=8, units="in", res=300)
+  png(paste0("presence_sum9_", years[i],".png"), width=4, height=6, units="in", res=300)
   print(p)
   dev.off()
   print(years[i])
