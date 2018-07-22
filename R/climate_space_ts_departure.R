@@ -20,6 +20,7 @@ for (i in 1:length(vargrp1)){
   df.p <- read.csv(paste0(csvpath, vargrp2[i], "_std_", years[1], "_", years[nyr], ".csv"))
   df <- cbind(data.frame(v1=df.t[,1]),data.frame(v2=df.p[,1]),data.frame(prs=df.t[,2]),data.frame(yrs=df.t[,3]))
   climate.space <- function(j){
+    df.s <- subset(df, yrs==years[j])
     df.ss <- subset(df, yrs==years[j] & prs=="mpb")
     sd1 <- length(na.omit(df.ss[(df.ss$v1 <= 1 & df.ss$v1 > 0) | (df.ss$v1 >= -1 & df.ss$v1 < 0),]$v1))
     sd2 <- length(na.omit(df.ss[(df.ss$v1 <= 2 & df.ss$v1 > 1) | (df.ss$v1 < -1 & df.ss$v1 >= -2),]$v1))
@@ -36,7 +37,7 @@ for (i in 1:length(vargrp1)){
     n5 <- round(sd5/sdsum1, digits = 1)
     n6 <- round(sd6/sdsum1, digits = 1)
   
-    p <- qplot(v1, v2, data=df.ss, color=factor(prs), alpha=I(0.7), xlab = paste(vargrp1[i], "(SD)"), ylab = paste(vargrp2[i], "(SD)"), main = years[j])+xlim(-5,5)+ylim(-5,5)
+    p <- qplot(v1, v2, data=df.s, color=factor(prs), alpha=I(0.7), xlab = paste(vargrp1[i], "(SD)"), ylab = paste(vargrp2[i], "(SD)"), main = years[j])+xlim(-5,5)+ylim(-5,5)
     d=data.frame(x1=c(-3,-2,-1), x2=c(3,2,1), y1=c(-3,-2,-1), y2=c(3,2,1),lab=c(paste(n3,",",n6), paste(n2,",",n5), paste(n1,",",n4)))
     p <- p + scale_colour_manual(values = cols)
     p <- p + geom_rect(data=d, aes(xmin=x1, xmax=x2, ymin=y1, ymax=y2, x = NULL,y = NULL), fill=NA, color="black") + geom_text(data=d, aes(x=x2-0.15, y=y1+0.25,label=lab), color="black")

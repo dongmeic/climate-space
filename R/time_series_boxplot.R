@@ -3,7 +3,6 @@
 library(ncdf4)
 library(ggplot2)
 library(grid)
-library(animation)
 library(parallel)
 library(doParallel)
 library(foreach)
