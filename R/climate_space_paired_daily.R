@@ -62,11 +62,12 @@ get.dataframe <- function(var2,var1,yr){
 climate.space.paired <- function(yr,i){
   df <- get.dataframe(vargrp2[i],vargrp1[i],yr)
   plot1 <- qplot(drop, dd, data=df, color=factor(prs), alpha=I(0.7), xlab = varnms1[i], ylab = varnms2[i], main = paste("MPB climate space in", toString(years[yr])))
-  plot1 <- plot1 + scale_colour_manual(name="Presencce", labels=c("Continent","Hosts","Beetles"), values = cols)+ labs(color="prs")
+  plot1 <- plot1 + xlim(min(df$drop), max(df$drop)) + ylim(min(df$dd), max(df$dd))
+  plot1 <- plot1 + scale_colour_manual(name="Presence", labels=c("Continent","Hosts","Beetles"), values = cols)+ labs(color="prs")
   plot1 <- plot1 + theme(axis.text=element_text(size=12),axis.title=element_text(size=14,face="bold"))
-  plot2 <- ggplot(df, aes(x=prs, y=drop, fill=factor(prs)))+geom_boxplot()+scale_fill_manual(values = cols)+theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+labs(x="Presencce", y=varnms1[i])+stat_summary(fun.data = max.n, geom = "text", fun.y = max)+
+  plot2 <- ggplot(df, aes(x=prs, y=drop, fill=factor(prs)))+geom_boxplot()+scale_fill_manual(values = cols)+theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+labs(x="Presence", y=varnms1[i])+stat_summary(fun.data = max.n, geom = "text", fun.y = max)+
     stat_summary(fun.data = min.n, geom = "text", fun.y = min)+stat_summary(fun.data = mean.n, geom = "text", fun.y = mean, col="white")+theme(legend.position="none")
-  plot3 <- ggplot(df, aes(x=prs, y=dd, fill=factor(prs)))+geom_boxplot()+scale_fill_manual(values = cols)+theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+labs(x="Presencce", y=varnms2[i])+stat_summary(fun.data = max.n, geom = "text", fun.y = max)+
+  plot3 <- ggplot(df, aes(x=prs, y=dd, fill=factor(prs)))+geom_boxplot()+scale_fill_manual(values = cols)+theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+labs(x="Presence", y=varnms2[i])+stat_summary(fun.data = max.n, geom = "text", fun.y = max)+
     stat_summary(fun.data = min.n, geom = "text", fun.y = min)+stat_summary(fun.data = mean.n, geom = "text", fun.y = mean, col="white")+theme(legend.position="none")
   
   png(paste0(out,"cs_",vargrp1[i],"_",vargrp2[i],"_",toString(years[yr]),".png"), width=12, height=6, units="in", res=300)
