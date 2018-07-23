@@ -62,7 +62,7 @@ get.dataframe <- function(var2,var1,yr){
 climate.space.paired <- function(yr,i){
   df <- get.dataframe(vargrp2[i],vargrp1[i],yr)
   plot1 <- qplot(drop, dd, data=df, color=factor(prs), alpha=I(0.7), xlab = varnms1[i], ylab = varnms2[i], main = paste("MPB climate space in", toString(years[yr])))
-  plot1 <- plot1 + xlim(min(df$drop), max(df$drop)) + ylim(min(df$dd), max(df$dd))
+  plot1 <- plot1 + xlim(range(get.data(vargrp1[i]), na.rm=T)[1], range(get.data(vargrp1[i]), na.rm=T)[2]) + ylim(range(get.data(vargrp2[i]), na.rm=T)[1], range(get.data(vargrp2[i]), na.rm=T)[2])
   plot1 <- plot1 + scale_colour_manual(name="Presence", labels=c("Continent","Hosts","Beetles"), values = cols)+ labs(color="prs")
   plot1 <- plot1 + theme(axis.text=element_text(size=12),axis.title=element_text(size=14,face="bold"))
   plot2 <- ggplot(df, aes(x=prs, y=drop, fill=factor(prs)))+geom_boxplot()+scale_fill_manual(values = cols)+theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+labs(x="Presence", y=varnms1[i])+stat_summary(fun.data = max.n, geom = "text", fun.y = max)+

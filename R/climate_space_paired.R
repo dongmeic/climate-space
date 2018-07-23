@@ -86,7 +86,7 @@ get.dataframe <- function(varp,vart,yr){
 climate.space.paired <- function(yr,i){
   df <- get.dataframe(vargrp.p[i],vargrp.t[i],yr)
   plot1 <- qplot(tmp, pre, data=df, color=factor(prs), alpha=I(0.7), xlab = varnms.t[i], ylab = varnms.p[i], main = paste("MPB climate space in", toString(years[yr])))
-  plot1 <- plot1 + xlim(min(df$tmp), max(df$tmp)) + ylim(min(df$pre), max(df$pre))
+  plot1 <- plot1 + xlim(range(get.data(vargrp.t[i]), na.rm=T)[1], range(get.data(vargrp.t[i]), na.rm=T)[2]) + ylim(range(get.data(vargrp.p[i]), na.rm=T)[1], range(get.data(vargrp.p[i]), na.rm=T)[2])
   plot1 <- plot1 + scale_colour_manual(name="Presence", labels=c("Continent","Hosts","Beetles"), values = cols)+ labs(color="prs")
   plot1 <- plot1 + theme(axis.text=element_text(size=12),axis.title=element_text(size=14,face="bold"))
   plot2 <- ggplot(df, aes(x=prs, y=tmp, fill=factor(prs)))+geom_boxplot()+scale_fill_manual(values = cols)+theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+labs(x="Presence", y=varnms.t[i])+stat_summary(fun.data = max.n, geom = "text", fun.y = max)+
@@ -199,7 +199,7 @@ climate.space.departure <- function(yr, i){
   plot3 <- ggplot(df, aes(x=prs, y=var.2,fill=factor(prs)))+geom_boxplot()+scale_fill_manual(values = cols)+theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+labs(x="Presence", y=paste(varnms2[i], "(SD)"))+stat_summary(fun.data = max.n, geom = "text", fun.y = max)+
     stat_summary(fun.data = min.n, geom = "text", fun.y = min)+stat_summary(fun.data = mean.n, geom = "text", fun.y = mean, col="white")+theme(legend.position="none")
   
-  png(paste0(out,"cs_",vargrp1[i],"_",vargrp2[i],"_std_", toString(years[yr]), ".png"), width=12, height=6, units="in", res=300)
+  png(paste0("std/cs_",vargrp1[i],"_",vargrp2[i],"_std_", toString(years[yr]), ".png"), width=12, height=6, units="in", res=300)
   grid.newpage()
   par(mar=c(2,2,4,2))
   pushViewport(viewport(layout = grid.layout(1, 4))) # 1 rows, 4 columns
@@ -219,7 +219,7 @@ foreach(i=1:length(years)) %dopar%{
 
 print("making an animation again")
 foreach(i=1:length(vargrp1)) %dopar%{
-  im.convert(paste0(out,"cs_",vargrp1[i],"_",vargrp2[i],"_std_*.png"), output = paste0(out,"cs_",vargrp1[i],"_",vargrp2[i],"_std.gif"))
+  im.convert(paste0("std/cs_",vargrp1[i],"_",vargrp2[i],"_std_*.png"), output = paste0("std/cs_",vargrp1[i],"_",vargrp2[i],"_std.gif"))
 }
 
 print("all done!")
