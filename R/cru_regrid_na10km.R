@@ -514,7 +514,7 @@ cru_ts_regrid_abs <- function(varname, varlname){
 	y_CoordinatAxisType <- ncatt_get(ncin, "x", "CoordinateAxisType")$value
 
 	time <- ncvar_get(ncin, varid="time", start=start_time, count=time_length); nt <- length(time)
-	time.lt <- ncvar_get(ncin, varid="time"); nt.lt <- length(time)
+	time.lt <- ncvar_get(ncin, varid="time"); nt.lt <- length(time.lt)
 	tunits <- ncatt_get(ncin,"time","units")
 
 	print("get longitude and latitude and attributes")
