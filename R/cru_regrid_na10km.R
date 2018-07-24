@@ -288,7 +288,7 @@ cru_ts_regrid_anomalies <- function(varname){
 	print("bilinear interpolation for most points:")
 	print("loop over times")
 	for (n in 1:nt) {
-		print(n)
+		# print(n)
 		# bilinear interpolation from fields package
 		control_dat <- list(x=crulon, y=crulat, z=var3d[,,n])
 		interp_var <- interp.surface(control_dat, cbind(na10km_v2$lon,na10km_v2$lat))
@@ -321,7 +321,7 @@ cru_ts_regrid_anomalies <- function(varname){
 	print("find closest nonmissing CRU point to each missing target point")
 	ptm <- proc.time()
 	for (i in 1:nmiss) {
-		print(i)
+		# print(i)
 		id <- miss_id[i]
 	
 		# subscripts of missing target point
@@ -593,14 +593,16 @@ cru_ts_regrid_abs <- function(varname, varlname){
 
 	print("write out absolute values")
 	ptm <- proc.time() # timer
+	outncdf <- c("short-term 3d", "long-term 3d", "short-term 4d", "long-term 4d")
   for(i in 1:4){
+    print(paste("writing", outncdf[i]))
     if(i==1){
       absfile <- paste0("na10km_v2_cru_ts4.01.",start_year,".",end_year,".",varname,".abs3d.nc")
     }else if(i==2){
       absfile <- paste0("na10km_v2_cru_ts4.01.1901.2016.",varname,".abs3d.nc")
     }else if(i==3){
       absfile <- paste0("na10km_v2_cru_ts4.01.",start_year,".",end_year,".",varname,".abs4d.nc")
-    }else{
+    }else if(i==4){
       absfile <- paste0("na10km_v2_cru_ts4.01.1901.2016.",varname,".abs4d.nc")
     }
     
@@ -613,6 +615,8 @@ cru_ts_regrid_abs <- function(varname, varlname){
 		tdim.lt <- ncdim_def("time", units=tunits$value, longname="time", as.double(time.lt))
     year <- seq(start_year,end_year, by=1)
 	  yeardim <- ncdim_def("year","year",as.integer(year))
+	  year.lt <- seq(1901,2016, by=1)
+	  yeardim.lt <- ncdim_def("year","year",as.integer(year.lt))
 	  month <- seq(1,12, by=1)
 	  monthdim <- ncdim_def("month","month",as.integer(month))
 	  
@@ -626,11 +630,16 @@ cru_ts_regrid_abs <- function(varname, varlname){
 		proj_def <- ncvar_def(projname,"1",NULL,NULL,longname=dlname,prec="char")
 
 		# create netCDF file and put data
-		if(i==1 | i==2){
+		if(i==1){
       var_def <- ncvar_def(varname,dunits$value,list(xdim,ydim,tdim),fillvalue,varlname,prec="double")
-    }else if(i==3 | i==4){
+    }else if(i==2){
+      var_def <- ncvar_def(varname,dunits$value,list(xdim,ydim,tdim.lt),fillvalue,varlname,prec="double")
+    }else if(i==3){
       var_def <- ncvar_def(varname,dunits$value,list(xdim,ydim,monthdim,yeardim),fillvalue,varlname,prec="double")
-    }	
+    }else if(i==4){
+      var_def <- ncvar_def(varname,dunits$value,list(xdim,ydim,monthdim,yeardim.lt),fillvalue,varlname,prec="double")
+    }
+
 		ncout <- nc_create(abs_ncfile,list(lon_def,lat_def,var_def,proj_def),force_v4=TRUE, verbose=FALSE)
 
 		print("put additional attributes into dimension and data variables")
@@ -642,9 +651,10 @@ cru_ts_regrid_abs <- function(varname, varlname){
 		ncatt_put(ncout,"y","standard_name",y_standard_name)
 		ncatt_put(ncout,"y","grid_spacing",y_grid_spacing)
 		ncatt_put(ncout,"y","_CoordinateAxisType",y_CoordinatAxisType)
-		ncatt_put(ncout,"time","axis","T")
-		ncatt_put(ncout,"time","calendar","standard")
-
+		if (i ==1 | i ==2){
+		  ncatt_put(ncout,"time","axis","T")
+		  ncatt_put(ncout,"time","calendar","standard")		
+		}
 		ncatt_put(ncout,crs_name,"name",crs_name)
 		ncatt_put(ncout,crs_name,"long_name",crs_long_name)
 		ncatt_put(ncout,crs_name,"grid_mapping_name",crs_grid_mapping_name)
@@ -668,9 +678,9 @@ cru_ts_regrid_abs <- function(varname, varlname){
     }else if(i==3){
       ncvar_put(ncout,var_def,var4d)
 	    remove(var4d)
-    }else{
+    }else if(i==4){
       ncvar_put(ncout,var_def,var4d.lt)
-	    remove(var3d.lt)
+	    remove(var4d.lt)
     }
 
 		# add global attributes
@@ -686,6 +696,7 @@ cru_ts_regrid_abs <- function(varname, varlname){
     }	
 		# close the file, writing data to disk
 		nc_close(ncout)
+		print(paste("finished writing", outncdf[i]))
 		proc.time() - ptm 
   }
 }
