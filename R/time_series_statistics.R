@@ -206,10 +206,9 @@ ncvar_put(ncout, var_def, temp_array)
 nc_close(ncout)
 print("done!")
 
-
 print("writing more 3D netCDF files...")
 t <- 2
-p <- 41
+p <- 21
 for (i in yr.runs[-1]){
   year <- (1997+i-1):2016
   pre.year <- (1997+t-1):2016
@@ -237,10 +236,10 @@ for (i in yr.runs[-1]){
   ncfname <- paste0(ncpath,"prs/time_series_presence_statistics_",i,".nc")
   var_def <- ncvar_def(varnm, dunits, list(xdim, ydim, tdim), fillvalue, varlnm, prec = "float")
   ncout <- nc_create(ncfname,list(lon_def,lat_def,var_def,proj_def),force_v4=TRUE, verbose=FALSE)  
-  p <- p + npt + 1
+  p <- p + npt
   temp_array <- array(fillvalue, dim = c(nx,ny,nt))
   m <- rep(1:nt,each=nobs)
-  temp_array[cbind(j2,k2,m)] <- as.matrix(indata[1:nobs,p:(p+nt-1)])
+  temp_array[cbind(j2,k2,m)] <- as.matrix(indata[1:nobs,(p+1):(p+nt)])
   t <- i
   # put variables
   ncvar_put(ncout,lon_def,lon)

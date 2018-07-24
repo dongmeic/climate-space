@@ -1,6 +1,8 @@
 library(ncdf4)
 library(fields)
 library(geosphere)
+library(lattice)
+library(RColorBrewer)
 
 cru_ts_ltms_anomalies <- function(varname, varlname, varunit){
 	# path
@@ -25,10 +27,31 @@ cru_ts_ltms_anomalies <- function(varname, varlname, varunit){
 	print("replace netCDF _FillValues with R NA's")
 	var3d[var3d==fillvalue] <- NA
 	
+	# quick maps to check data
+	n <- 1344
+	var_slice_3d <- var3d[,,n]
+	grid <- expand.grid(lon=lon, lat=lat)
+	# double check the cut points
+	cutpts <- c(0,10,20,30,40,50,60,70,80,90,100)
+	png(paste0(out,"cru_ts4.01.",varname,".2012.12.3d.png"), width=10, height=8, units="in", res=300)
+	levelplot(var_slice_3d ~ lon * lat, data=grid, at=cutpts, cuts=11, pretty=T, 
+		col.regions=(rev(brewer.pal(10,"RdBu"))))
+	dev.off()
+	
 	print("reshape 3d array to 4d")
 	nm <- 12 # number of months in year
 	ny <- nt/12 # number of years in CRU data set
 	var4d <- array(var3d, dim=c(nlon,nlat,nm,ny))
+
+	# quick maps to check data
+	m <- 6; n <- ny-2
+	var_slice_4d <- var4d[,,m,n]
+	grid <- expand.grid(lon=lon, lat=lat)
+	cutpts <- c(0,10,20,30,40,50,60,70,80,90,100)
+	png(paste0(out,"cru_ts4.01.",varname,".2014.06.4d.png"), width=10, height=8, units="in", res=300)
+	levelplot(var_slice_4d ~ lon * lat, data=grid, at=cutpts, cuts=11, pretty=T, 
+		col.regions=(rev(brewer.pal(10,"RdBu"))))
+	dev.off()
 
 	print("make a missing data mask")
 	landmask <- array(1, dim=c(nlon,nlat))
@@ -58,9 +81,18 @@ cru_ts_ltms_anomalies <- function(varname, varlname, varunit){
 			}
 		}
 	}
+	
+	# quick maps to check long-term means
+	m <- 12
+	var_slice_3d <- ltm[,,m]
+	grid <- expand.grid(lon=lon, lat=lat)
+	cutpts <- c(0,10,20,30,40,50,60,70,80,90,100)
+	png(paste0(out,"cru_ts4.01.",varname,".ltm.12.3d.png"), width=10, height=8, units="in", res=300)
+	levelplot(var_slice_3d ~ lon * lat, data=grid, at=cutpts, cuts=11, pretty=T, 
+		col.regions=(rev(brewer.pal(10,"RdBu"))))
+	dev.off()
 
-	ltm[is.na(ltm)] <- fillvalue
-
+  ltm[is.na(ltm)] <- fillvalue
 	print("write out the long-term means")
 
 	print("time -- values calculated by cf_time_subs.f90 -- 1961-1990")
@@ -113,7 +145,7 @@ cru_ts_ltms_anomalies <- function(varname, varlname, varunit){
 	nc_close(ncout)
 
 	print("get anomalies (both 3d and 4d arrays)")
-
+  ltm[ltm==fillvalue] <- NA
 	for (j in 1:nlon) {
 		for (k in 1:nlat) {
 			if (!is.na(landmask[j,k])) {
@@ -126,6 +158,26 @@ cru_ts_ltms_anomalies <- function(varname, varlname, varunit){
 			}
 		}
 	}
+
+	# quick maps to check anomalies
+	n <- 1380
+	var_slice_3d <- var3d[,,n]
+	grid <- expand.grid(lon=lon, lat=lat)
+	cutpts <- c(-60,-20,-15,-10,-5,0,5,10,15,20,60)
+	png(paste0(out,"cru_ts4.01.",varname,".anm.2015.12.3d.png"), width=10, height=8, units="in", res=300)
+	levelplot(var_slice_3d ~ lon * lat, data=grid, at=cutpts, cuts=11, pretty=T, 
+		col.regions=(rev(brewer.pal(10,"RdBu"))))
+	dev.off()
+
+	# quick maps to check anomalies
+	m <- 6; n <- ny
+	var_slice_4d <- var4d[,,m,n]
+	grid <- expand.grid(lon=lon, lat=lat)
+	cutpts <- c(-60,-20,-15,-10,-5,0,5,10,15,20,60)
+	png(paste0(out,"cru_ts4.01.",varname,".anm.2016.06.4d.png"), width=10, height=8, units="in", res=300)
+	levelplot(var_slice_4d ~ lon * lat, data=grid, at=cutpts, cuts=11, pretty=T, 
+		col.regions=(rev(brewer.pal(10,"RdBu"))))
+	dev.off()
 
 	var3d[is.na(var3d)] <- fillvalue
 	var4d[is.na(var4d)] <- fillvalue
@@ -303,6 +355,17 @@ cru_ts_regrid_anomalies <- function(varname){
 		interp_anm[,,n] <- interp_mat
 	}
 
+	# quick map to check data
+	n <- 1380
+	test_slice1 <- interp_anm[,,n]
+	grid <- expand.grid(x=x, y=y)
+	cutpts <- c(-60,-20,-15,-10,-5,0,5,10,15,20,60)
+	png(paste0(out,"cru_ts4.01.",varname,".interp.2016.12.3d.png"), width=9, height=8, units="in", res=300)
+	levelplot(test_slice1 ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 
+		col.regions=(rev(brewer.pal(10,"RdBu"))))
+	dev.off()
+	
+	sum(is.na(test_slice1))
 	print("nearest-neighbor assignment for missing bilinear-interpolation values")
 	# use last time-slice
 
@@ -341,6 +404,28 @@ cru_ts_regrid_anomalies <- function(varname){
 		interp_anm[j2,k2,] <- var3d[j3,k3,]
 	}
 	proc.time() - ptm
+
+	# # quick map to check data
+	n <- 1380
+	test_slice2 <- interp_anm[,,n]
+	grid <- expand.grid(x=x, y=y)
+	cutpts <- c(-60,-20,-15,-10,-5,0,5,10,15,20,60)
+	png(paste0(out,"cru_ts4.01.",varname,".nonmiss.2016.12.3d.png"), width=9, height=8, units="in", res=300)
+	levelplot(test_slice2 ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 
+						col.regions=(rev(brewer.pal(10,"RdBu"))))
+	dev.off()
+	sum(is.na(test_slice2))
+
+	# points that were filled by nearest-neighbor interpolation
+	test_slice3 <- test_slice2
+	test_slice3[!is.na(test_slice1)] <- NA
+	grid <- expand.grid(x=x, y=y)
+	cutpts <- c(-60,-20,-15,-10,-5,0,5,10,15,20,60)
+	png(paste0(out,"cru_ts4.01.",varname,".near.2016.12.3d.png"), width=9, height=8, units="in", res=300)
+	levelplot(test_slice3 ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 
+						col.regions=(rev(brewer.pal(10,"RdBu"))))
+	dev.off()
+	sum(is.na(test_slice3))
 
 	print("replace R NA's with fillvalues")
 	# fillvalue
@@ -577,6 +662,26 @@ cru_ts_regrid_abs <- function(varname, varlname){
 		}
 	}
 	proc.time() - ptm
+
+	# quick maps to check data
+	n <- time_length
+	var_slice_3d <- var3d[,,n]
+	grid <- expand.grid(x=x, y=y)
+	cutpts <- c(0,10,20,30,40,50,60,70,80,90,100)
+	png(file=paste0(out,"na10km_v2_cru_4.01.",end_year,".abs.",varname,"3d.png"), width=9, height=8, units="in", res=300)
+	levelplot(var_slice_3d ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 
+						col.regions=(rev(brewer.pal(10,"RdBu"))))
+	dev.off()
+
+	# quick maps to check data
+	m <- 6; n <- nyr
+	var_slice_4d <- var4d[,,m,n]
+	grid <- expand.grid(x=x, y=y)
+	cutpts <- c(0,10,20,30,40,50,60,70,80,90,100)
+	png(file=paste0(out,"na10km_v2_cru_4.01.",end_year,".abs",varname,"4d.png"), width=9, height=8, units="in", res=300)
+	levelplot(var_slice_4d ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 
+						col.regions=(rev(brewer.pal(10,"RdBu"))))
+	dev.off()
 
 	print("recode fillvalues")
 	fillvalue <- 1e32
