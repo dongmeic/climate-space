@@ -67,35 +67,35 @@ neighboring.sum <- function(k, yr, m){
 }
 
 print("writing neighboring cell years")
-for(k in yr.runs){
-  print(paste("running k", k))
-  for(yr in 1:(n-k+2)){
-    colnm <- paste0("ngb",k,years[yr+k-1])
-    v <- vector()
-    for(m in 1:nobs){
-      v[m] <- neighboring.sum(k, yr, m)
-      # comment below line if the script is run in bash
-      # print(paste("row", rownames(target.df)[m]))	
-    }
-    target.df[,colnm] <- v
-    rest.df[,colnm] <- rep(0,dim(rest.df)[1])
-    df <- rbind(target.df, rest.df)
-    df <- df[order(df$key),]
-    btlprs.df[,colnm] <- df[,colnm]
-    print(paste("got", years[yr+k-1]))
-  }
-  print(paste("finished running k", k))  
-}
-ndf <- btlprs.df[, -grep("prs_", colnames(btlprs.df))]
-df <- ndf[,-which(names(ndf) %in% c("key"))]
-write.csv(df, paste0(csvpath, "ts_presence_statistics.csv"), row.names=FALSE)
-print("finished CSV writing")
+# for(k in yr.runs){
+#   print(paste("running k", k))
+#   for(yr in 1:(n-k+2)){
+#     colnm <- paste0("ngb",k,years[yr+k-1])
+#     v <- vector()
+#     for(m in 1:nobs){
+#       v[m] <- neighboring.sum(k, yr, m)
+#       # comment below line if the script is run in bash
+#       # print(paste("row", rownames(target.df)[m]))	
+#     }
+#     target.df[,colnm] <- v
+#     rest.df[,colnm] <- rep(0,dim(rest.df)[1])
+#     df <- rbind(target.df, rest.df)
+#     df <- df[order(df$key),]
+#     btlprs.df[,colnm] <- df[,colnm]
+#     print(paste("got", years[yr+k-1]))
+#   }
+#   print(paste("finished running k", k))  
+# }
+# ndf <- btlprs.df[, -grep("prs_", colnames(btlprs.df))]
+# df <- ndf[,-which(names(ndf) %in% c("key"))]
+# write.csv(df, paste0(csvpath, "ts_presence_statistics.csv"), row.names=FALSE)
+# print("finished CSV writing")
 
 # open points netCDF file to get dimensions, etc.
 ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/"
 ncin <- nc_open(paste0(ncpath,"na10km_v2.nc"))
 x <- ncvar_get(ncin, varid="x"); nx <- length(x)
-y <- ncvar_get(ncin, varid="y"); ny <- length(y
+y <- ncvar_get(ncin, varid="y"); ny <- length(y)
 lon <- ncvar_get(ncin, varid="lon")
 lat <- ncvar_get(ncin, varid="lat")
 nc_close(ncin)
@@ -123,7 +123,7 @@ time_def <- ncvar_def(dlname,tunits,list(tdim),NULL,dlname,prec="integer")
 
 # mpb
 ncfname <- paste(ncpath,"prs/time_series_presence_statistics.nc", sep="")
-csvfile <- "ts_beetle_presence_statistics.csv"
+csvfile <- "ts_presence_statistics.csv"
 dname <- "prs_alt"
 dlname <- "Mountain pine beetle presence-absence alteration"
 dunits <- ""

@@ -610,6 +610,7 @@ cru_ts_regrid_abs <- function(varname, varlname){
 		xdim <- ncdim_def("x",units="m",longname="x coordinate of projection",as.double(x))
 		ydim <- ncdim_def("y",units="m",longname="y coordinate of projection",as.double(y))
 		tdim <- ncdim_def("time", units=tunits$value, longname="time", as.double(time))
+		tdim.lt <- ncdim_def("time", units=tunits$value, longname="time", as.double(time.lt))
     year <- seq(start_year,end_year, by=1)
 	  yeardim <- ncdim_def("year","year",as.integer(year))
 	  month <- seq(1,12, by=1)
