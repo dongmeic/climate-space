@@ -5,7 +5,6 @@ registerDoParallel(cores=28)
 
 # functions
 source("/gpfs/projects/gavingrp/dongmeic/climate-space/R/cru_regrid_na10km.R")
-out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/maps/checking/"
 
 varnames <- c("pet", "sun", "vap")
 varlnames <- c("potential evapotranspiration", "percent possible sunshine", "vapour pressure")
