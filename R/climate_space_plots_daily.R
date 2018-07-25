@@ -6,7 +6,7 @@ ndf <- read.csv(paste0(csvpath,csvfile))
 out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/plots"
 setwd(out)
 
-vargrp <- c("drop0", "drop5", "ddAugJul", "ddAugJun")
+vargrp <- c("drop0", "drop5", "ddAugJul", "ddAugJun", "min30", "min32", "min34", "min36", "min38", "min40")
 
 # density plot
 density.plot <- function(i){
