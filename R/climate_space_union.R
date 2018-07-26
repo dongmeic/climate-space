@@ -120,6 +120,9 @@ cols2 <- c("grey70", "#1b9e77", "#1B9E777D", "#7570b3", "#7570B37D")
 climate.space.paired <- function(i){
   df <- df5[,c(vargrp.t[i], vargrp.p[i], "prs")]
   colnames(df)[1:2] <- c("tmp", "pre")
+  if(i > 3){
+    df[,c("pre")] <- sqrt(df[,c("pre")])
+  }
   plot1 <- qplot(tmp, pre, data=df, color=factor(prs), alpha=I(0.7), xlab = varnms.t[i], ylab = varnms.p[i], main = "MPB climate space")
   plot1 <- plot1 + scale_colour_manual(name="Presencce", labels=c("Continent","Hosts","Beetles"), values = cols)+ labs(color="prs")
   plot1 <- plot1 + theme(axis.text=element_text(size=12),axis.title=element_text(size=14,face="bold"))
@@ -130,6 +133,9 @@ climate.space.paired <- function(i){
     scale_x_discrete(labels=c("continent" = "Continent", "hosts" = "Hosts", "hosts-abs" = "Hosts-abs", "mpb" = "Beetles", "mpb-abs" = "Beetles-abs"))
   
   df <- get.abs.data(vargrp.p[i])
+  if(i > 3){
+    df[,c("vals")] <- sqrt(df[,c("vals")])
+  }
   plot3 <- ggplot(df, aes(x=prs, y=vals, fill=factor(prs)))+geom_boxplot()+scale_fill_manual(values = cols2)+theme(axis.ticks.x=element_blank())+labs(x="Presencce", y=varnms.p[i])+stat_summary(fun.data = max.n, geom = "text", fun.y = max)+
     stat_summary(fun.data = min.n, geom = "text", fun.y = min)+stat_summary(fun.data = mean.n, geom = "text", fun.y = mean, col="white")+theme(legend.position="none")+ 
     scale_x_discrete(labels=c("continent" = "Continent", "hosts" = "Hosts", "hosts-abs" = "Hosts-abs", "mpb" = "Beetles", "mpb-abs" = "Beetles-abs"))

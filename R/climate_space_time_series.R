@@ -19,7 +19,7 @@ vargrp.t <- c("Tmin", "MarTmin", "TOctSep", "Tmean", "fallTmean", "OctTmin", "wi
 							
 vargrp.p <- c("AugTmean", "AugTmax", "Tvar", "PMarAug", "PcumOctSep", "PPT", "Pmean",
               "POctSep", "summerP2", "GSP", "summerP0", "summerP1")
-              
+           
 cols <- c("grey70", "#1b9e77", "#7570b3")
 
 #csvfile <- "bioclimatic_variables_1996_2015.csv" # from climate_space_union.R
@@ -29,6 +29,9 @@ foreach(i=1:length(vargrp.t))%dopar%{
   #df <- indata[,c(vargrp.t[i], vargrp.p[i], "prs", "yrs")]
   df.t <- read.csv(paste0(csvpath, vargrp.t[i], "_",years[1], "_",years[nyr], ".csv"))
   df.p <- read.csv(paste0(csvpath, vargrp.p[i], "_",years[1], "_",years[nyr], ".csv"))
+  if(i > 3){
+    df.p[,1] <- sqrt(df.p[,1])
+  }
   df <- cbind(data.frame(tmp=df.t[,1]),data.frame(pre=df.p[,1]),data.frame(prs=df.t[,2]),data.frame(yrs=df.t[,3]))
   climate.space <- function(j){
     df.ss <- subset(df, yrs==years[j])
