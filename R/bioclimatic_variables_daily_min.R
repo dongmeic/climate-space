@@ -28,8 +28,9 @@ min28 <- matrix(, nrow = dim1, ncol = dim2)
 # min38 <- matrix(, nrow = dim1, ncol = dim2)
 # min40 <- matrix(, nrow = dim1, ncol = dim2)
 
-#foreach(i = 1:(nt-1))%dopar%{
-for(i in 1:23){
+#foreach(i = 92:114)%dopar%{
+#for(i in 1:23){
+i <- 115
 	indata1 <- read.csv(paste0(inpath, "na10km_v2_climatic_values_",years[i],".csv"))
 	indata2 <- read.csv(paste0(inpath, "na10km_v2_climatic_values_",years[i+1],".csv"))
 	indata <- rbind(indata1, indata2)
@@ -52,6 +53,6 @@ for(i in 1:23){
 	}
 	print(paste("got data from", years[i+1]))
 	write.csv(df, paste0("bioclimatic_variables_daily_min_",years[i+1],"_2.csv"), row.names = FALSE)  
-}
+#}
 proc.time() - ptm
 print("all done!")
