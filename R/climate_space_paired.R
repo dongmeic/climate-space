@@ -13,41 +13,40 @@ years <- 1996:2015; nyr <- length(years)
 out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/climate_space/paired/"
 ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/ts/var/"
 setwd(out)
-
-vargrp.t <- c("OctTmin", "fallTmean", "winterTmin", "JanTmin", "MarTmin", "Tmin", "Tmean", 
-				"Tvar", "TOctSep", "TMarAug", "summerTmean", "AugTmean", "AugTmax")
-vargrp.p <- c("PcumOctSep", "PcumOctSep", "summerP0", "summerP1", "summerP2", "PPT", "Pmean",
-				"GSP", "POctSep", "PMarAug", "summerP0", "summerP1", "summerP2")
 				
-varnms.t <- c("Minimum temperature in Oct",
+vargrp.t <- c("Tmin", "MarTmin", "TOctSep", "Tmean", "fallTmean", "OctTmin", "winterTmin",
+							"JanTmin", "ddAugJun", "ddAugJul", "TMarAug", "summerTmean")
+							
+vargrp.p <- c("AugTmean", "AugTmax", "Tvar", "PMarAug", "PcumOctSep", "PPT", "Pmean",
+              "POctSep", "summerP2", "GSP", "summerP0", "summerP1")
+		
+varnms.t <- c("Mean minimum temperature from Nov to Mar",
+				"Minimum temperature in Mar",
+				"Mean temperature from Oct to Sep",
+				"Mean temperature from Aug to Jul",
 			  "Mean temperature from Sep to Nov",
+			  "Minimum temperature in Oct",
 			  "Minimum winter temperature",
 			  "Minimum temperature in Jan",
-			  "Minimum temperature in Mar",
-			  "Mean minimum temperature from Nov to Mar",
-			  "Mean temperature from Aug to Jul",
-			  "Temperature variation from Aug to Jul",
-			  "Mean temperature from Oct to Sep",
+        "Degree days from August to June",
+        "Degree days from August to July",
 			  "Mean temperature from Mar to Aug",
-			  "Mean temperature from Jun to Aug",
-			  "Mean temperature in Aug",
-			  "Maximum temperature in Aug")
+			  "Mean temperature from Jun to Aug")
 
-varnms.p <- c("Cumulative precipitation from Oct to Sep",
-			  "Cumulative precipitation from Oct to Sep",
-			  "Sum of precipitation from Jun to Aug",
-			  "Precipitation from Jun to Aug in previous year",
-			  "Cumulative precipitation from Jun to Aug",
-			  "Cumulative monthly Oct-Aug precipitation",
-			  "Mean precipitation from Aug to Jul",
-			  "Growing season precipitation",
-			  "Precipitation from Oct and Sep in previous year",
-			  "Sum of precipitation from Mar to Aug",
-			  "Sum of precipitation from Jun to Aug",
-			  "Precipitation from Jun to Aug in previous year",
-			  "Cumulative precipitation from Jun to Aug")
+varnms.p <- c("Mean temperature in Aug",
+				"Maximum temperature in Aug",
+				"Temperature variation from Aug to Jul",
+				"Sum of precipitation from Mar to Aug",
+				"Cumulative precipitation from Oct to Sep",
+				"Cumulative monthly Oct-Aug precipitation",
+				"Mean precipitation from Aug to Jul",
+				"Precipitation from Oct and Sep in previous year",
+				"Cumulative precipitation from Jun to Aug",
+				"Growing season precipitation",
+				"Sum of precipitation from Jun to Aug",
+				"Precipitation from Jun to Aug in previous year")
 
-cols <- c("grey70", "#1b9e77", "#d95f02")
+cols <- c("grey70", "#1b9e77", "#7570b3")
 			  
 get.data <- function(var){
   ncfile <- paste0("na10km_v2_",var, "_",years[1],".",years[nyr],".4d.nc")
@@ -83,18 +82,42 @@ get.dataframe <- function(varp,vart,yr){
   return(df)
 }
 
+get.abs.data <- function(var, yr){
+	data <- get.data(var)
+	na <- data[,,1,yr]
+	nav <- na[!is.na(na)]
+	vgt <- data[,,2,yr]
+  vgtv <- vgt[!is.na(vgt)]
+  btl <- data[,,3,yr]
+  btlv <- btl[!is.na(btl)]
+  vgt.abs <- na[is.na(vgt) & !is.na(na)]
+  btl.abs <- na[is.na(btl) & !is.na(na)]
+  vals <- c(nav, vgtv, vgt.abs, btlv, btl.abs)
+  prs <- c(rep("continent",length(nav)),rep("hosts",length(vgtv)),rep("hosts-abs",length(vgt.abs)),rep("mpb",length(btlv)),rep("mpb-abs",length(btl.abs)))
+  df <- data.frame(vals, prs)
+  return(df)
+}
+
+cols2 <- c("grey70", "#1b9e77", "#1B9E777D", "#7570b3", "#7570B37D")
+
 climate.space.paired <- function(yr,i){
   df <- get.dataframe(vargrp.p[i],vargrp.t[i],yr)
   plot1 <- qplot(tmp, pre, data=df, color=factor(prs), alpha=I(0.7), xlab = varnms.t[i], ylab = varnms.p[i], main = paste("MPB climate space in", toString(years[yr])))
   plot1 <- plot1 + xlim(range(get.data(vargrp.t[i]), na.rm=T)[1], range(get.data(vargrp.t[i]), na.rm=T)[2]) + ylim(range(get.data(vargrp.p[i]), na.rm=T)[1], range(get.data(vargrp.p[i]), na.rm=T)[2])
   plot1 <- plot1 + scale_colour_manual(name="Presence", labels=c("Continent","Hosts","Beetles"), values = cols)+ labs(color="prs")
   plot1 <- plot1 + theme(axis.text=element_text(size=12),axis.title=element_text(size=14,face="bold"))
-  plot2 <- ggplot(df, aes(x=prs, y=tmp, fill=factor(prs)))+geom_boxplot()+scale_fill_manual(values = cols)+theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+labs(x="Presence", y=varnms.t[i])+stat_summary(fun.data = max.n, geom = "text", fun.y = max)+
-    stat_summary(fun.data = min.n, geom = "text", fun.y = min)+stat_summary(fun.data = mean.n, geom = "text", fun.y = mean, col="white")+theme(legend.position="none")
-  plot3 <- ggplot(df, aes(x=prs, y=pre, fill=factor(prs)))+geom_boxplot()+scale_fill_manual(values = cols)+theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+labs(x="Presence", y=varnms.p[i])+stat_summary(fun.data = max.n, geom = "text", fun.y = max)+
-    stat_summary(fun.data = min.n, geom = "text", fun.y = min)+stat_summary(fun.data = mean.n, geom = "text", fun.y = mean, col="white")+theme(legend.position="none")
-  
-  png(paste0(out,"cs_",vargrp.t[i],"_",vargrp.p[i],"_",toString(years[yr]),".png"), width=12, height=6, units="in", res=300)
+  df <- get.abs.data(vargrp.t[i], yr)
+  plot2 <- ggplot(df, aes(x=prs, y=vals, fill=factor(prs)))+geom_boxplot()+scale_fill_manual(values = cols2)+theme(axis.ticks.x=element_blank())+labs(x="Presence", y=varnms.t[i])+stat_summary(fun.data = max.n, geom = "text", fun.y = max)+
+    stat_summary(fun.data = min.n, geom = "text", fun.y = min)+stat_summary(fun.data = mean.n, geom = "text", fun.y = mean, col="white")+theme(legend.position="none")+
+    ylim(range(get.data(vargrp.t[i]), na.rm=T)[1], range(get.data(vargrp.t[i]), na.rm=T)[2])+ 
+    scale_x_discrete(labels=c("continent" = "Continent", "hosts" = "Hosts", "hosts-abs" = "Hosts-abs", "mpb" = "Beetles", "mpb-abs" = "Beetles-abs"))
+  df <- get.abs.data(vargrp.p[i], yr)
+  plot3 <- ggplot(df, aes(x=prs, y=vals, fill=factor(prs)))+geom_boxplot()+scale_fill_manual(values = cols2)+theme(axis.ticks.x=element_blank())+labs(x="Presence", y=varnms.p[i])+stat_summary(fun.data = max.n, geom = "text", fun.y = max)+
+    stat_summary(fun.data = min.n, geom = "text", fun.y = min)+stat_summary(fun.data = mean.n, geom = "text", fun.y = mean, col="white")+theme(legend.position="none")+
+  	ylim(range(get.data(vargrp.p[i]), na.rm=T)[1], range(get.data(vargrp.p[i]), na.rm=T)[2])+ 
+    scale_x_discrete(labels=c("continent" = "Continent", "hosts" = "Hosts", "hosts-abs" = "Hosts-abs", "mpb" = "Beetles", "mpb-abs" = "Beetles-abs"))
+  	
+  png(paste0(out,"cs_",vargrp.t[i],"_",vargrp.p[i],"_",toString(years[yr]),".png"), width=14, height=6, units="in", res=300)
   grid.newpage()
   par(mar=c(2,2,4,2))
   pushViewport(viewport(layout = grid.layout(1, 4))) # 1 rows, 4 columns
@@ -209,17 +232,17 @@ climate.space.departure <- function(yr, i){
   dev.off()		
 }
 
-print("start plotting climate space of departure")
-foreach(i=1:length(years)) %dopar%{
-  foreach(j=1:length(vargrp1)) %dopar%{
-    print(paste("processed year", years[i], "and variable pair", vargrp1[j], "and", vargrp2[j]))
-    climate.space.departure(i,j)
-  }
-}
+# print("start plotting climate space of departure")
+# foreach(i=1:length(years)) %dopar%{
+#   foreach(j=1:length(vargrp1)) %dopar%{
+#     print(paste("processed year", years[i], "and variable pair", vargrp1[j], "and", vargrp2[j]))
+#     climate.space.departure(i,j)
+#   }
+# }
 
-print("making an animation again")
-foreach(i=1:length(vargrp1)) %dopar%{
-  im.convert(paste0("std/cs_",vargrp1[i],"_",vargrp2[i],"_std_*.png"), output = paste0("std/cs_",vargrp1[i],"_",vargrp2[i],"_std.gif"))
-}
+# print("making an animation again")
+# foreach(i=1:length(vargrp1)) %dopar%{
+#   im.convert(paste0("std/cs_",vargrp1[i],"_",vargrp2[i],"_std_*.png"), output = paste0("std/cs_",vargrp1[i],"_",vargrp2[i],"_std.gif"))
+# }
 
 print("all done!")
