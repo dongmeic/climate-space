@@ -8,17 +8,19 @@ registerDoParallel(cores=28)
 
 years <- 1996:2015; nyr <- length(years)
 csvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/climate_space/times_series/"
-out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/climate_space/paired/"
+out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/climate_space/paired/ts"
 setwd(out)
 
 # function for layout
 vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
 
-vargrp.t <- c("OctTmin", "fallTmean", "winterTmin", "JanTmin", "MarTmin", "Tmin", "Tmean", 
-				"Tvar", "TOctSep", "TMarAug", "summerTmean", "AugTmean", "AugTmax")
-vargrp.p <- c("PcumOctSep", "PcumOctSep", "summerP0", "summerP1", "summerP2", "PPT", "Pmean",
-				"GSP", "POctSep", "PMarAug", "summerP0", "summerP1", "summerP2")
-cols <- c("grey70", "#1b9e77", "#d95f02")
+vargrp.t <- c("Tmin", "MarTmin", "TOctSep", "Tmean", "fallTmean", "OctTmin", "winterTmin",
+							"JanTmin", "ddAugJun", "ddAugJul", "TMarAug", "summerTmean")
+							
+vargrp.p <- c("AugTmean", "AugTmax", "Tvar", "PMarAug", "PcumOctSep", "PPT", "Pmean",
+              "POctSep", "summerP2", "GSP", "summerP0", "summerP1")
+              
+cols <- c("grey70", "#1b9e77", "#7570b3")
 
 #csvfile <- "bioclimatic_variables_1996_2015.csv" # from climate_space_union.R
 #indata <- read.csv(csvfile)
@@ -36,7 +38,7 @@ foreach(i=1:length(vargrp.t))%dopar%{
     p <- p + theme(title =element_text(size=14, face='bold'), axis.text=element_text(size=10),axis.title=element_text(size=12,face="bold"),legend.position="none")
     return(p) 
   }
-  png(paste0("ts/cs_",vargrp.t[i],"_",vargrp.p[i],"_ts.png"), width=15, height=12, units="in", res=300)
+  png(paste0("cs_",vargrp.t[i],"_",vargrp.p[i],"_ts.png"), width=15, height=12, units="in", res=300)
   grid.newpage()
   par(mar=c(2,2,4,2))
   pushViewport(viewport(layout = grid.layout(4, 5)))
