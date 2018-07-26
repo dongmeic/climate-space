@@ -12,7 +12,7 @@ vargrp.t <- c("Tmin", "MarTmin", "TOctSep", "Tmean", "fallTmean", "OctTmin", "wi
 vargrp.p <- c("AugTmean", "AugTmax", "Tvar", "PMarAug", "PcumOctSep", "PPT", "Pmean",
               "POctSep", "summerP2", "GSP", "summerP0", "summerP1")
 
-vargrp <- c(vargrp.t, vargrp.p)
+vargrp <- c(vargrp.t, vargrp.p) 
 
 cols <- c("grey70", "#1b9e77", "#7570b3")
 
@@ -22,9 +22,9 @@ density.plot <- function(i){
   p2 <- density(ndf[ndf$hosts==1,][,vargrp[i]])
   p3 <- density(ndf[ndf$beetles==1,][,vargrp[i]])
   r <- range(c(p1$y,p2$y,p3$y))
-  plot(p3,col=cols[1], main=vargrp[i], xlab="", ylab="", cex.main=2, cex.lab=1.5, cex.axis=1.5, lwd=4, ylim=r)
+  plot(p3,col=cols[3], main=vargrp[i], xlab="", ylab="", cex.main=2, cex.lab=1.5, cex.axis=1.5, lwd=4, ylim=r)
   lines(p2,col=cols[2], lwd=4)
-  lines(p1,col=cols[3], lwd=4)
+  lines(p1,col=cols[1], lwd=4)
   polygon(p3, col=rgb(1,0,0,0.2), border=cols[3])
   print(paste(vargrp[i], "is done!"))
 }
@@ -36,9 +36,9 @@ for(i in 1:length(vargrp)){
   r <- range(c(p1$y,p2$y,p3$y))
   png(paste0("bioclimatic_density_",vargrp[i],".png"), width=9, height=8, units="in", res=300)
   par(mfrow=c(1, 1), mar=c(4.5,4.5,3,1))
-  plot(p3,col=cols[1], main=vargrp[i], xlab="Values", cex.main=2, cex.lab=1.5, cex.axis=1.5, lwd=4, ylim=r)
+  plot(p3,col=cols[3], main=vargrp[i], xlab="Values", cex.main=2, cex.lab=1.5, cex.axis=1.5, lwd=4, ylim=r)
   lines(p2,col=cols[2], lwd=4)
-  lines(p1,col=cols[3], lwd=4)
+  lines(p1,col=cols[1], lwd=4)
   polygon(p3, col=rgb(1,0,0,0.2), border=cols[3]) 
   rug(ndf[ndf$beetles==1,][,vargrp[i]],col=rgb(1,0,0,0.05))
   legend('topright', lty=1, lwd=4, col=cols, legend=c("Continent", "Hosts", "Beetles"), cex = 1.8, bty='n')
@@ -51,7 +51,7 @@ par(mfrow=c(4,6),mar=c(3.5,3.5,3,1))
 for (i in 1:length(vargrp)){
   density.plot(i)
   if(i==1){
-    legend('center', lty=1, lwd=4, col=cols, legend=c("Continent", "Hosts", "Beetles"), cex = 2, bty='n')
+    legend('topleft', lty=1, lwd=4, col=cols, legend=c("Continent", "Hosts", "Beetles"), bty='n')
   }
 }
 #plot(0,type='n',axes=FALSE,ann=FALSE)

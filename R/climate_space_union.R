@@ -23,7 +23,10 @@ vargrp.p <- c("AugTmean", "AugTmax", "Tvar", "PMarAug", "PcumOctSep", "PPT", "Pm
               "POctSep", "summerP2", "GSP", "summerP0", "summerP1")
 
 vargrp <- c(vargrp.t, vargrp.p)
-		
+
+svars <- c("GSP", "PMarAug", "summerP0","summerP1", "summerP2", 
+           "Pmean","POctSep", "PcumOctSep", "PPT", "ddAugJul", "ddAugJun")
+
 varnms.t <- c("Mean minimum temperature from Nov to Mar",
 				"Minimum temperature in Mar",
 				"Mean temperature from Oct to Sep",
@@ -78,6 +81,9 @@ get.dtcol <- function(var){
     ndf <- rbind(ndf, df)
   }
   colnames(ndf)[1] <- var
+  if(var %in% svars){
+  	ndf[,1] <- sqrt(ndf[,1])
+  }
   write.csv(ndf, paste0(outcsvpath, var, "_", years[1], "_", years[nyr], ".csv"), row.names = FALSE)
 }
 
@@ -111,6 +117,9 @@ get.abs.data <- function(var, yr){
   vgt.abs <- na[is.na(vgt) & !is.na(na)]
   btl.abs <- na[is.na(btl) & !is.na(na)]
   vals <- c(nav, vgtv, vgt.abs, btlv, btl.abs)
+  if(var %in% svars){
+  	vals <- sqrt(vals)
+  }
   prs <- c(rep("continent",length(nav)),rep("hosts",length(vgtv)),rep("hosts-abs",length(vgt.abs)),rep("mpb",length(btlv)),rep("mpb-abs",length(btl.abs)))
   df <- data.frame(vals, prs)
   return(df)
@@ -120,23 +129,17 @@ cols2 <- c("grey70", "#1b9e77", "#1B9E777D", "#7570b3", "#7570B37D")
 climate.space.paired <- function(i){
   df <- df5[,c(vargrp.t[i], vargrp.p[i], "prs")]
   colnames(df)[1:2] <- c("tmp", "pre")
-  if(i > 3){
-    df[,c("pre")] <- sqrt(df[,c("pre")])
-  }
-  plot1 <- qplot(tmp, pre, data=df, color=factor(prs), alpha=I(0.7), xlab = varnms.t[i], ylab = varnms.p[i], main = "MPB climate space")
-  plot1 <- plot1 + scale_colour_manual(name="Presencce", labels=c("Continent","Hosts","Beetles"), values = cols)+ labs(color="prs")
+  plot1 <- qplot(tmp, pre, data=df, color=factor(prs), alpha=I(0.5), xlab = varnms.t[i], ylab = varnms.p[i], main = "MPB climate space")
+  plot1 <- plot1 + scale_colour_manual(name="Presence", labels=c("Continent","Hosts","Beetles"), values = cols)+ labs(color="prs")
   plot1 <- plot1 + theme(axis.text=element_text(size=12),axis.title=element_text(size=14,face="bold"))
   
   df <- get.abs.data(vargrp.t[i])
-  plot2 <- ggplot(df, aes(x=prs, y=vals, fill=factor(prs)))+geom_boxplot()+scale_fill_manual(values = cols2)+theme(axis.ticks.x=element_blank())+labs(x="Presencce", y=varnms.t[i])+stat_summary(fun.data = max.n, geom = "text", fun.y = max)+
+  plot2 <- ggplot(df, aes(x=prs, y=vals, fill=factor(prs)))+geom_boxplot()+scale_fill_manual(values = cols2)+theme(axis.ticks.x=element_blank())+labs(x="Presence", y=varnms.t[i])+stat_summary(fun.data = max.n, geom = "text", fun.y = max)+
     stat_summary(fun.data = min.n, geom = "text", fun.y = min)+stat_summary(fun.data = mean.n, geom = "text", fun.y = mean, col="white")+theme(legend.position="none")+ 
     scale_x_discrete(labels=c("continent" = "Continent", "hosts" = "Hosts", "hosts-abs" = "Hosts-abs", "mpb" = "Beetles", "mpb-abs" = "Beetles-abs"))
   
   df <- get.abs.data(vargrp.p[i])
-  if(i > 3){
-    df[,c("vals")] <- sqrt(df[,c("vals")])
-  }
-  plot3 <- ggplot(df, aes(x=prs, y=vals, fill=factor(prs)))+geom_boxplot()+scale_fill_manual(values = cols2)+theme(axis.ticks.x=element_blank())+labs(x="Presencce", y=varnms.p[i])+stat_summary(fun.data = max.n, geom = "text", fun.y = max)+
+  plot3 <- ggplot(df, aes(x=prs, y=vals, fill=factor(prs)))+geom_boxplot()+scale_fill_manual(values = cols2)+theme(axis.ticks.x=element_blank())+labs(x="Presence", y=varnms.p[i])+stat_summary(fun.data = max.n, geom = "text", fun.y = max)+
     stat_summary(fun.data = min.n, geom = "text", fun.y = min)+stat_summary(fun.data = mean.n, geom = "text", fun.y = mean, col="white")+theme(legend.position="none")+ 
     scale_x_discrete(labels=c("continent" = "Continent", "hosts" = "Hosts", "hosts-abs" = "Hosts-abs", "mpb" = "Beetles", "mpb-abs" = "Beetles-abs"))
 
@@ -160,11 +163,11 @@ climate.space <- function(i){
   df.p <- read.csv(paste0(outcsvpath, vargrp.p[i], "_", years[1], "_", years[nyr], ".csv"))
   df <- cbind(data.frame(tmp=df.t[,1]),data.frame(pre=df.p[,1]),data.frame(prs=df.t[,2]))
   df.na <- subset(df, prs=="continent")
-  plot(df.na$tmp, df.na$pre, pch=16, cex=0.1, col = alpha(cols[1], 0.2), main=paste0(vargrp.t[i],"/",vargrp.p[i]), xlab=vargrp.t[i], ylab=vargrp.p[i], cex.main=2, cex.lab=1.5, cex.axis=1.5)
+  plot(df.na$tmp, df.na$pre, pch=16, cex=0.1, col = alpha(cols[1], 0.5), main=paste0(vargrp.t[i],"/",vargrp.p[i]), xlab=vargrp.t[i], ylab=vargrp.p[i], cex.main=2, cex.lab=1.5, cex.axis=1.5)
   df.vgt <- subset(df, prs=="hosts")
-  points(df.vgt$tmp, df.vgt$pre, pch=16, cex=0.1, col = alpha(cols[2], 0.2))
+  points(df.vgt$tmp, df.vgt$pre, pch=16, cex=0.1, col = alpha(cols[2], 0.5))
   df.btl <- subset(df, prs=="mpb")
-  points(df.btl$tmp, df.btl$pre, pch=16, cex=0.1, col = alpha(cols[3], 0.2))  
+  points(df.btl$tmp, df.btl$pre, pch=16, cex=0.1, col = alpha(cols[3], 0.5))  
 }
 
 png("cs_var_union.png", width=13, height=10, units="in", res=300)

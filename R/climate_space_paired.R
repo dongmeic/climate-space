@@ -102,10 +102,7 @@ cols2 <- c("grey70", "#1b9e77", "#1B9E777D", "#7570b3", "#7570B37D")
 
 climate.space.paired <- function(yr,i){
   df <- get.dataframe(vargrp.p[i],vargrp.t[i],yr)
-  if(i > 3){
-    df[,c("pre")] <- sqrt(df[,c("pre")])
-  }
-  plot1 <- qplot(tmp, pre, data=df, color=factor(prs), alpha=I(0.7), xlab = varnms.t[i], ylab = varnms.p[i], main = paste("MPB climate space in", toString(years[yr])))
+  plot1 <- qplot(tmp, pre, data=df, color=factor(prs), alpha=I(0.5), xlab = varnms.t[i], ylab = varnms.p[i], main = paste("MPB climate space in", toString(years[yr])))
   plot1 <- plot1 + xlim(range(get.data(vargrp.t[i]), na.rm=T)[1], range(get.data(vargrp.t[i]), na.rm=T)[2]) + ylim(range(get.data(vargrp.p[i]), na.rm=T)[1], range(get.data(vargrp.p[i]), na.rm=T)[2])
   plot1 <- plot1 + scale_colour_manual(name="Presence", labels=c("Continent","Hosts","Beetles"), values = cols)+ labs(color="prs")
   plot1 <- plot1 + theme(axis.text=element_text(size=12),axis.title=element_text(size=14,face="bold"))
@@ -116,9 +113,6 @@ climate.space.paired <- function(yr,i){
     scale_x_discrete(labels=c("continent" = "Continent", "hosts" = "Hosts", "hosts-abs" = "Hosts-abs", "mpb" = "Beetles", "mpb-abs" = "Beetles-abs"))
   
   df <- get.abs.data(vargrp.p[i], yr)
-  if(i > 3){
-    df[,c("vals")] <- sqrt(df[,c("vals")])
-  }
   plot3 <- ggplot(df, aes(x=prs, y=vals, fill=factor(prs)))+geom_boxplot()+scale_fill_manual(values = cols2)+theme(axis.ticks.x=element_blank())+labs(x="Presence", y=varnms.p[i])+stat_summary(fun.data = max.n, geom = "text", fun.y = max)+
     stat_summary(fun.data = min.n, geom = "text", fun.y = min)+stat_summary(fun.data = mean.n, geom = "text", fun.y = mean, col="white")+theme(legend.position="none")+
   	ylim(range(get.data(vargrp.p[i]), na.rm=T)[1], range(get.data(vargrp.p[i]), na.rm=T)[2])+ 
@@ -219,7 +213,7 @@ climate.space.departure <- function(yr, i){
   n5 <- round(sd5/sdsum1, digits = 2)
   n6 <- round(sd6/sdsum1, digits = 2)
   
-  plot1 <- qplot(var.1, var.2, data=df, color=factor(prs), alpha=I(0.7), xlab = paste(varnms1[i], "(SD)"), ylab = paste(varnms2[i], "(SD)"), main = paste("MPB climate space in", toString(years[yr]))) + xlim(-5,5)+ylim(-5,5)
+  plot1 <- qplot(var.1, var.2, data=df, color=factor(prs), alpha=I(0.5), xlab = paste(varnms1[i], "(SD)"), ylab = paste(varnms2[i], "(SD)"), main = paste("MPB climate space in", toString(years[yr]))) + xlim(-5,5)+ylim(-5,5)
   plot1 <- plot1 + scale_colour_manual(name="Presence", labels=c("Continent","Hosts","Beetles"), values = cols)
   plot1 <- plot1 + theme(axis.text=element_text(size=12),axis.title=element_text(size=14,face="bold"))
   d=data.frame(x1=c(-3,-2,-1), x2=c(3,2,1), y1=c(-3,-2,-1), y2=c(3,2,1),lab=c(paste(n3,",",n6), paste(n2,",",n5), paste(n1,",",n4)))
