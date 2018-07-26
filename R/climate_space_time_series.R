@@ -19,9 +19,6 @@ vargrp.t <- c("Tmin", "MarTmin", "TOctSep", "Tmean", "fallTmean", "OctTmin", "wi
 							
 vargrp.p <- c("AugTmean", "AugTmax", "Tvar", "PMarAug", "PcumOctSep", "PPT", "Pmean",
               "POctSep", "summerP2", "GSP", "summerP0", "summerP1")
-
-svars <- c("GSP", "PMarAug", "summerP0","summerP1", "summerP2", 
-           "Pmean","POctSep", "PcumOctSep", "PPT", "ddAugJul", "ddAugJun")
         
 cols <- c("grey70", "#1b9e77", "#7570b3")
 
@@ -36,7 +33,7 @@ foreach(i=1:length(vargrp.t))%dopar%{
   df[,which(colnames(df) %in% svars)] <- sqrt(df[,which(colnames(df) %in% svars)])
   climate.space <- function(j){
     df.ss <- subset(df, yrs==years[j])
-    p <- qplot(tmp, pre, data=df.ss, color=factor(prs), alpha=I(0.7), xlab = vargrp.t[i], ylab = vargrp.p[i], main = years[j])
+    p <- qplot(tmp, pre, data=df.ss, color=factor(prs), alpha=I(0.5), xlab = vargrp.t[i], ylab = vargrp.p[i], main = years[j])
     p <- p + scale_colour_manual(values = cols)
     p <- p + xlim(min(df$tmp), max(df$tmp)) + ylim(min(df$pre), max(df$pre))
     p <- p + theme(title =element_text(size=14, face='bold'), axis.text=element_text(size=10),axis.title=element_text(size=12,face="bold"),legend.position="none")

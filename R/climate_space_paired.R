@@ -19,7 +19,10 @@ vargrp.t <- c("Tmin", "MarTmin", "TOctSep", "Tmean", "fallTmean", "OctTmin", "wi
 							
 vargrp.p <- c("AugTmean", "AugTmax", "Tvar", "PMarAug", "PcumOctSep", "PPT", "Pmean",
               "POctSep", "summerP2", "GSP", "summerP0", "summerP1")
-		
+
+svars <- c("GSP", "PMarAug", "summerP0","summerP1", "summerP2", 
+           "Pmean","POctSep", "PcumOctSep", "PPT", "ddAugJul", "ddAugJun")
+
 varnms.t <- c("Mean minimum temperature from Nov to Mar",
 				"Minimum temperature in Mar",
 				"Mean temperature from Oct to Sep",
@@ -79,6 +82,12 @@ get.dataframe <- function(varp,vart,yr){
   tmp <- c(na.t, vgt.t, btl.t)
   prs <- c(rep("continent",length(na.t)),rep("hosts",length(vgt.t)),rep("mpb",length(btl.t)))
   df <- data.frame(tmp, pre, prs)
+  if(vart %in% svars){
+     df[,1] <- sqrt(df[,1])
+  }
+  if(varp %in% svars){
+     df[,2] <- sqrt(df[,2])
+  }
   return(df)
 }
 
@@ -93,6 +102,9 @@ get.abs.data <- function(var, yr){
   vgt.abs <- na[is.na(vgt) & !is.na(na)]
   btl.abs <- na[is.na(btl) & !is.na(na)]
   vals <- c(nav, vgtv, vgt.abs, btlv, btl.abs)
+  if(var %in% svars){
+  	vals <- sqrt(vals)
+  }
   prs <- c(rep("continent",length(nav)),rep("hosts",length(vgtv)),rep("hosts-abs",length(vgt.abs)),rep("mpb",length(btlv)),rep("mpb-abs",length(btl.abs)))
   df <- data.frame(vals, prs)
   return(df)

@@ -19,7 +19,6 @@ years <- 1996:2015
 ndf <- read.csv(paste0(csvpath,"bioclimatic_values_",years[1],".csv")) # from bioclimatic_values_time_series.R
 ndf <- cbind(ndf, na10km_btl_df[,c(paste0("prs_",(years[1]+1)),"vegetation")])
 b <- dim(ndf)[2]; a <- b - 1
-
 colnames(ndf)[a:b] <- c("beetles","hosts")
 for(i in 2:length(years)){
   df <- read.csv(paste0(csvpath,"bioclimatic_values_",years[i],".csv"))
@@ -28,8 +27,12 @@ for(i in 2:length(years)){
   ndf <- rbind(ndf,df)
   print(paste(years[i], "done!"))
 }
-ndf <- cbind(ndf, year=unlist(lapply(1996:2015,function(i) rep(i,dim(ndf)[1]/length(1996:2015)))))
 
+ndf <- cbind(ndf, year=unlist(lapply(1996:2015,function(i) rep(i,dim(ndf)[1]/length(1996:2015)))))
+svars <- c("GSP", "PMarAug", "summerP0","summerP1", "summerP2", 
+           "Pmean","POctSep", "PcumOctSep", "PPT", "ddAugJul", "ddAugJun")
+sdf <- sqrt(ndf[, svars])
+df <- cbind(sdf, ndf[,-which(colnames(ndf) %in% svars)])
 pca_plot <- function(df,j){
 	png(paste0("PCA_variable_selection_",years[j],".png"), width=12, height=9, units="in", res=300)
 	par(mfrow=c(2, 2))
@@ -65,7 +68,6 @@ pca_plot <- function(df,j){
 			 pch=16,
 			 col=rgb(0, 1, 1, t))
 	  legend('bottomleft', pch=16, col=c(6, 5), legend=c('absent', 'present'))
-
 	}
 	dev.off()
 }
@@ -76,11 +78,7 @@ vars <- c("JanTmin", "MarTmin", "TMarAug", "summerTmean",
 				"Tvar", "TOctSep", "summerP1", "summerP2", "Pmean",
 				"POctSep", "PcumOctSep", "PPT", "drop0", "drop5", 
 				"ddAugJul", "ddAugJun", "min30")
-svars <- c("GSP", "PMarAug", "summerP0","summerP1", "summerP2", 
-           "Pmean","POctSep", "PcumOctSep", "PPT", "ddAugJul", "ddAugJun")
 
-sdf <- sqrt(ndf[, svars])
-df <- cbind(sdf, ndf[,-which(colnames(ndf) %in% svars)])
 head(df)
 pca <- princomp(df[,vars], cor=T)
 summary(pca, loadings <- T)

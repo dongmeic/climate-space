@@ -40,7 +40,11 @@ for(i in 2:length(years)){
   print(paste(years[i], "done!"))
 }
 ndf <- cbind(ndf, year=unlist(lapply(1996:2015,function(i) rep(i,dim(ndf)[1]/length(1996:2015)))))
-write.csv(ndf, paste0(csvpath, "bioclimatic_values_1996_2015.csv"), row.names=FALSE)
+svars <- c("GSP", "PMarAug", "summerP0","summerP1", "summerP2", 
+           "Pmean","POctSep", "PcumOctSep", "PPT", "ddAugJul", "ddAugJun")
+sdf <- sqrt(ndf[, svars])
+df <- cbind(sdf, ndf[,-which(colnames(ndf) %in% svars)])
+write.csv(df, paste0(csvpath, "bioclimatic_values_1996_2015.csv"), row.names=FALSE)
 
 vars <- c("JanTmin", "MarTmin", "TMarAug", "summerTmean", 
 				"AugTmean", "AugTmax", "GSP", "PMarAug", "summerP0",
@@ -48,11 +52,7 @@ vars <- c("JanTmin", "MarTmin", "TMarAug", "summerTmean",
 				"Tvar", "TOctSep", "summerP1", "summerP2", "Pmean",
 				"POctSep", "PcumOctSep", "PPT", "drop0", "drop5", 
 				"ddAugJul", "ddAugJun", "min30")
-svars <- c("GSP", "PMarAug", "summerP0","summerP1", "summerP2", 
-           "Pmean","POctSep", "PcumOctSep", "PPT", "ddAugJul", "ddAugJun")
 
-sdf <- sqrt(ndf[, svars])
-df <- cbind(sdf, ndf[,-which(colnames(ndf) %in% svars)])
 head(df)
 pca <- princomp(df[,vars], cor=T)
 summary(pca, loadings <- T)
