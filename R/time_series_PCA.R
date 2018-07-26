@@ -4,6 +4,7 @@
 
 library(parallel)
 library(doParallel)
+library(animation)
 library(foreach)
 registerDoParallel(cores=28)
 
@@ -89,4 +90,5 @@ foreach(i=1:length(years))%dopar%{
 	print(paste(years[i], "done!"))
 }
 
+im.convert("PCA_variable_selection_*.png", output = "PCA_variable_selection.gif")
 print("all done!")
