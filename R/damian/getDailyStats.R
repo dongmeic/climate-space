@@ -149,14 +149,21 @@ get.degree.days <- function(daily.means) {
 
 
 get.min.data <- function(daily.lows) {
-  min30 <- sum(daily.lows <= -30)
-  min32 <- sum(daily.lows <= -32)
-  min34 <- sum(daily.lows <= -34)
-  min36 <- sum(daily.lows <= -36)
-  min38 <- sum(daily.lows <= -38)
-  min40 <- sum(daily.lows <= -40)
-  list(min30=min30, min32=min32, min34=min34, min36=min36, min38=min38,
-       min40=min40)
+	min20 <- sum(daily.lows <= -20)
+	min22 <- sum(daily.lows <= -22)
+	min24 <- sum(daily.lows <= -24)
+	min26 <- sum(daily.lows <= -26)
+	min28 <- sum(daily.lows <= -28)
+
+	list(min20=min20, min22=min22, min24=min24, min26=min26, min28=min28)
+# min30 <- sum(daily.lows <= -30)
+# min32 <- sum(daily.lows <= -32)
+# min34 <- sum(daily.lows <= -34)
+# min36 <- sum(daily.lows <= -36)
+# min38 <- sum(daily.lows <= -38)
+# min40 <- sum(daily.lows <= -40)
+# list(min30=min30, min32=min32, min34=min34, min36=min36, min38=min38,
+#      min40=min40)
 }
 
 

@@ -28,11 +28,13 @@ min28 <- matrix(, nrow = dim1, ncol = dim2)
 # min38 <- matrix(, nrow = dim1, ncol = dim2)
 # min40 <- matrix(, nrow = dim1, ncol = dim2)
 
-foreach(i = 1:(nt-1))%dopar%{
+#foreach(i = 1:(nt-1))%dopar%{
+for(i in 1:23){
 	indata1 <- read.csv(paste0(inpath, "na10km_v2_climatic_values_",years[i],".csv"))
 	indata2 <- read.csv(paste0(inpath, "na10km_v2_climatic_values_",years[i+1],".csv"))
 	indata <- rbind(indata1, indata2)
-	df <- data.frame(min30=integer(), min32=integer(), min34=integer(), min36=integer(), min38=integer(), min40=integer())
+	df <- data.frame(min20=integer(), min22=integer(), min24=integer(), min26=integer(), min28=integer())
+	#df <- data.frame(min30=integer(), min32=integer(), min34=integer(), min36=integer(), min38=integer(), min40=integer())
 	for(j in 1:dim1){
 		df.j <- indata[j,]
 		for(m in 1:23){
