@@ -30,7 +30,6 @@ foreach(i=1:length(vargrp.t))%dopar%{
   df.t <- read.csv(paste0(csvpath, vargrp.t[i], "_",years[1], "_",years[nyr], ".csv")) # climate_space_time_series.R
   df.p <- read.csv(paste0(csvpath, vargrp.p[i], "_",years[1], "_",years[nyr], ".csv"))
   df <- cbind(data.frame(tmp=df.t[,1]),data.frame(pre=df.p[,1]),data.frame(prs=df.t[,2]),data.frame(yrs=df.t[,3]))
-  df[,which(colnames(df) %in% svars)] <- sqrt(df[,which(colnames(df) %in% svars)])
   climate.space <- function(j){
     df.ss <- subset(df, yrs==years[j])
     p <- qplot(tmp, pre, data=df.ss, color=factor(prs), alpha=I(0.5), xlab = vargrp.t[i], ylab = vargrp.p[i], main = years[j])
