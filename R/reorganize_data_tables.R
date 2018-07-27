@@ -13,6 +13,7 @@ setwd(path)
 years <- 1996:2015; nyr <- length(years)
 # beetle presence data
 btlprs <- read.csv("beetle_presence.csv")
+bd <- btlprs[btlprs$allyears==1,]
 btlsum9 <- read.csv("ts_presence_sum9.csv")
 # location data
 loc <- read.csv("location.csv")
@@ -29,9 +30,8 @@ foreach (i=3:nyr)%dopar%{
   colnames(df)[12:13] <- c("sum9_t1","sum9_t2")
   df$year <- rep(years[i], dim(df)[1])
   df <- cbind(subset(df, select=c("btl_t")), df[ , -which(colnames(df) %in% c("btl_t"))])
-  #df$aoi <- ifelse(df$lon >= -135 & df$lon <= -100 & df$lat >= 30 & df$lat <= 62, 1, 0)
   # bounding box
-  ndf <- df[df$lon >= -135 & df$lon <= -100 & df$lat >= 30 & df$lat <= 62,]
+  ndf <- df[df$lon >= range(bd$lon)[1] & df$lon <= range(bd$lon)[2] & df$lat >= range(bd$lat)[1] & df$lat <= range(bd$lat)[2],]
   write.csv(ndf, paste0("input_data_",years[i],".csv"), row.names=FALSE)
   print(paste(years[i], "is done!"))
 }

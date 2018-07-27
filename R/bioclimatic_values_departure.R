@@ -21,7 +21,8 @@ vargrp.b <- c("OctTmin", "fallTmean", "winterTmin", "Tmin", "Tmean", "Tvar", "TO
 vargrp.c <- c("POctSep", "PcumOctSep")
 # start_year:1907
 vargrp.d <- c("PPT")
-vargrp <- c(vargrp.a, vargrp.b, vargrp.c, vargrp.d)
+#vargrp <- c(vargrp.a, vargrp.b, vargrp.c, vargrp.d)
+vargrp <- c("ddAugJun", "ddAugJul")
 
 get.data <- function(var){
   ncfile <- paste0("na10km_v2_",var, "_std_1996.2015.4d.nc")
