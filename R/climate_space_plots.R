@@ -25,7 +25,7 @@ density.plot <- function(i){
   plot(p3,col=cols[3], main=vargrp[i], xlab="", ylab="", cex.main=2, cex.lab=1.5, cex.axis=1.5, lwd=4, ylim=r)
   lines(p2,col=cols[2], lwd=4)
   lines(p1,col=cols[1], lwd=4)
-  polygon(p3, col=rgb(1,0,0,0.2), border=cols[3])
+  polygon(p3, col="#7570B37D", border=cols[3])
   print(paste(vargrp[i], "is done!"))
 }
 
@@ -39,8 +39,8 @@ for(i in 1:length(vargrp)){
   plot(p3,col=cols[3], main=vargrp[i], xlab="Values", cex.main=2, cex.lab=1.5, cex.axis=1.5, lwd=4, ylim=r)
   lines(p2,col=cols[2], lwd=4)
   lines(p1,col=cols[1], lwd=4)
-  polygon(p3, col=rgb(1,0,0,0.2), border=cols[3]) 
-  rug(ndf[ndf$beetles==1,][,vargrp[i]],col=rgb(1,0,0,0.05))
+  polygon(p3, col="#7570B37D", border=cols[3]) 
+  rug(ndf[ndf$beetles==1,][,vargrp[i]],col=cols[3])
   legend('topright', lty=1, lwd=4, col=cols, legend=c("Continent", "Hosts", "Beetles"), cex = 1.8, bty='n')
   dev.off()
   print(paste(vargrp[i], "is done!"))

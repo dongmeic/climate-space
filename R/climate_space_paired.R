@@ -152,20 +152,20 @@ climate.space.paired <- function(yr,i){
   dev.off()
 }
 
-ptm <- proc.time()
-print("start plotting climate space")
-foreach(i=1:length(years)) %dopar%{
-  foreach(j=1:length(vargrp.t)) %dopar%{
-    climate.space.paired(i,j)
-    print(paste("processed year", years[i], "and variable pair", vargrp.t[j], "and", vargrp.p[j]))
-  }
-}
-
-print("making an animation")
-foreach(i=1:length(vargrp.t)) %dopar%{
-  im.convert(paste0(out,"cs_",vargrp.t[i],"_",vargrp.p[i],"_*.png"), output = paste0(out,"cs_",vargrp.t[i],"_",vargrp.p[i],".gif"))
-}
-proc.time() - ptm
+# ptm <- proc.time()
+# print("start plotting climate space")
+# foreach(i=1:length(years)) %dopar%{
+#   foreach(j=1:length(vargrp.t)) %dopar%{
+#     climate.space.paired(i,j)
+#     print(paste("processed year", years[i], "and variable pair", vargrp.t[j], "and", vargrp.p[j]))
+#   }
+# }
+# 
+# print("making an animation")
+# foreach(i=1:length(vargrp.t)) %dopar%{
+#   im.convert(paste0(out,"cs_",vargrp.t[i],"_",vargrp.p[i],"_*.png"), output = paste0(out,"cs_",vargrp.t[i],"_",vargrp.p[i],".gif"))
+# }
+# proc.time() - ptm
 
 # departure from long-term means
 vargrp1 <- c("Tmin", "MarTmin", "TOctSep", "Tmean", "OctTmin", "winterTmin",
@@ -196,6 +196,7 @@ varnms2 <-  c("Mean temperature from Mar to Aug",
               "Mean temperature from Sep to Nov",
               "Minimum temperature in Jan",
               "Cumulative monthly Oct-Aug precipitation",
+              "Growing season precipitation",
 							"Precipitation from Oct and Sep in previous year",
 							"Precipitation from Jun to Aug in previous year",
 							"Cumulative precipitation from Jun to Aug",
@@ -270,7 +271,7 @@ climate.space.departure <- function(yr, i){
   plot1 <- plot1 + scale_colour_manual(name="Presence", labels=c("Continent","Hosts","Beetles"), values = cols)
   plot1 <- plot1 + theme(axis.text=element_text(size=12),axis.title=element_text(size=14,face="bold"))
   d=data.frame(x1=c(-3,-2,-1), x2=c(3,2,1), y1=c(-3,-2,-1), y2=c(3,2,1),lab=c(paste(n3,",",n6), paste(n2,",",n5), paste(n1,",",n4)))
-  plot1 <- plot1 + geom_rect(data=d, aes(xmin=x1, xmax=x2, ymin=y1, ymax=y2, x = NULL,y = NULL), fill=NA, color="black") + geom_text(data=d, aes(x=x2-015, y=y1+025,label=lab), color="black")
+  plot1 <- plot1 + geom_rect(data=d, aes(xmin=x1, xmax=x2, ymin=y1, ymax=y2, x = NULL,y = NULL), fill=NA, color="black") + geom_text(data=d, aes(x=x2-0.15, y=y1+0.25,label=lab), color="black")
   plot2 <- ggplot(df, aes(x=prs, y=var1,fill=factor(prs)))+geom_boxplot()+scale_fill_manual(values = cols)+theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+labs(x="Presence", y=paste(varnms1[i], "(SD)"))+stat_summary(fun.data = max.n, geom = "text", fun.y = max)+
     stat_summary(fun.data = min.n, geom = "text", fun.y = min)+stat_summary(fun.data = mean.n, geom = "text", fun.y = mean, col="white")+theme(legend.position="none")
   plot3 <- ggplot(df, aes(x=prs, y=var2,fill=factor(prs)))+geom_boxplot()+scale_fill_manual(values = cols)+theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+labs(x="Presence", y=paste(varnms2[i], "(SD)"))+stat_summary(fun.data = max.n, geom = "text", fun.y = max)+
