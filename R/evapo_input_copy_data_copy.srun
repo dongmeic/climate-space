@@ -1,0 +1,24 @@
+#!/bin/bash
+#SBATCH --partition=longfat       ### Partition (like a queue in PBS)
+#SBATCH --job-name=evapo_input_copy    ### Job Name
+#SBATCH --output=evapo_input_copy.out       ### File in which to store job output
+#SBATCH --error=evapo_input_copy.err        ### File in which to store job error messages
+#SBATCH --time=14-00:00:00      ### Wall clock time limit in Days-HH:MM:SS
+#SBATCH --nodes=1              ### Node count required for the job
+#SBATCH --ntasks-per-node=1    ### Number of tasks to be launched per Node
+#SBATCH --workdir=/gpfs/projects/gavingrp/dongmeic/beetle/output/daily/20180725 ###Set the working directory of the batch script to directory before it is executed
+#SBATCH --mail-type=END,FAIL
+#SBATCH --mail-user=dongmeic@uoregon.edu
+#SBATCH --mem=100GB
+
+echo "starting job on evapo_input_copy at " `date` >> job.log
+echo "loading R module" >> job.log
+module unload intel
+module load R/3.4.3
+module load bright
+module load netcdf/gcc/64/4.4.0
+
+echo "preparing for job on evapo_input_copy" >> job.log
+Rscript /gpfs/projects/gavingrp/dongmeic/climate-space/R/evapo_input_data_copy.R > r-evapo_input_copy.out
+echo "job on evapo_input_copy finished" >> job.log
+echo "job on evapo_input_copy completed at " `date` >> job.log
