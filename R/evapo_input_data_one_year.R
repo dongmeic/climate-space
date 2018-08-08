@@ -35,7 +35,7 @@ get.monthly.data <- function(var,yr){
     na.values <- data_slice[!is.na(data_slice)]
     nadf <- data.frame(var=na.values)
 	  df <- rbind(df, nadf)
-	  print(paste("getting values from",vars[1],"in year", years[yr], "and month", m))
+	  #print(paste("getting values from",var,"in year", years[yr], "and month", m))
   }	
   colnames(df) <- var
   return(df)  
