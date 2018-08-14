@@ -87,9 +87,9 @@ get.dtcol <- function(var){
   write.csv(ndf, paste0(outcsvpath, var, "_", years[1], "_", years[nyr], ".csv"), row.names = FALSE)
 }
 
-foreach(i = 1:length(vargrp))%dopar%{
-  get.dtcol(vargrp[i])
-}
+#foreach(i = 1:length(vargrp))%dopar%{
+#  get.dtcol(vargrp[i])
+#}
 
 # reorganize the data table
 df <- read.csv(paste0(outcsvpath, vargrp[1], "_", years[1], "_", years[nyr], ".csv"))
@@ -104,7 +104,7 @@ for(i in 2:length(vargrp)){
   print(paste("adding the variable", vargrp[i]))
 }
 df5 <- cbind(df1, df2)
-write.csv(df5, "bioclimatic_variables_1996_2015.csv", row.names = FALSE)
+#write.csv(df5, "bioclimatic_variables_1996_2015.csv", row.names = FALSE)
 
 get.abs.data <- function(var, yr){
 	data <- get.data(var)
@@ -129,6 +129,7 @@ cols2 <- c("grey70", "#1b9e77", "#1B9E777D", "#7570b3", "#7570B37D")
 climate.space.paired <- function(i){
   df <- df5[,c(vargrp.t[i], vargrp.p[i], "prs")]
   colnames(df)[1:2] <- c("tmp", "pre")
+  df <- df[order(df$prs),]  
   plot1 <- qplot(tmp, pre, data=df, color=factor(prs), alpha=I(0.5), xlab = varnms.t[i], ylab = varnms.p[i], main = "MPB climate space")
   plot1 <- plot1 + scale_colour_manual(name="Presence", labels=c("Continent","Hosts","Beetles"), values = cols)+ labs(color="prs")
   plot1 <- plot1 + theme(axis.text=element_text(size=12),axis.title=element_text(size=14,face="bold"))
@@ -170,12 +171,12 @@ climate.space <- function(i){
   points(df.btl$tmp, df.btl$pre, pch=16, cex=0.1, col = alpha(cols[3], 0.5))  
 }
 
-png("cs_var_union.png", width=13, height=10, units="in", res=300)
-par(mfrow=c(3,4),mar=c(5,5,3,1))
+png("cs_var_union.png", width=14, height=10, units="in", res=300)
+par(mfrow=c(3,4),mar=c(5,5,3,2))
 for(i in 1:length(vargrp.t)){
   climate.space(i)
   if(i==1){
-    legend('topleft', pch=16, col=cols, legend=c("Continent", "Hosts", "Beetles"), bty='n')
+    legend('topleft', pch=16, col=cols, legend=c("Continent", "Hosts", "Beetles"), cex = 1.2, bty='n')
   }
   print(paste0("plotting climate space with ", vargrp.t[i], " and ", vargrp.p[i]))
 }
