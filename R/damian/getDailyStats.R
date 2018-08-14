@@ -109,15 +109,17 @@ get.coldsnap.stats <- function(daily.lows) {
   for (day in below.neg20) {
     if (day) {
       consec.days <- consec.days + 1
-    } else {
-      if (consec.days > 3) {
+    } else if (consec.days > 3){
         n.coldsnap <- n.coldsnap + 1
         length.coldsnap <- c(length.coldsnap, consec.days)
         consec.days <- 0
-      } else {
-        consec.days <- 0
-      }
+    } else {
+      consec.days <- 0  	
     }
+  }
+  if (consec.days > 3) {
+    n.coldsnap <- n.coldsnap + 1
+    length.coldsnap <- c(length.coldsnap, consec.days)
   }
   Acs <- ifelse(length(length.coldsnap), mean(length.coldsnap), 0)
   list(Ncs=n.coldsnap, Acs=Acs)
@@ -177,13 +179,15 @@ get.two.year.data <- function(start.year, monthly.means, monthly.lows) {
 
   #winterTmin <- min(daily.lows[winter.range])
   #Ecs <- is.coldsnap(daily.lows[Ecs.range])
-  #coldsnap.stats <- get.coldsnap.stats(daily.lows[winter.range])
+  coldsnap.stats <- get.coldsnap.stats(daily.lows[winter.range])
   #drop.data <- get.drop.stats(daily.means[winter.range])
   #degree.days.data <- get.degree.days(daily.means)
-  min.data <- get.min.data(daily.lows[winter.range])
-  list(#winterTmin=winterTmin, Ecs=Ecs, coldsnap.stats=coldsnap.stats,
+  #min.data <- get.min.data(daily.lows[winter.range])
+  list(#winterTmin=winterTmin, Ecs=Ecs, 
+       coldsnap.stats=coldsnap.stats,
        #drop.data=drop.data, degree.days.data=degree.days.data, 
-       min.data=min.data)
+       #min.data=min.data
+  )
 }
 
 # get.daily.stats requires 2 years of monthly statistics from Jan (t-1) 
