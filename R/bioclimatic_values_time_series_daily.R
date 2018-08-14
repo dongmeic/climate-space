@@ -12,7 +12,7 @@ outcsvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
 ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/ts/var/"
 setwd(outcsvpath)
 
-vargrp <- c("drop0", "drop5", "ddAugJul", "ddAugJun")
+vargrp <- c("drop0", "drop5", "ddAugJul", "ddAugJun", "min30", "min32", "min34", "min36", "min38", "min40")
 
 # number of the start and end layer
 get.data <- function(var){

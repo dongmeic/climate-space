@@ -5,17 +5,14 @@ csvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
 years <- 1996:2015; nyr <- length(years)
 setwd(out)
 
-# start_year:1901
-vargrp.a <- c("JanTmin", "MarTmin", "TMarAug", "summerTmean", 
-				"AugTmean", "AugTmax", "GSP", "PMarAug", "summerP0")
-# start_year:1902
-vargrp.b <- c("OctTmin", "fallTmean", "winterTmin", "Tmin", "Tmean", "Tvar", "TOctSep", "summerP1", "summerP2", "Pmean")
-# start_year:1903
-vargrp.c <- c("POctSep", "PcumOctSep")
-# start_year:1907
-vargrp.d <- c("PPT")
-vargrp <- c(vargrp.a, vargrp.b, vargrp.c, vargrp.d)
-cols <- c("grey70", "#1b9e77", "#d95f02")
+vargrp.t <- c("Tmin", "MarTmin", "TOctSep", "Tmean", "fallTmean", "OctTmin", "winterTmin",
+							"JanTmin", "ddAugJun", "ddAugJul", "TMarAug", "summerTmean")
+							
+vargrp.p <- c("AugTmean", "AugTmax", "Tvar", "PMarAug", "PcumOctSep", "PPT", "Pmean",
+              "POctSep", "summerP2", "GSP", "summerP0", "summerP1")
+
+vargrp <- c(vargrp.t, vargrp.p) 
+cols <- c("grey70", "#1b9e77", "#7570b3")
 
 std.histogram <- function(i){
   df <- read.csv(paste0(csvpath, vargrp[i], "_std_", years[1], "_", years[nyr], ".csv"))
@@ -56,8 +53,8 @@ for(i in 1:length(vargrp)){
   std.histogram(i)
   print(paste0("barplot for ", vargrp[i]))
 }
-plot(0,type='n',axes=FALSE,ann=FALSE)
-legend('center', fill=cols, legend=c("Continent", "Hosts", "Beetles"), cex = 2, bty='n')
+#plot(0,type='n',axes=FALSE,ann=FALSE)
+#legend('center', fill=cols, legend=c("Continent", "Hosts", "Beetles"), cex = 2, bty='n')
 dev.off()
 
 print("all done!")		  

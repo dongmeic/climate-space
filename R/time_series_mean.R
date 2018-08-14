@@ -60,12 +60,12 @@ startyrs <- c(rep(1901,9), rep(1902,14), rep(1903, 2), 1907)
 
 units <- c(rep("(°C)",6), rep("(mm)",3), rep("(°C)",5),"","(°C)",rep("(mm)",3),rep("(day)",2),rep("(°C)",2),rep("(mm)",3))
 
-cols <- c("grey70", "#1b9e77", "#d95f02")
+cols <- c("grey70", "#1b9e77", "#7570b3")
 rect <- data.frame(xmin=1996, xmax=2015, ymin=-Inf, ymax=Inf)
 override.linetype <- c("dashed", "longdash", "solid")
 
 foreach(i=1:length(varnms)) %dopar% {
-  indata <- read.csv(paste0(inpath,vargrp[i],"_",startyrs[i],".csv"))
+  indata <- read.csv(paste0(inpath,vargrp[i],"_",startyrs[i],"_1.csv"))
   df <- aggregate(indata$var, by=list(prs=indata$prs, yrs=indata$yrs), FUN=mean)
   g <- ggplot(data=df, aes(x=yrs, y=x,linetype = prs, color= prs)) + 
     geom_line(alpha=0.3) + 
@@ -77,7 +77,7 @@ foreach(i=1:length(varnms)) %dopar% {
   g <- g + labs(title=varnms[i], x =paste("Years since", startyrs[i]), y = paste(vargrp[i], units[i]))
   g <- g + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax),color="pink",alpha=0.2,inherit.aes = FALSE)
   g <- g + geom_vline(xintercept = 2008, color = "black", linetype=4)
-  ggsave(paste0("time_series_mean_",vargrp[i],"_",startyrs[i],".png"), g, width=10, height=4, units="in", dpi = 300)
+  ggsave(paste0("time_series_mean_",vargrp[i],"_",startyrs[i],"_1.png"), g, width=10, height=4, units="in", dpi = 300)
   print(paste(vargrp[i], "is done!"))
 }
 

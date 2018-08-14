@@ -65,16 +65,30 @@ btlprs <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/beetle
 myColors <- c('grey', 'red')
 myKey <- list(text=list(lab=c("0","1"), cex=c(1.2,1.2)), 
               rectangles=list(col = myColors), space="inside", width = 0.5, columns=1)
+myColors2 <- c('grey', 'red', 'black')
+myKey2 <- list(text=list(lab=c("0","1","2"), cex=c(1.2,1.2)), 
+              rectangles=list(col = myColors2), space="inside", width = 0.5, columns=1)
               
 foreach(i=1:length(vargrp)) %dopar% {
   var_4d <- get.data(vargrp[i])
   plotclm <- function(yr){
 	  var_4d_slice <- var_4d[,,1,yr]
-	  if(i == 1 | i == 4 | i == 5){
+	  if(i == 1 | i == 4){
 		  p <- levelplot(var_4d_slice ~ x * y, data=grid, 
 			  par.settings = list(axis.line = list(col = "transparent")), col.regions=myColors,
 			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr]), cex=1.5),
 			  xlab="",ylab="", colorkey = FALSE)
+		}else if(i == 5){
+			p <- levelplot(var_4d_slice ~ x * y, data=grid, 
+			  par.settings = list(axis.line = list(col = "transparent")), col.regions=myColors2,
+			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr]), cex=1.5),
+			  xlab="",ylab="", colorkey = FALSE)
+		}else if(i == 6 | i == 8){
+			p <- levelplot(var_4d_slice ~ x * y, data=grid, at=cutpts[,vargrp[i]], cuts=11, pretty=T, 
+			  col.regions=brewer.pal(10,"RdBu"),
+			  par.settings = list(axis.line = list(col = "transparent")), 
+			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr]), cex=1.5),
+			  xlab="",ylab="")
 	  }else{
 	    p <- levelplot(var_4d_slice ~ x * y, data=grid, at=cutpts[,vargrp[i]], cuts=11, pretty=T, 
 			  col.regions=rev(brewer.pal(10,"RdBu")),
@@ -84,7 +98,13 @@ foreach(i=1:length(vargrp)) %dopar% {
 	  }
 	  p <- p + latticeExtra::layer(sp.polygons(canada.prov, lwd=0.8, col='dimgray', alpha=0.3))
 	  p <- p + latticeExtra::layer(sp.polygons(us.states, lwd=0.8, col='dimgray', alpha=0.3))
-	  p <- p + latticeExtra::layer(sp.polygons(lrglakes, lwd=0.8, col='dimgray', fill='lightblue', alpha=0.3))	  
+	  p <- p + latticeExtra::layer(sp.polygons(lrglakes, lwd=0.8, col='dimgray', fill='lightblue', alpha=0.3))
+	  df <- btlprs[,c("x","y",paste0("prs_",(years[yr]+1)))]
+    coordinates(df) <- c("x","y")
+    points2grid(df)
+    btl_pixels <- as(df, "SpatialPixelsDataFrame")
+    names(btl_pixels) <- "btlprs"
+    p <- p + latticeExtra::layer(sp.points(btl_pixels[btl_pixels$btlprs==1,], pch=19, cex=0.05, col='green', alpha=0.4))	  
   }
   plots <- lapply(1:20, function(i) plotclm(i))
   png(paste0("bioclimatic_maps_",vargrp[i],".png"), width=20, height=12, units="in", res=300)
@@ -97,11 +117,22 @@ for(i in 1:length(vargrp)){
   var_4d <- get.data(vargrp[i])
   for(j in 1:length(years)){
     var_4d_slice <- var_4d[,,1,j]
-    if(i == 1 | i == 4 | i == 5){
+    if(i == 1 | i == 4){
 		  p <- levelplot(var_4d_slice ~ x * y, data=grid, 
 			  par.settings = list(axis.line = list(col = "transparent")), col.regions=myColors,
 			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[j]), cex=1.5),
 			  xlab="",ylab="", colorkey = FALSE, key=myKey)
+		}else if(i == 5){
+			p <- levelplot(var_4d_slice ~ x * y, data=grid, 
+			  par.settings = list(axis.line = list(col = "transparent")), col.regions=myColors2,
+			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[j]), cex=1.5),
+			  xlab="",ylab="", colorkey = FALSE, key=myKey2)
+		}else if(i == 6 | i == 8){
+			p <- levelplot(var_4d_slice ~ x * y, data=grid, at=cutpts[,vargrp[i]], cuts=11, pretty=T, 
+			  col.regions=brewer.pal(10,"RdBu"),
+			  par.settings = list(axis.line = list(col = "transparent")), 
+			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[j]), cex=1.5),
+			  xlab="",ylab="")
 	  }else{
 	    p <- levelplot(var_4d_slice ~ x * y, data=grid, at=cutpts[,vargrp[i]], cuts=11, pretty=T, 
 			  col.regions=rev(brewer.pal(10,"RdBu")),

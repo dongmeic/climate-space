@@ -35,8 +35,8 @@ get.yearly.table <- function(yr){
     na.values <- data_slice[!is.na(data_slice)]
     nadf <- data.frame(x=na10km.df$x, y=na10km.df$y, year=rep(years[yr],length(na.values)),
 	  					 month=rep(m,length(na.values)),var=na.values)
-	ndf <- rbind(ndf, nadf)
-	print(paste("getting values from",vars[1],"in year", years[yr], "and month", m))
+	  ndf <- rbind(ndf, nadf)
+	  print(paste("getting values from",vars[1],"in year", years[yr], "and month", m))
   }	
   colnames(ndf)[5] <- vars[1]
   for(i in 2:length(vars)){

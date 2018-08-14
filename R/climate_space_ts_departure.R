@@ -10,15 +10,20 @@ setwd(out)
 # function for layout
 vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
 
-vargrp1 <- c("fallTmean", "winterTmin", "Tmin", "Tmean", "Tvar", "JanTmin", "PcumOctSep", "summerP0", "summerP1", "summerP2")
-vargrp2 <- c("TOctSep", "TMarAug", "summerTmean", "AugTmean", "AugTmax", "MarTmin", "PPT", "Pmean", "POctSep", "PMarAug")
-cols <- c("grey70", "#1b9e77", "#d95f02")
+vargrp1 <- c("Tmin", "MarTmin", "TOctSep", "Tmean", "OctTmin", "winterTmin",
+							"summerTmean", "PMarAug", "PcumOctSep", "summerP0", "Pmean", "ddAugJun")
+							
+vargrp2 <- c("TMarAug","AugTmean", "AugTmax", "Tvar", "fallTmean", "JanTmin",
+							"PPT", "POctSep", "GSP", "summerP1","summerP2", "ddAugJul")
+							
+cols <- c("grey70", "#1b9e77", "#7570b3")
 
 l1 <- rep(c(1,2,3,4),5); l2 <- c(rep(1,4),rep(2,4),rep(3,4),rep(4,4),rep(5,4))
 for (i in 1:length(vargrp1)){
   df.t <- read.csv(paste0(csvpath, vargrp1[i], "_std_", years[1], "_", years[nyr], ".csv"))
   df.p <- read.csv(paste0(csvpath, vargrp2[i], "_std_", years[1], "_", years[nyr], ".csv"))
-  df <- cbind(data.frame(v1=df.t[,1]),data.frame(v2=df.p[,1]),data.frame(prs=df.t[,2]),data.frame(yrs=df.t[,3]))
+  length(df.t[,1]); length(df.p[,1]); ml <- min(length(df.t[,1]), length(df.p[,1]))
+  df <- cbind(data.frame(v1=tail(df.t[,1],ml)),data.frame(v2=tail(df.p[,1],ml)),data.frame(prs=tail(df.t[,2],ml)),data.frame(yrs=tail(df.t[,3],ml)))
   climate.space <- function(j){
     df.s <- subset(df, yrs==years[j])
     df.ss <- subset(df, yrs==years[j] & prs=="mpb")
@@ -37,7 +42,7 @@ for (i in 1:length(vargrp1)){
     n5 <- round(sd5/sdsum1, digits = 1)
     n6 <- round(sd6/sdsum1, digits = 1)
   
-    p <- qplot(v1, v2, data=df.s, color=factor(prs), alpha=I(0.7), xlab = paste(vargrp1[i], "(SD)"), ylab = paste(vargrp2[i], "(SD)"), main = years[j])+xlim(-5,5)+ylim(-5,5)
+    p <- qplot(v1, v2, data=df.s, color=factor(prs), alpha=I(0.5), xlab = paste(vargrp1[i], "(SD)"), ylab = paste(vargrp2[i], "(SD)"), main = years[j])+xlim(-5,5)+ylim(-5,5)
     d=data.frame(x1=c(-3,-2,-1), x2=c(3,2,1), y1=c(-3,-2,-1), y2=c(3,2,1),lab=c(paste(n3,",",n6), paste(n2,",",n5), paste(n1,",",n4)))
     p <- p + scale_colour_manual(values = cols)
     p <- p + geom_rect(data=d, aes(xmin=x1, xmax=x2, ymin=y1, ymax=y2, x = NULL,y = NULL), fill=NA, color="black") + geom_text(data=d, aes(x=x2-0.15, y=y1+0.25,label=lab), color="black")

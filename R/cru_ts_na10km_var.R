@@ -10,7 +10,8 @@ varnames <- c("pet", "sun", "vap")
 varlnames <- c("potential evapotranspiration", "percent possible sunshine", "vapour pressure")
 varunits <- c("mm/day", "percentage", "hPa")
 
-foreach(i=1:length(varnames))%dopar%{
+#foreach(i=1:length(varnames))%dopar%{
+i <- 2
   print(paste("processing", varnames[i]))
   print(paste("getting anomalies for", varnames[i]))
   cru_ts_ltms_anomalies(varnames[i], varlnames[i], varunits[i])
@@ -19,6 +20,6 @@ foreach(i=1:length(varnames))%dopar%{
   print(paste("getting absolute values for", varnames[i]))
   cru_ts_regrid_abs(varnames[i], varlnames[i])
   print(paste("got", varnames[i], "from cru to na10km..."))
-}
+#}
 
 print("all done!")

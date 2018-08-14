@@ -1,11 +1,14 @@
 library(ncdf4)
 library(fields)
 library(geosphere)
+library(lattice)
+library(RColorBrewer)
 
 cru_ts_ltms_anomalies <- function(varname, varlname, varunit){
 	# path
 	ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/cru_ts4.01/source/"
 	ncoutpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/cru_ts4.01/derived/"
+	out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/maps/checking/"
 	print("open points netCDF file to get dimensions, etc.")
 	ncinfile <- paste0("cru_ts4.01.1901.2016.",varname,".dat.nc")
 	ncin <- nc_open(paste0(ncpath,ncinfile))
@@ -25,10 +28,31 @@ cru_ts_ltms_anomalies <- function(varname, varlname, varunit){
 	print("replace netCDF _FillValues with R NA's")
 	var3d[var3d==fillvalue] <- NA
 	
+	# quick maps to check data
+	n <- 1344
+	var_slice_3d <- var3d[,,n]
+	grid <- expand.grid(lon=lon, lat=lat)
+	# double check the cut points
+	cutpts <- c(0,10,20,30,40,50,60,70,80,90,100)
+	png(paste0(out,"cru_ts4.01.",varname,".2012.12.3d.png"), width=10, height=8, units="in", res=300)
+	levelplot(var_slice_3d ~ lon * lat, data=grid, at=cutpts, cuts=11, pretty=T, 
+		col.regions=(rev(brewer.pal(10,"RdBu"))))
+	dev.off()
+	
 	print("reshape 3d array to 4d")
 	nm <- 12 # number of months in year
 	ny <- nt/12 # number of years in CRU data set
 	var4d <- array(var3d, dim=c(nlon,nlat,nm,ny))
+
+	# quick maps to check data
+	m <- 6; n <- ny-2
+	var_slice_4d <- var4d[,,m,n]
+	grid <- expand.grid(lon=lon, lat=lat)
+	cutpts <- c(0,10,20,30,40,50,60,70,80,90,100)
+	png(paste0(out,"cru_ts4.01.",varname,".2014.06.4d.png"), width=10, height=8, units="in", res=300)
+	levelplot(var_slice_4d ~ lon * lat, data=grid, at=cutpts, cuts=11, pretty=T, 
+		col.regions=(rev(brewer.pal(10,"RdBu"))))
+	dev.off()
 
 	print("make a missing data mask")
 	landmask <- array(1, dim=c(nlon,nlat))
@@ -58,9 +82,18 @@ cru_ts_ltms_anomalies <- function(varname, varlname, varunit){
 			}
 		}
 	}
+	
+	# quick maps to check long-term means
+	m <- 12
+	var_slice_3d <- ltm[,,m]
+	grid <- expand.grid(lon=lon, lat=lat)
+	cutpts <- c(0,10,20,30,40,50,60,70,80,90,100)
+	png(paste0(out,"cru_ts4.01.",varname,".ltm.12.3d.png"), width=10, height=8, units="in", res=300)
+	levelplot(var_slice_3d ~ lon * lat, data=grid, at=cutpts, cuts=11, pretty=T, 
+		col.regions=(rev(brewer.pal(10,"RdBu"))))
+	dev.off()
 
-	ltm[is.na(ltm)] <- fillvalue
-
+  ltm[is.na(ltm)] <- fillvalue
 	print("write out the long-term means")
 
 	print("time -- values calculated by cf_time_subs.f90 -- 1961-1990")
@@ -113,7 +146,6 @@ cru_ts_ltms_anomalies <- function(varname, varlname, varunit){
 	nc_close(ncout)
 
 	print("get anomalies (both 3d and 4d arrays)")
-
 	for (j in 1:nlon) {
 		for (k in 1:nlat) {
 			if (!is.na(landmask[j,k])) {
@@ -127,6 +159,27 @@ cru_ts_ltms_anomalies <- function(varname, varlname, varunit){
 		}
 	}
 
+	# quick maps to check anomalies
+	n <- 1380
+	var_slice_3d <- var3d[,,n]
+	grid <- expand.grid(lon=lon, lat=lat)
+	cutpts <- c(-60,-20,-15,-10,-5,0,5,10,15,20,60)
+	png(paste0(out,"cru_ts4.01.",varname,".anm.2015.12.3d.png"), width=10, height=8, units="in", res=300)
+	levelplot(var_slice_3d ~ lon * lat, data=grid, at=cutpts, cuts=11, pretty=T, 
+		col.regions=(rev(brewer.pal(10,"RdBu"))))
+	dev.off()
+
+	# quick maps to check anomalies
+	m <- 6; n <- ny
+	var_slice_4d <- var4d[,,m,n]
+	grid <- expand.grid(lon=lon, lat=lat)
+	cutpts <- c(-60,-20,-15,-10,-5,0,5,10,15,20,60)
+	png(paste0(out,"cru_ts4.01.",varname,".anm.2016.06.4d.png"), width=10, height=8, units="in", res=300)
+	levelplot(var_slice_4d ~ lon * lat, data=grid, at=cutpts, cuts=11, pretty=T, 
+		col.regions=(rev(brewer.pal(10,"RdBu"))))
+	dev.off()
+
+  fillvalue <- 1e32
 	var3d[is.na(var3d)] <- fillvalue
 	var4d[is.na(var4d)] <- fillvalue
 
@@ -134,11 +187,11 @@ cru_ts_ltms_anomalies <- function(varname, varlname, varunit){
 
 	print("define dimensions")
 	londim <- ncdim_def("lon","degrees_east",as.double(lon)) 
-	latdim <- ncdim_def("lat","degrees_north",as.double(lat)) 
+	latdim <- ncdim_def("lat","degrees_north",as.double(lat))
+	tunits <- "days since 1900-1-1" 
 	timedim <- ncdim_def("time",tunits,as.double(time))
 
 	print("define variable")
-	fillvalue <- 1e32
 	dlname <- paste(varlname,"anomalies")
 	var_def <- ncvar_def(paste0(varname,"_anm"),varunit,list(londim,latdim,timedim),fillvalue,dlname,prec="single")
 
@@ -204,6 +257,7 @@ cru_ts_ltms_anomalies <- function(varname, varlname, varunit){
 
 cru_ts_regrid_anomalies <- function(varname){
 	print("open CRU netCDF file to get dimensions, etc.")
+	out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/maps/checking/"
 	crupath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/cru_ts4.01/derived/"
 	crufile <- paste0("cru_ts4.01.1901.2016.",varname,".anm3d.nc")
 	cru_ncfile <- paste(crupath,crufile,sep="")
@@ -287,8 +341,9 @@ cru_ts_regrid_anomalies <- function(varname){
 
 	print("bilinear interpolation for most points:")
 	print("loop over times")
+
 	for (n in 1:nt) {
-		print(n)
+		# print(n)
 		# bilinear interpolation from fields package
 		control_dat <- list(x=crulon, y=crulat, z=var3d[,,n])
 		interp_var <- interp.surface(control_dat, cbind(na10km_v2$lon,na10km_v2$lat))
@@ -303,6 +358,17 @@ cru_ts_regrid_anomalies <- function(varname){
 		interp_anm[,,n] <- interp_mat
 	}
 
+	# quick map to check data
+	n <- 1380
+	test_slice1 <- interp_anm[,,n]
+	grid <- expand.grid(x=x, y=y)
+	cutpts <- c(-60,-20,-15,-10,-5,0,5,10,15,20,60)
+	png(paste0(out,"cru_ts4.01.",varname,".interp.2016.12.3d.png"), width=9, height=8, units="in", res=300)
+	levelplot(test_slice1 ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 
+		col.regions=(rev(brewer.pal(10,"RdBu"))))
+	dev.off()
+	
+	sum(is.na(test_slice1))
 	print("nearest-neighbor assignment for missing bilinear-interpolation values")
 	# use last time-slice
 
@@ -321,7 +387,7 @@ cru_ts_regrid_anomalies <- function(varname){
 	print("find closest nonmissing CRU point to each missing target point")
 	ptm <- proc.time()
 	for (i in 1:nmiss) {
-		print(i)
+		# print(i)
 		id <- miss_id[i]
 	
 		# subscripts of missing target point
@@ -341,6 +407,28 @@ cru_ts_regrid_anomalies <- function(varname){
 		interp_anm[j2,k2,] <- var3d[j3,k3,]
 	}
 	proc.time() - ptm
+
+	# # quick map to check data
+	n <- 1380
+	test_slice2 <- interp_anm[,,n]
+	grid <- expand.grid(x=x, y=y)
+	cutpts <- c(-60,-20,-15,-10,-5,0,5,10,15,20,60)
+	png(paste0(out,"cru_ts4.01.",varname,".nonmiss.2016.12.3d.png"), width=9, height=8, units="in", res=300)
+	levelplot(test_slice2 ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 
+						col.regions=(rev(brewer.pal(10,"RdBu"))))
+	dev.off()
+	sum(is.na(test_slice2))
+
+	# points that were filled by nearest-neighbor interpolation
+	test_slice3 <- test_slice2
+	test_slice3[!is.na(test_slice1)] <- NA
+	grid <- expand.grid(x=x, y=y)
+	cutpts <- c(-60,-20,-15,-10,-5,0,5,10,15,20,60)
+	png(paste0(out,"cru_ts4.01.",varname,".near.2016.12.3d.png"), width=9, height=8, units="in", res=300)
+	levelplot(test_slice3 ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 
+						col.regions=(rev(brewer.pal(10,"RdBu"))))
+	dev.off()
+	sum(is.na(test_slice3))
 
 	print("replace R NA's with fillvalues")
 	# fillvalue
@@ -404,7 +492,7 @@ cru_ts_regrid_anomalies <- function(varname){
 	ncatt_put(ncout,0,"source","generated by cru_ts_4.01_regrid_anomalies.R")
 	history <- paste("D. Chen", date(), sep=", ")
 	ncatt_put(ncout,0,"history",history)
-	ncatt_put(ncout,0,"base_period","1961-1990")
+	ncatt_put(ncout,0,"base_period","1901-2016")
 
 	print("close the file, writing data to disk")
 	nc_close(ncout)
@@ -474,7 +562,7 @@ cru_ts_regrid_anomalies <- function(varname){
 	ncatt_put(ncout,0,"source","generated by cru_ts_4.01_regrid_anomalies.R")
 	history <- paste("D. Chen", date(), sep=", ")
 	ncatt_put(ncout,0,"history",history)
-	ncatt_put(ncout,0,"base_period","1961-1990")
+	ncatt_put(ncout,0,"base_period","1901-2016")
 
 	print("close the file, writing data to disk")
 	nc_close(ncout)
@@ -482,6 +570,7 @@ cru_ts_regrid_anomalies <- function(varname){
 }
 
 cru_ts_regrid_abs <- function(varname, varlname){
+	out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/maps/checking/"
 	# define time parameters
 	start_year = 1996; end_year = 2015; start_time = 1141; time_length = 240
 
@@ -514,7 +603,7 @@ cru_ts_regrid_abs <- function(varname, varlname){
 	y_CoordinatAxisType <- ncatt_get(ncin, "x", "CoordinateAxisType")$value
 
 	time <- ncvar_get(ncin, varid="time", start=start_time, count=time_length); nt <- length(time)
-	time.lt <- ncvar_get(ncin, varid="time"); nt.lt <- length(time)
+	time.lt <- ncvar_get(ncin, varid="time"); nt.lt <- length(time.lt)
 	tunits <- ncatt_get(ncin,"time","units")
 
 	print("get longitude and latitude and attributes")
@@ -557,6 +646,17 @@ cru_ts_regrid_abs <- function(varname, varlname){
 	ltmncin <- nc_open(ltmncfile)
 
 	ltm <- ncvar_get(ltmncin,varname)
+	#ltm[ltm==fillvalue] <- NA
+	
+	# quick maps to check long-term means
+	m <- 12
+	var_slice_3d <- ltm[,,m]
+	grid <- expand.grid(x=x, y=y)
+	cutpts <- c(-1000,-500,-200,0,50,100,200,500,1000,2000,3000)
+	png(file=paste(out,"na10km_ltm.pre3d.png",sep=""))
+	levelplot(var_slice_3d ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 
+						col.regions=(rev(brewer.pal(10,"RdBu"))))
+	dev.off()
 
   print("get absolute values")
 	ptm <- proc.time()
@@ -578,6 +678,26 @@ cru_ts_regrid_abs <- function(varname, varlname){
 	}
 	proc.time() - ptm
 
+	# quick maps to check data
+	n <- time_length
+	var_slice_3d <- var3d[,,n]
+	grid <- expand.grid(x=x, y=y)
+	cutpts <- c(0,10,20,30,40,50,60,70,80,90,100)
+	png(file=paste0(out,"na10km_v2_cru_4.01.",end_year,".abs.",varname,"3d.png"), width=9, height=8, units="in", res=300)
+	levelplot(var_slice_3d ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 
+						col.regions=(rev(brewer.pal(10,"RdBu"))))
+	dev.off()
+
+	# quick maps to check data
+	m <- 6; n <- nyr
+	var_slice_4d <- var4d[,,m,n]
+	grid <- expand.grid(x=x, y=y)
+	cutpts <- c(0,10,20,30,40,50,60,70,80,90,100)
+	png(file=paste0(out,"na10km_v2_cru_4.01.",end_year,".abs",varname,"4d.png"), width=9, height=8, units="in", res=300)
+	levelplot(var_slice_4d ~ x * y, data=grid, at=cutpts, cuts=11, pretty=T, 
+						col.regions=(rev(brewer.pal(10,"RdBu"))))
+	dev.off()
+
 	print("recode fillvalues")
 	fillvalue <- 1e32
 	var3d[is.na(var3d)] <- fillvalue
@@ -593,14 +713,16 @@ cru_ts_regrid_abs <- function(varname, varlname){
 
 	print("write out absolute values")
 	ptm <- proc.time() # timer
+	outncdf <- c("short-term 3d", "long-term 3d", "short-term 4d", "long-term 4d")
   for(i in 1:4){
+    print(paste("writing", outncdf[i]))
     if(i==1){
       absfile <- paste0("na10km_v2_cru_ts4.01.",start_year,".",end_year,".",varname,".abs3d.nc")
     }else if(i==2){
       absfile <- paste0("na10km_v2_cru_ts4.01.1901.2016.",varname,".abs3d.nc")
     }else if(i==3){
       absfile <- paste0("na10km_v2_cru_ts4.01.",start_year,".",end_year,".",varname,".abs4d.nc")
-    }else{
+    }else if(i==4){
       absfile <- paste0("na10km_v2_cru_ts4.01.1901.2016.",varname,".abs4d.nc")
     }
     
@@ -610,8 +732,11 @@ cru_ts_regrid_abs <- function(varname, varlname){
 		xdim <- ncdim_def("x",units="m",longname="x coordinate of projection",as.double(x))
 		ydim <- ncdim_def("y",units="m",longname="y coordinate of projection",as.double(y))
 		tdim <- ncdim_def("time", units=tunits$value, longname="time", as.double(time))
+		tdim.lt <- ncdim_def("time", units=tunits$value, longname="time", as.double(time.lt))
     year <- seq(start_year,end_year, by=1)
 	  yeardim <- ncdim_def("year","year",as.integer(year))
+	  year.lt <- seq(1901,2016, by=1)
+	  yeardim.lt <- ncdim_def("year","year",as.integer(year.lt))
 	  month <- seq(1,12, by=1)
 	  monthdim <- ncdim_def("month","month",as.integer(month))
 	  
@@ -625,11 +750,16 @@ cru_ts_regrid_abs <- function(varname, varlname){
 		proj_def <- ncvar_def(projname,"1",NULL,NULL,longname=dlname,prec="char")
 
 		# create netCDF file and put data
-		if(i==1 | i==2){
+		if(i==1){
       var_def <- ncvar_def(varname,dunits$value,list(xdim,ydim,tdim),fillvalue,varlname,prec="double")
-    }else if(i==3 | i==4){
+    }else if(i==2){
+      var_def <- ncvar_def(varname,dunits$value,list(xdim,ydim,tdim.lt),fillvalue,varlname,prec="double")
+    }else if(i==3){
       var_def <- ncvar_def(varname,dunits$value,list(xdim,ydim,monthdim,yeardim),fillvalue,varlname,prec="double")
-    }	
+    }else if(i==4){
+      var_def <- ncvar_def(varname,dunits$value,list(xdim,ydim,monthdim,yeardim.lt),fillvalue,varlname,prec="double")
+    }
+
 		ncout <- nc_create(abs_ncfile,list(lon_def,lat_def,var_def,proj_def),force_v4=TRUE, verbose=FALSE)
 
 		print("put additional attributes into dimension and data variables")
@@ -641,9 +771,10 @@ cru_ts_regrid_abs <- function(varname, varlname){
 		ncatt_put(ncout,"y","standard_name",y_standard_name)
 		ncatt_put(ncout,"y","grid_spacing",y_grid_spacing)
 		ncatt_put(ncout,"y","_CoordinateAxisType",y_CoordinatAxisType)
-		ncatt_put(ncout,"time","axis","T")
-		ncatt_put(ncout,"time","calendar","standard")
-
+		if (i ==1 | i ==2){
+		  ncatt_put(ncout,"time","axis","T")
+		  ncatt_put(ncout,"time","calendar","standard")		
+		}
 		ncatt_put(ncout,crs_name,"name",crs_name)
 		ncatt_put(ncout,crs_name,"long_name",crs_long_name)
 		ncatt_put(ncout,crs_name,"grid_mapping_name",crs_grid_mapping_name)
@@ -667,9 +798,9 @@ cru_ts_regrid_abs <- function(varname, varlname){
     }else if(i==3){
       ncvar_put(ncout,var_def,var4d)
 	    remove(var4d)
-    }else{
+    }else if(i==4){
       ncvar_put(ncout,var_def,var4d.lt)
-	    remove(var3d.lt)
+	    remove(var4d.lt)
     }
 
 		# add global attributes
@@ -685,6 +816,7 @@ cru_ts_regrid_abs <- function(varname, varlname){
     }	
 		# close the file, writing data to disk
 		nc_close(ncout)
+		print(paste("finished writing", outncdf[i]))
 		proc.time() - ptm 
   }
 }
