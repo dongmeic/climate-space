@@ -193,7 +193,7 @@ get.two.year.data <- function(start.year, monthly.means, monthly.lows) {
   list(#winterTmin=winterTmin, Ecs=Ecs, 
        coldsnap.stats=coldsnap.stats#,
        #drop.data=drop.data, degree.days.data=degree.days.data, 
-       #min.data=min.data
+       min.data=min.data
   )
 }
 
