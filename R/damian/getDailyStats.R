@@ -189,7 +189,7 @@ get.two.year.data <- function(start.year, monthly.means, monthly.lows) {
   coldsnap.stats <- get.coldsnap.stats(daily.lows[winter.range])
   #drop.data <- get.drop.stats(daily.means[winter.range])
   #degree.days.data <- get.degree.days(daily.means)
-  #min.data <- get.min.data(daily.lows[winter.range])
+  min.data <- get.min.data(daily.lows[winter.range])
   list(#winterTmin=winterTmin, Ecs=Ecs, 
        coldsnap.stats=coldsnap.stats,
        #drop.data=drop.data, degree.days.data=degree.days.data, 
