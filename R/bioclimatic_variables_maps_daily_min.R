@@ -21,8 +21,8 @@ ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/ts/var/"
 out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/maps/"
 setwd(out)
 
-vargrp <- c("min30", "min32", "min34", "min36", "min38", "min40")
-#vargrp <- c("min20", "min22", "min24", "min26", "min28")
+#vargrp <- c("min30", "min32", "min34", "min36", "min38", "min40")
+vargrp <- c("min20", "min22", "min24", "min26", "min28")
 
 ncin <- nc_open("/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/na10km_v2.nc")
 x <- ncvar_get(ncin, varid="x"); nx <- length(x)
@@ -48,7 +48,6 @@ get.data <- function(var){
 }
 
 btlprs <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/beetle_presence.csv")
-
               
 foreach(i=1:length(vargrp)) %dopar% {
   var_4d <- get.data(vargrp[i])

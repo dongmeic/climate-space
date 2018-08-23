@@ -5,7 +5,7 @@ library(doParallel)
 library(foreach)
 registerDoParallel(cores=28)
 
-inpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"; setwd(inpath)
+inpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/min/"; setwd(inpath)
 start_year <- 1902; end_year <- 2016; years <- start_year:end_year; nt <- length(years)
 ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/"
 ncfile <- paste0(ncpath,"na10km_v2.nc")
@@ -74,26 +74,27 @@ k2 <- sapply(na10km$y, function(xy) which.min(abs(y-xy)))
 head(cbind(na10km$x,na10km$y,j2,k2))
 print("done!")
 
-varnms <- c("min30", "min32", "min34", "min36", "min38", "min40")
+varnms <- c("Ncs", "Acs", "min20", "min22", "min24", "min26", "min28")
 nvar <- length(varnms)
-varlnms <- c("number of days with minimum temperatures at or below -30 °C during winter",
-             "number of days with minimum temperatures at or below -32 °C during winter",
-             "number of days with minimum temperatures at or below -34 °C during winter",
-             "number of days with minimum temperatures at or below -36 °C during winter",
-             "number of days with minimum temperatures at or below -38 °C during winter",
-             "number of days with minimum temperatures at or below -40 °C during winter")
-dunits <- c("day", "day", "day", "day", "day", "day")
+varlnms <- c("total number of cold snaps occurring through out the winter",
+             "average duration of a cold snap during winter",
+						 "number of days with minimum temperatures at or below -20 °C during winter",
+             "number of days with minimum temperatures at or below -22 °C during winter",
+             "number of days with minimum temperatures at or below -24 °C during winter",
+             "number of days with minimum temperatures at or below -26 °C during winter",
+             "number of days with minimum temperatures at or below -28 °C during winter")
+dunits <- c("one", "one", "day", "day", "day", "day", "day")
             
 dim1 <- 277910; dim2 <- nt
 
 print("writing 3D netCDF files")
 ptm <- proc.time()
 foreach(k = 1:nvar)%dopar%{
-  indata <- read.csv(paste0("bioclimatic_variables_daily_min_",years[1],".csv"))
+  indata <- read.csv(paste0("bioclimatic_variables_daily_min_",years[1],"_2.csv"))
   df <- data.frame(indata[,varnms[k]])
   colnames(df) <- years[1]
   for(i in 2:nt){
-    indata <- read.csv(paste0("bioclimatic_variables_daily_min_",years[i],".csv"))
+    indata <- read.csv(paste0("bioclimatic_variables_daily_min_",years[i],"_2.csv"))
     ndf <- data.frame(indata[,varnms[k]])
     colnames(ndf) <- years[i]
     df <- cbind(df,ndf)

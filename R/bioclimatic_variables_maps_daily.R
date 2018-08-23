@@ -69,7 +69,8 @@ myColors2 <- c('grey', 'red', 'black')
 myKey2 <- list(text=list(lab=c("0","1","2"), cex=c(1.2,1.2)), 
               rectangles=list(col = myColors2), space="inside", width = 0.5, columns=1)
               
-foreach(i=1:length(vargrp)) %dopar% {
+#foreach(i=1:length(vargrp)) %dopar% {
+for(i in c(5,6)){
   var_4d <- get.data(vargrp[i])
   plotclm <- function(yr){
 	  var_4d_slice <- var_4d[,,1,yr]
@@ -113,7 +114,8 @@ foreach(i=1:length(vargrp)) %dopar% {
   dev.off()
 }
 
-for(i in 1:length(vargrp)){
+#for(i in 1:length(vargrp)){
+for(i in c(5,6)){
   var_4d <- get.data(vargrp[i])
   for(j in 1:length(years)){
     var_4d_slice <- var_4d[,,1,j]
@@ -156,7 +158,8 @@ for(i in 1:length(vargrp)){
   }
 }
 
-foreach(i=1:length(vargrp)) %dopar% {
+#foreach(i=1:length(vargrp)) %dopar% {
+for(i in c(5,6)){
   im.convert(paste0("bioclimatic_map_",vargrp[i],"_*.png"),output=paste0("bioclimatic_map_",vargrp[i],".gif"))
 }
 
