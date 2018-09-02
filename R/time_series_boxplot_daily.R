@@ -30,15 +30,16 @@ mpb.nc <- ncvar_get(ncin_btl,"chosts_mpb_prs") # with all core hosts
 nc_close(ncin_btl)
 
 #vargrp <- c("drop0", "drop5", "ddAugJul", "ddAugJun")
-vargrp <- c("min30", "min32", "min34", "min36", "min38", "min40")
+vargrp <- c("Ncs", "Acs", "min20", "min22", "min24", "min26", "min28")
 
 #varnms <- c("No. days of positive temperature change", "No. days when a 0-5 °C drop ", "Degree days from August to July", "Degree days from August to June")
-varnms <- c("No. days with Tmin at or below -30 °C",
-             "No. days with Tmin at or below -32 °C",
-             "No. days with Tmin at or below -34 °C",
-             "No. days with Tmin at or below -36 °C",
-             "No. days with Tmin at or below -38 °C",
-             "No. days with Tmin at or below -40 °C")
+varnms <- c("total number of cold snaps occurring through out the winter",
+						"average duration of a cold snap during winter",
+						 "No. days with Tmin at or below -20 °C",
+             "No. days with Tmin at or below -22 °C",
+             "No. days with Tmin at or below -24 °C",
+             "No. days with Tmin at or below -26 °C",
+             "No. days with Tmin at or below -28 °C")
 
 get.data <- function(var){
   ncfile <- paste0("na10km_v2_",var, "_1902.2016.3d.nc")

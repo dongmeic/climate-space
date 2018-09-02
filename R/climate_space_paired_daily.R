@@ -14,14 +14,14 @@ out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/climate_space/paired/"
 ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/ts/var/"
 setwd(out)
 			
-vargrp1 <- c("drop0", "drop5")
-vargrp2 <- c("ddAugJul", "ddAugJun")
-				
-varnms1 <- c("No. days of positive temperature change",
-             "No. days when a 0-5 °C drop ")
-
-varnms2 <- c("Degree days from August to July",
-             "Degree days from August to June")
+# vargrp1 <- c("drop0", "drop5")
+# vargrp2 <- c("ddAugJul", "ddAugJun")
+# 
+# varnms1 <- c("No. days of positive temperature change",
+#              "No. days when a 0-5 °C drop ")
+# 
+# varnms2 <- c("Degree days from August to July",
+#              "Degree days from August to June")
 
 cols <- c("grey70", "#1b9e77", "#d95f02")
 			  
