@@ -27,7 +27,7 @@ na10km_btl_df <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/output/tables
 head(na10km_btl_df)
 years <- 1996:2015
 
-ndf <- read.csv(paste0(csvpath,"bioclimatic_values_",years[1],".csv")) # from bioclimatic_values_time_series.R
+ndf <- read.csv(paste0(csvpath,"bioclimatic_values_selected_",years[1],".csv")) # from bioclimatic_values_time_series.R
 ndf <- cbind(ndf, na10km_btl_df[,c(paste0("prs_",(years[1]+1)),"vegetation")])
 b <- dim(ndf)[2]; a <- b - 1
 colnames(ndf)[a:b] <- c("beetles","hosts")
