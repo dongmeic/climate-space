@@ -144,7 +144,7 @@ for(i in 1:length(vargrp)){
     btl_pixels <- as(df, "SpatialPixelsDataFrame")
     names(btl_pixels) <- "btlprs"
     p <- p + latticeExtra::layer(sp.points(btl_pixels[btl_pixels$btlprs==1,], pch=19, cex=0.05, col='green', alpha=0.4))
-    print(p,split=c(pos[,yr][1], pos[,yr][2], 5, 4))	  
+    print(p,split=c(pos[,yr][1], pos[,yr][2], 5, 4), newpage=FALSE) 
   }
   dev.off()
   print(vargrp[i])
