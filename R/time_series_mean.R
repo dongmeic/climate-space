@@ -65,8 +65,10 @@ rect <- data.frame(xmin=1996, xmax=2015, ymin=-Inf, ymax=Inf)
 override.linetype <- c("dashed", "longdash", "solid")
 
 foreach(i=1:length(varnms)) %dopar% {
-  indata <- read.csv(paste0(inpath,vargrp[i],"_",startyrs[i],"_1.csv"))
+  indata <- read.csv(paste0(inpath,vargrp[i],"_",startyrs[i],"_1.csv")) # from time_series_boxplot.R; 1- the whole beetle affected area in all years
   df <- aggregate(indata$var, by=list(prs=indata$prs, yrs=indata$yrs), FUN=mean)
+  df.s <- subset(df, prs == "mpb")
+  test <- cor.test(df.s$yrs, df.s$x)
   g <- ggplot(data=df, aes(x=yrs, y=x,linetype = prs, color= prs)) + 
     geom_line(alpha=0.3) + 
     geom_point(alpha=0.3) + 
@@ -74,7 +76,8 @@ foreach(i=1:length(varnms)) %dopar% {
   g <- g + scale_linetype_manual(values=override.linetype, guide = FALSE)
   g <- g + guides(colour = guide_legend(override.aes = list(linetype = override.linetype)))
   g <- g + scale_colour_manual(name="", labels=c("Continent","Hosts","Beetles"), values = cols)
-  g <- g + labs(title=varnms[i], x =paste("Years since", startyrs[i]), y = paste(vargrp[i], units[i]))
+  g <- g + labs(title=varnms[i], subtitle=paste0("Correlation with time in the beetle range: r = ", format(as.numeric(test$estimate), digits = 2),", p-value = ",format(as.numeric(test$p.value), digits = 2)), 
+  							x=paste("Years since", startyrs[i]), y = paste(vargrp[i], units[i]))
   g <- g + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax),color="pink",alpha=0.2,inherit.aes = FALSE)
   g <- g + geom_vline(xintercept = 2008, color = "black", linetype=4)
   ggsave(paste0("time_series_mean_",vargrp[i],"_",startyrs[i],"_1.png"), g, width=10, height=4, units="in", dpi = 300)

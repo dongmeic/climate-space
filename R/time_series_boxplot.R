@@ -118,13 +118,13 @@ foreach(i=1:length(varnms)) %dopar% {
   df <- read.csv(paste0(vargrp[i], "_", startyrs[i], "_1.csv"), stringsAsFactors = F)
   print(paste("plotting", vargrp[i]))
   df.ss.1 <- subset(df, prs == "continent")
-  p1 <- ggplot(df.ss.1, aes(x = yrs, y = var)) +geom_boxplot(fill = cols[1], colour = "black", outlier.size = 0.75, 
+  p1 <- ggplot(df.ss.1, aes(x = as.character(yrs), y = var)) +geom_boxplot(fill = cols[1], colour = "black", outlier.size = 0.75, 
                                                              outlier.shape = 1, outlier.alpha = 0.35)+
     labs(x="Time", y=varnms[i])+theme(axis.text.x=element_blank())+
     ggtitle("Climatic changes in North America")
   
   df.ss.2 <- subset(df, prs == "hosts")
-  p2 <- ggplot(df.ss.2, aes(x = yrs, y = var)) +geom_boxplot(fill = cols[2], colour = "black", outlier.size = 0.75, 
+  p2 <- ggplot(df.ss.2, aes(x = as.character(yrs), y = var)) +geom_boxplot(fill = cols[2], colour = "black", outlier.size = 0.75, 
                                                              outlier.shape = 1, outlier.alpha = 0.35)+
     labs(x="Time", y=varnms[i])+theme(axis.text.x=element_blank())+
     ggtitle("Climatic changes in areas where core hosts exist")
@@ -132,7 +132,7 @@ foreach(i=1:length(varnms)) %dopar% {
   df.ss.3 <- subset(df, prs == "mpb")
   #df.ss.3$btl <- ifelse(as.numeric(as.character(df.ss.3$yrs)) > 1995, c('Presence with one year'), c('Presence with all years'))
   df.ss.3$btl <- ifelse(as.numeric(as.character(df.ss.3$yrs)) > 1995, c('Recent'), c('Historical')) 
-  p3 <- ggplot(df.ss.3, aes(x = yrs, y = var)) +geom_boxplot(fill = cols[3], colour = "black", outlier.size = 0.75, 
+  p3 <- ggplot(df.ss.3, aes(x = as.character(yrs), y = var)) +geom_boxplot(fill = cols[3], colour = "black", outlier.size = 0.75, 
                                                              outlier.shape = 1, outlier.alpha = 0.35)+
     facet_grid(. ~ btl, scales = "free", space = "free")+
     labs(x="Time", y=varnms[i])+theme(axis.text.x=element_blank())+
