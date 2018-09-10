@@ -121,7 +121,11 @@ for (i in 1:length(vargrp)){
 	points2grid(df)
 	btl_pixels <- as(df, "SpatialPixelsDataFrame")
 	names(btl_pixels) <- "btlprs"
-	p <- p + latticeExtra::layer(sp.points(btl_pixels[btl_pixels$btlprs==1,], pch=19, cex=0.05, col='black', alpha=0.4))
+	if(i<=13){
+		p <- p + latticeExtra::layer(sp.points(btl_pixels[btl_pixels$btlprs==1,], pch=19, cex=0.05, col='green', alpha=0.4))
+	}else{
+		p <- p + latticeExtra::layer(sp.points(btl_pixels[btl_pixels$btlprs==1,], pch=19, cex=0.05, col='blue', alpha=0.4))
+	}
 	print(p,split=c(pos[,yr][1], pos[,yr][2], 5, 4))
   for(yr in 2:20){
 	  var_4d_slice <- var_4d[,,1,yr]
@@ -146,7 +150,11 @@ for (i in 1:length(vargrp)){
 		points2grid(df)
 		btl_pixels <- as(df, "SpatialPixelsDataFrame")
 		names(btl_pixels) <- "btlprs"
-		p <- p + latticeExtra::layer(sp.points(btl_pixels[btl_pixels$btlprs==1,], pch=19, cex=0.05, col='black', alpha=0.4))
+		if(i<=13){
+			p <- p + latticeExtra::layer(sp.points(btl_pixels[btl_pixels$btlprs==1,], pch=19, cex=0.05, col='green', alpha=0.4))
+		}else{
+			p <- p + latticeExtra::layer(sp.points(btl_pixels[btl_pixels$btlprs==1,], pch=19, cex=0.05, col='blue', alpha=0.4))
+		}
 	  print(p,split=c(pos[,yr][1], pos[,yr][2], 5, 4), newpage=FALSE)
   }
   dev.off()
