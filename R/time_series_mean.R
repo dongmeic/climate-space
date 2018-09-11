@@ -59,6 +59,7 @@ varnms <- c(varnms.a, varnms.b, varnms.e, varnms.c, varnms.d)
 startyrs <- c(rep(1901,9), rep(1902,14), rep(1903, 2), 1907)
 
 units <- c(rep("(°C)",6), rep("(mm)",3), rep("(°C)",5),"","(°C)",rep("(mm)",3),rep("(day)",2),rep("(°C)",2),rep("(mm)",3))
+#units <- c(rep("(day)",2),rep("(°C)",2))
 
 cols <- c("grey70", "#1b9e77", "#7570b3")
 rect <- data.frame(xmin=1996, xmax=2015, ymin=-Inf, ymax=Inf)

@@ -33,11 +33,13 @@ vargrp.a <- c("JanTmin", "MarTmin", "TMarAug", "summerTmean",
 				"AugTmean", "AugTmax", "GSP", "PMarAug", "summerP0")
 # start_year:1902
 vargrp.b <- c("OctTmin", "fallTmean", "winterTmin", "Tmin", "Tmean", "Tvar", "TOctSep", "summerP1", "summerP2", "Pmean")
+# start_year:1902, daily
+vargrp.e <- c("drop0", "drop5", "ddAugJul", "ddAugJun")
 # start_year:1903
 vargrp.c <- c("POctSep", "PcumOctSep")
 # start_year:1907
 vargrp.d <- c("PPT")
-vargrp <- c(vargrp.a, vargrp.b, vargrp.c, vargrp.d)
+vargrp <- c(vargrp.a, vargrp.b, vargrp.e, vargrp.c, vargrp.d)
 			
 varnms.a <- c("Minimum temperature in Jan",
 			  "Minimum temperature in Mar",
@@ -59,15 +61,21 @@ varnms.b <- c("Minimum temperature in Oct",
 			  "Precipitation from Jun to Aug in previous year",
 			  "Cumulative precipitation from Jun to Aug",
 			  "Mean precipitation from Aug to Jul")
+
+varnms.e <- c("No. days of positive temperature change",
+            "No. days when a 0-5 °C drop ",
+            "Degree days from August to July",
+            "Degree days from August to June")
 			  			  
 varnms.c <- c("Precipitation from Oct and Sep in previous year",
 			  "Cumulative precipitation from Oct to Sep")
 
 varnms.d <- c("Cumulative monthly Oct-Aug precipitation")
 
-varnms <- c(varnms.a, varnms.b, varnms.c, varnms.d)
+varnms <- c(varnms.a, varnms.b, varnms.e, varnms.c, varnms.d)
 
 startyrs <- c(rep(1901,9), rep(1902,10), rep(1903, 2), 1907)
+#startyrs <- rep(1902,4)
 
 get.data <- function(var, start_yr){
   ncfile <- paste0("na10km_v2_",var, "_", start_yr,".2016.3d.nc")
@@ -114,6 +122,7 @@ ptm <- proc.time()
 cols <- c("grey70", "#1b9e77", "#7570b3")
 foreach(i=1:length(varnms)) %dopar% {
 #for(i in 1:length(varnms)){
+for(i in 1:length(varnms)){
   #df <- get.dataframe(vargrp[i], startyrs[i])
   df <- read.csv(paste0(vargrp[i], "_", startyrs[i], "_1.csv"), stringsAsFactors = F)
   print(paste("plotting", vargrp[i]))
