@@ -11,14 +11,16 @@ registerDoParallel(cores=28)
 source("/gpfs/projects/gavingrp/dongmeic/climate-space/R/boxplot_settings.R")
 
 years <- 1996:2015; nyr <- length(years)
-out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/plots/"
-csvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/climate_space/times_series/"
+out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/climate_space/paired/"
+outcsvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/climate_space/times_series/"
 ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/ts/var/"
 setwd(out)
 
-vargrp.1 <- c("winterTmin", "Tmean", "ddAugJul", "TMarAug")
+vargrp.t <- c("Tmin", "MarTmin", "TOctSep", "Tmean", "fallTmean", "OctTmin", "winterTmin",
+							"JanTmin", "ddAugJun", "ddAugJul", "TMarAug", "summerTmean")
 							
-vargrp.2 <- c("AugTmax", "Tvar", "GSP", "PMarAug")
+vargrp.p <- c("AugTmean", "AugTmax", "Tvar", "PMarAug", "PcumOctSep", "PPT", "Pmean",
+              "POctSep", "summerP2", "GSP", "summerP0", "summerP1")
 
 vargrp <- c(vargrp.t, vargrp.p)
 

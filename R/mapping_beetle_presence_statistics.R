@@ -29,43 +29,47 @@ proj4string(lrglakes) <- crs
 hostpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/shapefiles/corehost"
 corehost <- readOGR(dsn=hostpath, layer="MPB_corehost_proj_disall")
 corehost <- spTransform(corehost, crs)
-
+labels <- c("Maximum continuous presence", "Maximum continuous absence", 
+						"Presence year after absence", "Absence year after presence", 
+						"Mean of presence length", "Neighboring presence")
 plots <- list()
-for(i in 1:length(varnms)){
+#for(i in 1:length(varnms)){
+for(i in 1:c(1,2,6)){
   var <- ncvar_get(ncin,varnms[i])
-  if(i==1 | i==2 | i==5){
+  if(i==1 | i==2){
     cutpts <- seq(1,20,by=2)
     p <- levelplot(var ~ x * y, data=grid, xlim=c(-2050000,20000), ylim=c(-2000000,2000000),
                par.settings = list(axis.line = list(col = "transparent")), scales = list(draw = FALSE), 
                margin=F, at=cutpts, cuts=10, pretty=T, col.regions=rev(brewer.pal(10,"RdBu")), 
-               main=list(label=varnms[i], cex=1.5), xlab="",ylab="", aspect="iso")
-  }else if(i==3 | i==4){
-    cutpts <- c(1999,2001,2003,2005,2006,2007,2009,2011,2013,2015,2016)
-    p <- levelplot(var ~ x * y, data=grid, xlim=c(-2050000,20000), ylim=c(-2000000,2000000),
-               par.settings = list(axis.line = list(col = "transparent")), scales = list(draw = FALSE), 
-               margin=F, cuts=11, pretty=T,col.regions=brewer.pal(11,"Spectral"),
-               main=list(label=varnms[i], cex=1.5), xlab="", ylab="", aspect="iso")
+               main=list(label=labels[i], cex=1.5), xlab="",ylab="", aspect="iso")
+  #}else if(i==3 | i==4){
+  # cutpts <- c(1999,2001,2003,2005,2006,2007,2009,2011,2013,2015,2016)
+  #  p <- levelplot(var ~ x * y, data=grid, xlim=c(-2050000,20000), ylim=c(-2000000,2000000),
+  #             par.settings = list(axis.line = list(col = "transparent")), scales = list(draw = FALSE), 
+  #             margin=F, cuts=11, pretty=T,col.regions=brewer.pal(11,"Spectral"),
+  #             main=list(label=varnms[i], cex=1.5), xlab="", ylab="", aspect="iso")
   }else if(i==6){
     cutpts <- seq(0,180,by=20)
     p <- levelplot(var ~ x * y, data=grid, xlim=c(-2050000,20000), ylim=c(-2000000,2000000),
                par.settings = list(axis.line = list(col = "transparent")), scales = list(draw = FALSE), 
                margin=F, at=cutpts, cuts=10, pretty=T, col.regions=rev(brewer.pal(10,"RdBu")), 
-               main=list(label=varnms[i], cex=1.5), xlab="",ylab="", aspect="iso")
+               main=list(label=labels[i], cex=1.5), xlab="",ylab="", aspect="iso")
   }
   p <- p + latticeExtra::layer(sp.polygons(canada.prov, lwd=0.8, col='dimgray'))
   p <- p + latticeExtra::layer(sp.polygons(us.states, lwd=0.8, col='dimgray'))
   p <- p + latticeExtra::layer(sp.polygons(lrglakes, lwd=0.8, col='lightblue'))
   #p <- p + latticeExtra::layer(sp.polygons(corehost, lwd=0.8, col=rgb(0,1,0,0.3)))
   plots[[i]] <- p
-  png(paste0("beetle_presence_stat_", varnms[i],".png"), width=5, height=7, units="in", res=300)
-  print(p)
-  dev.off()
+  #png(paste0("beetle_presence_stat_", varnms[i],".png"), width=5, height=7, units="in", res=300)
+  #print(p)
+  #dev.off()
   print(varnms[i])
 }
 
-png("composite_beetle_presence_stat.png", width=11, height=9, units="in", res=300)
-par(mfrow=c(2,3), xpd=FALSE, mar=rep(0.5,4))
-print.plotlist(plots, layout=matrix(1:6, ncol=3))
+#png("composite_beetle_presence_stat.png", width=11, height=9, units="in", res=300)
+png("beetle_presence_stats.png", width=10, height=3, units="in", res=300)
+par(mfrow=c(1,3), xpd=FALSE, mar=rep(0.5,4))
+print.plotlist(plots, layout=matrix(1:3, ncol=3))
 dev.off()
 
 print("all done!")
