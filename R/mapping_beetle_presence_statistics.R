@@ -34,14 +34,14 @@ labels <- c("Maximum continuous presence", "Maximum continuous absence",
 						"Mean of presence length", "Neighboring presence")
 plots <- list()
 #for(i in 1:length(varnms)){
-for(i in 1:c(1,2,6)){
+for(i in c(1,2,6)){
   var <- ncvar_get(ncin,varnms[i])
   if(i==1 | i==2){
     cutpts <- seq(1,20,by=2)
     p <- levelplot(var ~ x * y, data=grid, xlim=c(-2050000,20000), ylim=c(-2000000,2000000),
                par.settings = list(axis.line = list(col = "transparent")), scales = list(draw = FALSE), 
                margin=F, at=cutpts, cuts=10, pretty=T, col.regions=rev(brewer.pal(10,"RdBu")), 
-               main=list(label=labels[i], cex=1.5), xlab="",ylab="", aspect="iso")
+               main=list(label=labels[i], cex=0.6), xlab="",ylab="", aspect="iso")
   #}else if(i==3 | i==4){
   # cutpts <- c(1999,2001,2003,2005,2006,2007,2009,2011,2013,2015,2016)
   #  p <- levelplot(var ~ x * y, data=grid, xlim=c(-2050000,20000), ylim=c(-2000000,2000000),
@@ -53,7 +53,7 @@ for(i in 1:c(1,2,6)){
     p <- levelplot(var ~ x * y, data=grid, xlim=c(-2050000,20000), ylim=c(-2000000,2000000),
                par.settings = list(axis.line = list(col = "transparent")), scales = list(draw = FALSE), 
                margin=F, at=cutpts, cuts=10, pretty=T, col.regions=rev(brewer.pal(10,"RdBu")), 
-               main=list(label=labels[i], cex=1.5), xlab="",ylab="", aspect="iso")
+               main=list(label=labels[i], cex=0.6), xlab="",ylab="", aspect="iso")
   }
   p <- p + latticeExtra::layer(sp.polygons(canada.prov, lwd=0.8, col='dimgray'))
   p <- p + latticeExtra::layer(sp.polygons(us.states, lwd=0.8, col='dimgray'))
@@ -67,7 +67,7 @@ for(i in 1:c(1,2,6)){
 }
 
 #png("composite_beetle_presence_stat.png", width=11, height=9, units="in", res=300)
-png("beetle_presence_stats.png", width=10, height=3, units="in", res=300)
+png("beetle_presence_stats.png", width=6, height=3, units="in", res=300)
 par(mfrow=c(1,3), xpd=FALSE, mar=rep(0.5,4))
 print.plotlist(plots, layout=matrix(1:3, ncol=3))
 dev.off()
