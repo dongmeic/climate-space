@@ -22,7 +22,7 @@ print.plotlist<-function(xx, layout=matrix(1:length(xx), nrow=1), more=F) {
     pos <- apply(wch,2,range)
     ps <- c(col.pts[pos[1,2]], row.pts[pos[2,1]+1], col.pts[pos[2,2]+1],row.pts[pos[1,1]])
     print(
-      xx[[i]], 
+      xx[[i]],
       position = ps,
       #split=c(rev(which(lyt==j, arr.ind=T)),rev(dim(lyt))),
       more=ifelse(j != maxi & i<length(xx), T, more)

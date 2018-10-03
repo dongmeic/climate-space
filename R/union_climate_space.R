@@ -17,13 +17,13 @@ vargrp <- c(vars1, vars2)
 
 varnms1 <- c("Minimum winter temperature",
 						 "Mean temperature from Aug to Jul",
-						 "Degree days from August to July",
+						 "Sqrt(Degree days from August to July)",
 						 "Mean temperature from Mar to Aug")
 
 varnms2 <- c("Maximum temperature in Aug",
 						 "Temperature variation from Aug to Jul",
-						 "Growing season precipitation",
-						 "Sum of precipitation from Mar to Aug")
+						 "Sqrt(Growing season precipitation)",
+						 "Sqrt(Sum of precipitation from Mar to Aug)")
 
 varnms <- c(varnms1, varnms2)
 cols <- c("grey70", "#1b9e77", "#7570b3")
@@ -55,7 +55,7 @@ climate.space <- function(i){
 	df <- df5[,c(vars1[i], vars2[i], "prs")]
   colnames(df)[1:2] <- c("x", "y")
   df <- df[order(df$prs),]
-  plot <- qplot(x, y, data=df, color=factor(prs), alpha=I(0.5), xlab = varnms1[i], ylab = varnms2[i], main = paste0(vars1[i],"/", vars2[i]))  
+  plot <- qplot(x, y, data=df, color=factor(prs), alpha=I(0.5), xlab = varnms1[i], ylab = varnms2[i])  
 	plot <- plot + scale_colour_manual(name="Presence", labels=c("Continent","Hosts","Beetles"), values = cols)+ labs(color="prs")
   plot <- plot + theme(axis.text=element_text(size=12),axis.title=element_text(size=12))
 	return(plot)
@@ -63,7 +63,7 @@ climate.space <- function(i){
 
 png(paste0(out,"union_cs_var.png"), width=10, height=8, units="in", res=300)
 grid.newpage()
-par(mar=c(2,2,4,2))
+par(mar=c(2,2,2,2))
 pushViewport(viewport(layout = grid.layout(2, 2)))
 plot1 <- climate.space(1)
 print(plot1, vp = vplayout(1, 1))

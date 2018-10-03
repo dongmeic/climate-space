@@ -72,7 +72,7 @@ plots<-lapply(1:20, function(i) plotbtl(i))
 
 png("composite_beetle_presence.png", width=8, height=12, units="in", res=300)
 par(mfrow=c(4,5), xpd=FALSE, mar=rep(0.5,4))
-print.plotlist(plots, layout=matrix(1:20, ncol=5))
+print.plotlist(plots, layout=matrix(1:20, ncol=5, byrow=T))
 dev.off()
 
 print("all done!")
