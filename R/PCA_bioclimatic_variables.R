@@ -40,6 +40,7 @@ for(i in 2:length(years)){
   print(paste(years[i], "done!"))
 }
 ndf <- cbind(ndf, year=unlist(lapply(1996:2015,function(i) rep(i,dim(ndf)[1]/length(1996:2015)))))
+write.csv(df, paste0(csvpath, "bioclimatic_values_1996_2015_r.csv"), row.names=FALSE)
 svars <- c("GSP", "PMarAug", "summerP0","summerP1", "summerP2", 
            "Pmean","POctSep", "PcumOctSep", "PPT", "ddAugJul", "ddAugJun")
 sdf <- sqrt(ndf[, svars])
