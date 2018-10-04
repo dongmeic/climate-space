@@ -8,10 +8,10 @@ dat <- cbind(dat[34], scale(dat[,-34]))
 dat$beetles <- as.character(dat$beetles)
 # Linear Discriminant Analysis with Jacknifed Prediction 
 dat.lda <- lda(beetles ~ ., data=dat)
-dat.lda.p <- predict(dat.lda, newdata=dat[,c(2:3)])$class
 
 # Assess the accuracy of the prediction
 # percent correct for each category of "beetles"
+fit <- lda(beetles ~ ., data=dat, na.action="na.omit", CV=TRUE)
 ct <- table(dat$beetles, fit$class)
 diag(prop.table(ct, 1))
 # total percent correct
