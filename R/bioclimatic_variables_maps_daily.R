@@ -17,7 +17,7 @@ ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/ts/var/"
 out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/maps/"
 setwd(out)
 
-vargrp <- c("Lcs", "maxAugT", "winterTmin", "Ecs", "Ncs", "Acs", "drop0", "drop5", "ddAugJul", "ddAugJun")
+vargrp <- c("Lcs", "maxAugT", "winterTmin", "Ecs", "Ncs", "Acs", "drop0", "drop5", "ddAugJul", "ddAugJun", "summerT40")
 
 ncin <- nc_open("/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/na10km_v2.nc")
 x <- ncvar_get(ncin, varid="x"); nx <- length(x)
@@ -45,7 +45,9 @@ drop5=c(0,10,20,30,40,45,50,60,70,80,90),
 #ddAugJul
 ddAugJul=c(0,1000,2000,3000,4000,5000,6000,8000,9000,10000,11000),
 #ddAugJun
-ddAugJun=c(0,1000,2000,3000,4000,5000,6000,7000,8000,9000,10000))
+ddAugJun=c(0,1000,2000,3000,4000,5000,6000,7000,8000,9000,10000),
+#summerT40
+summerT40=c())
 
 get.data <- function(var){
   ncfile <- paste0("na10km_v2_",var, "_",years[1],".",years[nyr],".4d.nc")

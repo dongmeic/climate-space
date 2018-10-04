@@ -12,7 +12,8 @@ outcsvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
 ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/ts/var/"
 setwd(outcsvpath)
 
-vargrp <- c("drop0", "drop5", "ddAugJul", "ddAugJun", "Acs",
+vargrp <- c("drop0", "drop5", "ddAugJul", "ddAugJun", 
+						"Acs", "Ecs", "Lcs", "Ncs",
 						"min20", "min22", "min24", "min26", "min28", 
 						"min30", "min32", "min34", "min36", "min38", "min40")
 
