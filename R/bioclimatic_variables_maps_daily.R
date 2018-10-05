@@ -47,7 +47,7 @@ ddAugJul=c(0,1000,2000,3000,4000,5000,6000,8000,9000,10000,11000),
 #ddAugJun
 ddAugJun=c(0,1000,2000,3000,4000,5000,6000,7000,8000,9000,10000),
 #summerT40
-summerT40=c())
+summerT40=c(0,5,10,15,25,35,45,55,65,75,95))
 
 get.data <- function(var){
   ncfile <- paste0("na10km_v2_",var, "_",years[1],".",years[nyr],".4d.nc")
@@ -196,7 +196,6 @@ for(i in 1:length(vargrp)){
 }
 
 foreach(i=1:length(vargrp)) %dopar% {
-#for(i in c(5,6)){
   im.convert(paste0("bioclimatic_map_",vargrp[i],"_*.png"),output=paste0("bioclimatic_map_",vargrp[i],".gif"))
 }
 
