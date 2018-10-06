@@ -27,13 +27,13 @@ na10km_btl_df <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/output/tables
 head(na10km_btl_df)
 years <- 1996:2015
 
-ndf <- read.csv(paste0(csvpath,"bioclimatic_values_selected_",years[1],".csv")) # from bioclimatic_values_time_series.R
+ndf <- read.csv(paste0(csvpath,"bioclimatic_values_",years[1],".csv")) # from bioclimatic_values_time_series_combined.R
 ndf <- cbind(ndf, na10km_btl_df[,c(paste0("prs_",(years[1]+1)),"vegetation")])
 b <- dim(ndf)[2]; a <- b - 1
 colnames(ndf)[a:b] <- c("beetles","hosts")
 
 for(i in 2:length(years)){
-  df <- read.csv(paste0(csvpath,"bioclimatic_values_selected_",years[i],".csv"))
+  df <- read.csv(paste0(csvpath,"bioclimatic_values_",years[i],".csv"))
   df <- cbind(df,na10km_btl_df[,c(paste0("prs_",(years[i]+1)),"vegetation")])
   colnames(df)[a:b] <- c("beetles","hosts")
   ndf <- rbind(ndf,df)
@@ -47,20 +47,13 @@ sdf <- sqrt(ndf[, svars])
 df <- cbind(sdf, ndf[,-which(colnames(ndf) %in% svars)])
 write.csv(df, paste0(csvpath, "bioclimatic_values_1996_2015.csv"), row.names=FALSE)
 
-# vars <- c("JanTmin", "MarTmin", "TMarAug", "summerTmean", 
-#           "AugTmean", "AugTmax", "GSP", "PMarAug", "summerP0",
-#           "OctTmin", "fallTmean", "winterTmin", "Tmin", "Tmean", 
-#           "Tvar", "TOctSep", "summerP1", "summerP2", "Pmean",
-#           "POctSep", "PcumOctSep", "PPT", "drop0", "drop5", 
-#           "ddAugJul", "ddAugJun", "min30")
-
 vars <- c("JanTmin", "MarTmin", "TMarAug", "summerTmean",
           "AugTmean", "AugTmax", "GSP", "PMarAug", "summerP0",
           "OctTmin", "fallTmean", "winterTmin", "Tmin", "Tmean",
           "Tvar", "TOctSep", "summerP1", "summerP2", "Pmean",
           "POctSep", "PcumOctSep", "PPT", "drop0", "drop5",
-          "ddAugJul", "ddAugJun", "Acs", 
-          "min20", "min22", "min24", "min26", "min28", "min30")
+          "ddAugJul", "ddAugJun", "Acs", "Ecs", "Lcs", "Ncs", "maxAugT", "summerT40",
+          "min20", "min22", "min24", "min26", "min28", "min30", "min32", "min34", "min36", "min38", "min40")
 
 head(df)
 pca <- princomp(df[,vars], cor=T)
