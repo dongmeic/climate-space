@@ -173,7 +173,7 @@ vargrp1 <- c("Tmin", "MarTmin", "TOctSep", "Tmean", "OctTmin", "winterTmin",
              "summerTmean", "PMarAug", "PcumOctSep", "summerP0", "Pmean", "ddAugJun")
                             
 vargrp2 <- c("TMarAug","AugTmean", "AugTmax", "Tvar", "fallTmean", "JanTmin",
-             "PPT", "POctSep", "GSP", "summerP1","summerP2", "ddAugJul")
+             "PPT", "POctSep", "GSP", "summerP1", "summerP2", "ddAugJul")
 
 vargrp <- c(vargrp1, vargrp2)
 
@@ -197,8 +197,8 @@ varnms2 <-  c("Mean temperature from Mar to Aug",
               "Mean temperature from Sep to Nov",
               "Minimum temperature in Jan",
               "Cumulative monthly Oct-Aug precipitation",
-              "Growing season precipitation",
               "Precipitation from Oct and Sep in previous year",
+              "Growing season precipitation",
               "Precipitation from Jun to Aug in previous year",
               "Cumulative precipitation from Jun to Aug",
               "Degree days from August to July")

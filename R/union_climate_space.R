@@ -1,3 +1,6 @@
+# Created by Dongmei Chen
+# Copy from climate_space_union.R
+
 library(ncdf4)
 library(ggplot2)
 library(grid)
@@ -10,20 +13,20 @@ csvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/climate_space/times_s
 ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/ts/var/"
 setwd(out)
 
-vars1 <- c("winterTmin", "Tmean", "ddAugJul", "TMarAug")
-vars2 <- c("AugTmax", "Tvar", "GSP", "PMarAug")
+vars1 <- c("Tmean", "fallTmean", "AugTmax", "Tmin")
+vars2 <- c("Tvar", "PPT", "POctSep", "GSP")
 
 vargrp <- c(vars1, vars2)
 
-varnms1 <- c("Minimum winter temperature",
-						 "Mean temperature from Aug to Jul",
-						 "Sqrt(Degree days from August to July)",
-						 "Mean temperature from Mar to Aug")
+varnms1 <- c("Mean temperature from Aug to Jul",
+						 "Mean temperature from Sep to Nov",
+						 "Maximum temperature in Aug",
+						 "Mean minimum temperature from Nov to Mar")
 
-varnms2 <- c("Maximum temperature in Aug",
-						 "Temperature variation from Aug to Jul",
-						 "Sqrt(Growing season precipitation)",
-						 "Sqrt(Sum of precipitation from Mar to Aug)")
+varnms2 <- c("Temperature variation from Aug to Jul",
+						 "Sqrt(Cumulative monthly Oct-Aug precipitation)",
+						 "Sqrt(Precipitation from Oct and Sep in previous year)",
+						 "Sqrt(Precipitation from Apr to Jun in current year)")
 
 varnms <- c(varnms1, varnms2)
 cols <- c("grey70", "#1b9e77", "#7570b3")
