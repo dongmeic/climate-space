@@ -10,10 +10,11 @@ library(PerformanceAnalytics)
 
 inpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
 data <- read.csv(paste0(inpath, "bioclimatic_values_1996_2015_r.csv"))
+head(data)
 
 d <- dim(data)[2]
-# Remove hosts column
-dat <- data[,-d]
+# Remove hosts and year columns
+dat <- data[,-(d:(d-1))]; head(dat)
 d <- dim(dat)[2]
 # rescale the predictors
 dt <- cbind(dat[d], scale(dat[,-d]))
@@ -67,22 +68,28 @@ chart.Correlation(my_data, histogram=TRUE, pch=19)
 
 # checking climate space pairs
 df <- dt[dt$beetles=="1",]
-par(mfrow=c(2,5))
-plot(df$Tmean, df$Tvar)
-plot(df$TMarAug,df$PPT)
-plot(df$fallTmean, df$POctSep)
-plot(df$ddAugJul, df$PcumOctSep)
-plot(df$ddAugJun, df$Pmean)
-plot(df$AugTmean, df$GSP)
-plot(df$AugTmax,df$JanTmin)
-plot(df$Tmin, df$summerP1)
-plot(df$summerTmean, df$summerP0)
-plot(df$OctTmin, df$summerP2)
-plot(df$TOctSep, df$POctSep)
+par(mfrow=c(2,4))
+plot(df$ddAugJul, df$drop5)
+plot(df$ddAugJun,df$drop0)
+plot(df$AugTmax, df$Tvar)
+plot(df$AugTmean, df$PMarAug)
+plot(df$Tmin, df$GSP)
+plot(df$TOctSep, df$PPT)
+plot(df$OctTmin, df$summerP0)
+plot(df$fallTmean, df$Pmean)
+
+par(mfrow=c(2,3))
+plot(df$ddAugJul, df$drop5)
+plot(df$AugTmax, df$Tvar)
+plot(df$Tmin, df$GSP)
+plot(df$TOctSep, df$PPT)
+plot(df$OctTmin, df$PMarAug)
+plot(df$fallTmean, df$Pmean)
 
 par(mfrow=c(2,2))
-plot(df$Tmean, df$Tvar)
-plot(df$TMarAug,df$PPT)
-plot(df$AugTmax,df$POctSep)
-plot(df$Tmin, df$summerP1)
+plot(df$ddAugJul, df$drop5)
+plot(df$AugTmax, df$Tvar)
+plot(df$Tmin, df$GSP)
+plot(df$TOctSep, df$PPT)
+
 

@@ -13,20 +13,20 @@ csvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/climate_space/times_s
 ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/ts/var/"
 setwd(out)
 
-vars1 <- c("Tmean", "fallTmean", "AugTmax", "Tmin")
-vars2 <- c("Tvar", "PPT", "POctSep", "GSP")
+vars1 <- c("ddAugJul", "AugTmax", "Tmin", "TOctSep")
+vars2 <- c("drop5", "Tvar", "GSP", "PPT")
 
 vargrp <- c(vars1, vars2)
 
-varnms1 <- c("Mean temperature from Aug to Jul",
-						 "Mean temperature from Sep to Nov",
+varnms1 <- c("Day-degrees above 5.5 °C (Aug - Jul)",
 						 "Maximum temperature in Aug",
-						 "Mean minimum temperature from Nov to Mar")
+						 "Mean minimum temperature (Nov - Mar)",
+						 "Water-year mean temperature (Oct - Sep)")
 
-varnms2 <- c("Temperature variation from Aug to Jul",
-						 "Sqrt(Cumulative monthly Oct-Aug precipitation)",
-						 "Sqrt(Precipitation from Oct and Sep in previous year)",
-						 "Sqrt(Precipitation from Apr to Jun in current year)")
+varnms2 <- c("No. days with a 0-5 °C drop during winter",
+						 "Seasonal temperature variation (Aug - Jul)",
+						 "Sqrt(Growing season precipitation)",
+						 "Sqrt(Cumulative monthly Oct-Aug precipitation)")
 
 varnms <- c(varnms1, varnms2)
 cols <- c("grey70", "#1b9e77", "#7570b3")
