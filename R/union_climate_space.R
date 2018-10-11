@@ -18,10 +18,10 @@ vars2 <- c("drop5", "Tvar", "GSP", "PPT")
 
 vargrp <- c(vars1, vars2)
 
-varnms1 <- c("Day-degrees above 5.5 °C (Aug - Jul)",
-						 "Maximum temperature in Aug",
-						 "Mean minimum temperature (Nov - Mar)",
-						 "Water-year mean temperature (Oct - Sep)")
+varnms1 <- c("Sqrt(Day-degrees above 5.5 °C (Aug - Jul))",
+						 "Maximum temperature in Aug (°C)",
+						 "Mean minimum temperature (°C, Nov - Mar)",
+						 "Water-year mean temperature (°C, Oct - Sep)")
 
 varnms2 <- c("No. days with a 0-5 °C drop during winter",
 						 "Seasonal temperature variation (Aug - Jul)",
