@@ -13,20 +13,20 @@ csvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/climate_space/times_s
 ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/ts/var/"
 setwd(out)
 
-vars1 <- c("ddAugJul", "AugTmax", "Tmin", "TOctSep")
-vars2 <- c("GSP", "Tvar", "PMarAug", "PPT")
+vars1 <- c("ddAugJul", "AugTmax", "winterTmin", "summerP1")
+vars2 <- c("GSP", "summerP0", "PPT", "Tvar")
 
 vargrp <- c(vars1, vars2)
 
 varnms1 <- c("Sqrt(Day-degrees above 5.5 °C from Aug to Jul)",
 						 "Maximum temperature in Aug (°C)",
-						 "Mean minimum temperature (°C, Nov - Mar)",
-						 "Water-year mean temperature (°C, Oct - Sep)")
+						 "Minimum winter temperature (°C)",
+						 "Sqrt(Summer precipitation in previous year, mm)")
 
 varnms2 <- c("Sqrt(Growing season precipitation, mm)",
-						 "Seasonal temperature variation (Aug - Jul)",
-						 "Sqrt(Sum of precipitation from Mar to Aug, mm)",
-						 "Sqrt(Cumulative monthly Oct-Aug precipitation, mm)")
+						 "Sqrt(Summer precipitation in current year, mm)",
+						 "Sqrt(Cumulative monthly Oct-Aug precipitation, mm)",
+						 "Seasonal temperature variation (Aug - Jul)")
 
 varnms <- c(varnms1, varnms2)
 cols <- c("grey70", "#1b9e77", "#7570b3")

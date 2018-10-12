@@ -174,7 +174,8 @@ for(i in 1:which(names(data)=="ddAugJun")){
 dev.off()
 
 # correlation matrix
-dat <- data[!(names(data) %in% ignore)]
+data <- read.csv(paste0(inpath, "bioclimatic_values_1996_2015_t.csv"))
+dat <- data[,!(names(data) %in% ignore)]
 my_data <- scale(dat)
 res <- cor(my_data)
 sink(paste0(inpath,"CorrMatrix.txt"))
@@ -183,16 +184,18 @@ sink()
 res2 <- rcorr(my_data)
 
 # rescale the predictors
-my_data$beetles <- data$beetles
+dt <- as.data.frame(my_data)
+dt$beetles <- data$beetles
 # Linear Discriminant Analysis
-dt.lda <- lda(beetles ~ ., data=my_data)
+dt.lda <- lda(beetles ~ AugTmax + GSP + summerP0 + winterTmin + Tvar + summerP1 + PPT + drop5 + ddAugJul, data=dt)
 sink(paste0(inpath,"lda.txt"))
 print(dt.lda)
 sink()
 
 # Assess the accuracy of the prediction
 # percent correct for each category of "beetles"
-fit <- lda(beetles ~ ., data=dt, na.action="na.omit", CV=TRUE)
+fit <- lda(beetles ~ AugTmax + GSP + summerP0 + winterTmin + Tvar + summerP1 + PPT + drop5 + ddAugJul, 
+					 data=dt, na.action="na.omit", CV=TRUE)
 ct <- table(dt$beetles, fit$class)
 diag(prop.table(ct, 1))
 # total percent correct
@@ -244,8 +247,8 @@ plot(df$fallTmean, df$Pmean)
 
 par(mfrow=c(2,2))
 plot(df$ddAugJul, df$GSP)
-plot(df$AugTmax, df$Tvar)
-plot(df$Tmin, df$PMarAug)
-plot(df$TOctSep, df$PPT)
+plot(df$AugTmax, df$summerP0)
+plot(df$winterTmin, df$PPT)
+plot(df$summerP1, df$Tvar)
 
 
