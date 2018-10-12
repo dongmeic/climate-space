@@ -38,6 +38,131 @@ for(i in 1:43){
 }
 dev.off()
 
+# https://github.com/dongmeic/SDM/blob/master/R/models/logisticModEDA.R.ipynb
+# Find the best exponential transform (x' = x^a) or log transform 
+# (x' = log(x))that best normalizes the input vector x
+get.best.transform <- function(x, 
+                               min.exp=-2, 
+                               max.exp=2, 
+                               steps=100, 
+                               min.x=NULL, 
+                               include.log=T, 
+                               plt=F, 
+                               verbose=F) {
+  t.string <- 'x'
+  if (is.null(min.x)) { min.x <- min(x) }
+    
+  # Prevent 0 and negative values--not defined for certain tranformations
+  if (min(x) <= 0) {
+    xt <- x + abs(min.x) + 1
+    t.string <- paste('(', t.string, ' + ', abs(min(x)) + 1, ')', sep='')
+  } else {
+    xt <- x
+    t.string <- 'x'
+  }
+    
+  exps <- seq(min.exp, max.exp, length=steps)
+  ps <- rep(NA, steps)
+    
+  for (i in 1:length(exps)) {
+    ex <- exps[i]
+    ps[i] <- shapiro.test(xt^ex)$p
+  }
+    
+  best.p <- which(ps == max(ps))[1]
+  best.exp <- exps[best.p]
+  best <- best.exp
+    
+  if (include.log) {
+    if (shapiro.test(log(xt))$p > best.p) {
+      t.string <- paste('log', t.string, sep='')
+      xt <- log(xt)
+      best <- 'log'
+    } else {
+      t.string <- paste(t.string, round(best.exp, 4), sep='^')
+      xt <- xt^best.exp
+    }
+  }
+    
+  if (verbose) { cat(t.string, '\n')}
+    
+  if (plt) {
+    plot(ps ~ exps, 
+         xlab='exponent', 
+         ylab='p (Shapiro-Wilk Test)', 
+         type='l', 
+         col=2)
+    par(mfrow=c(1, 2))
+    hist(x, main='x', col=4, xlab='')
+    hist(xt, main=t.string, col=4, xlab='')
+  }
+
+  list(best=best, x.transform=xt)
+}
+
+# To compensate, we will take several random samples of size 5000, and 
+# average their transformations
+get.best.transform.big <- function(data, field, n.samples, plt=T, time=T) {
+    
+  start <- Sys.time()
+  exps <- rep(NA, n.samples)
+    
+  for (s in 1:n.samples) {
+    if (length(data) == 1) {
+      x <- sample(data[[1]][, field], size=5000)
+      min.x <- min(data[[1]][, field], na.rm=T)
+    } else {
+      x <- sample(data[[1]][, field], size=5000)
+      min.xs <- rep(NA, length(data))
+      for (i in 1:length(data)) {
+        min.xs[i] <- min(data[[i]][, field], na.rm=T)
+      }
+      min.x <- min(min.xs)
+    }
+    
+    x <- x[!is.na(x)]
+    exps[s] <- get.best.transform(x, min.x=min.x, include.log=F)$best
+  }
+
+  if (plt) { hist(exps, main=field, col=4) }
+  if (time) { cat('Time taken:', Sys.time() - start, '\n') }
+    
+  mean(exps)    
+}
+
+ignore <- c('Acs', 'Ecs', 'Lcs', 'Ncs', 'maxAugT', 'summerT40', 'min20',
+						'min22', 'min24', 'min26', 'min28', 'min30', 'min32', 'min34',
+						'min36', 'min38', 'min40', 'beetles', 'hosts', 'year')
+
+SAMPLES <- 500
+best.exps <- c()
+par(mfrow=c(1, 1))
+
+for (field in names(data)) {
+  if (!(field %in% ignore)) {
+    min.x <- min(data[, field],
+                 na.rm=T)
+    best.exp <- get.best.transform.big(
+        list(data), field, SAMPLES, plt=T, time=T)
+    cat(field, ': ', best.exp, '\n', sep='')
+    best.exps[field] <- best.exp
+  }
+}
+
+# transform and check the distributions before and after the transformation
+par(mfrow=c(2, 2))
+for (field in names(data)) {
+  if (!(field %in% ignore)) {
+    hist(data[, field], main=field, col=4)
+      
+    min.x <- min(data[, field], na.rm=T)
+    data[, field] <- (data[, field] + abs(min.x) + 1)^best.exps[field]
+    
+    hist(data[, field], main=paste(field, "'", sep=''), col=4)
+  }
+}
+write.csv(paste0(inpath, "bioclimatic_values_1996_2015_t.csv"), row.names=FALSE)
+
 d <- dim(data)[2]
 # Remove hosts and year columns
 dat <- data[,-(d:(d-1))]; head(dat)
