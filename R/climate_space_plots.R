@@ -1,18 +1,20 @@
 # Created by Dongmei Chen
 
 csvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
-csvfile <- "bioclimatic_values_1996_2015.csv" # from PCA_bioclimatic_variables.R
+csvfile <- "bioclimatic_values_1996_2015_r.csv" # from PCA_bioclimatic_variables.R
 ndf <- read.csv(paste0(csvpath,csvfile))
 out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/plots"
 setwd(out)
 
-vargrp.t <- c("Tmin", "MarTmin", "TOctSep", "Tmean", "fallTmean", "OctTmin", "winterTmin",
-							"JanTmin", "ddAugJun", "ddAugJul", "TMarAug", "summerTmean")
-							
-vargrp.p <- c("AugTmean", "AugTmax", "Tvar", "PMarAug", "PcumOctSep", "PPT", "Pmean",
-              "POctSep", "summerP2", "GSP", "summerP0", "summerP1")
+# vargrp.t <- c("Tmin", "MarTmin", "TOctSep", "Tmean", "fallTmean", "OctTmin", "winterTmin",
+#               "JanTmin", "ddAugJun", "ddAugJul", "TMarAug", "summerTmean")
+# 
+# vargrp.p <- c("AugTmean", "AugTmax", "Tvar", "PMarAug", "PcumOctSep", "PPT", "Pmean",
+#               "POctSep", "summerP2", "GSP", "summerP0", "summerP1")
 
-vargrp <- c(vargrp.t, vargrp.p) 
+vars1 <- c("ddAugJul", "AugTmax", "winterTmin", "summerP1")
+vars2 <- c("GSP", "summerP0", "PPT", "Tvar")
+vargrp <- c("ddAugJul", "AugTmax", "winterTmin", "summerP0", "PPT", "GSP", "summerP1", "Tvar")
 
 cols <- c("grey70", "#1b9e77", "#7570b3")
 
@@ -46,8 +48,8 @@ for(i in 1:length(vargrp)){
   print(paste(vargrp[i], "is done!"))
 }
 
-png("bioclimatic_density_plots.png", width=18, height=12, units="in", res=300)
-par(mfrow=c(4,6),mar=c(3.5,3.5,3,1))
+png("bioclim_density_plots.png", width=12, height=6, units="in", res=300)
+par(mfrow=c(2,4),mar=c(3.5,3.5,3,1))
 for (i in 1:length(vargrp)){
   density.plot(i)
   if(i==1){
@@ -91,9 +93,16 @@ for(i in 1:length(vargrp)){
   print(paste(vargrp[i], "is done!"))
 }
 
-png("presence_boxplot_bioclm.png", width=18, height=10, units="in", res=300)
-layout(matrix(c(seq(1,11,by=2),seq(2,12,by=2),seq(13,23,by=2),seq(14,24,by=2),
-seq(25,35,by=2),seq(26,36,by=2),seq(37,47,by=2),seq(38,48,by=2)),8,6,byrow = TRUE))
+# png("presence_boxplot_bioclm.png", width=18, height=10, units="in", res=300)
+# layout(matrix(c(seq(1,11,by=2),seq(2,12,by=2),seq(13,23,by=2),seq(14,24,by=2),
+#                 seq(25,35,by=2),seq(26,36,by=2),seq(37,47,by=2),seq(38,48,by=2)),8,6,byrow = TRUE))
+# par(mar=c(3,3,3,1))
+# for (i in 1:length(vargrp)){
+#   presence.boxplot(i)
+# }
+
+png("presence_boxplot_bioclm.png", width=12, height=6, units="in", res=300)
+layout(matrix(c(seq(1,9,by=2),seq(2,10,by=2),seq(9,17,by=2),seq(10,18,by=2),4,4,byrow = TRUE))
 par(mar=c(3,3,3,1))
 for (i in 1:length(vargrp)){
   presence.boxplot(i)

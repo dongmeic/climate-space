@@ -66,28 +66,37 @@ get.abs.data <- function(var, yr){
 
 climate.space.paired <- function(i){
 	cols2 <- c("grey70", "#1b9e77", "#1B9E777D", "#7570b3", "#7570B37D")
-	vars1 <- c("ddAugJul", "AugTmax", "winterTmin", "summerP1")
-	vars2 <- c("GSP", "summerP0", "PPT", "Tvar")
   df <- df5[,c(vars1[i], vars2[i], "prs")]
   colnames(df)[1:2] <- c("tmp", "pre")
   df <- df[order(df$prs),]  
-  plot1 <- qplot(tmp, pre, data=df, color=factor(prs), alpha=I(0.5), xlab = varnms.t[i], ylab = varnms.p[i], main = "MPB climate space")
+  plot1 <- qplot(tmp, pre, data=df, color=factor(prs), alpha=I(0.5), xlab = varnms1[i], ylab = varnms2[i])
   plot1 <- plot1 + scale_colour_manual(name="Presence", labels=c("Continent","Hosts","Beetles"), values = cols)+ labs(color="prs")
-  plot1 <- plot1 + theme(axis.text=element_text(size=12),axis.title=element_text(size=14,face="bold"))
+  plot1 <- plot1 + theme(axis.text=element_text(size=11),axis.title=element_text(size=11,face="bold"))
   
   df <- get.abs.data(vars1[i])
-  plot2 <- ggplot(df, aes(x=prs, y=vals, fill=factor(prs)))+geom_boxplot()+scale_fill_manual(values = cols2)+theme(axis.ticks.x=element_blank())+labs(x="Presence", y=varnms.t[i])+stat_summary(fun.data = max.n, geom = "text", fun.y = max)+
+  plot2 <- ggplot(df, aes(x=prs, y=vals, fill=factor(prs)))+geom_boxplot(outlier.color = rgb(0.5,0.5,0.5),outlier.shape = 16, outlier.size = 0.8,
+  	outlier.stroke = 0.5, outlier.alpha = 0.3)+scale_fill_manual(values = cols2)+theme(axis.ticks.x=element_blank())+labs(x="Presence", y=varnms1[i])+stat_summary(fun.data = max.n, geom = "text", fun.y = max)+
     stat_summary(fun.data = min.n, geom = "text", fun.y = min)+stat_summary(fun.data = mean.n, geom = "text", fun.y = mean, col="white")+theme(legend.position="none")+ 
     scale_x_discrete(labels=c("continent" = "Continent", "hosts" = "Hosts", "hosts-abs" = "Hosts-abs", "mpb" = "Beetles", "mpb-abs" = "Beetles-abs"))
   
   df <- get.abs.data(vars2[i])
-  plot3 <- ggplot(df, aes(x=prs, y=vals, fill=factor(prs)))+geom_boxplot()+scale_fill_manual(values = cols2)+theme(axis.ticks.x=element_blank())+labs(x="Presence", y=varnms.p[i])+stat_summary(fun.data = max.n, geom = "text", fun.y = max)+
+  plot3 <- ggplot(df, aes(x=prs, y=vals, fill=factor(prs)))+geom_boxplot(outlier.color = rgb(0.5,0.5,0.5),outlier.shape = 16, outlier.size = 0.8,
+  	outlier.stroke = 0.5, outlier.alpha = 0.3)+scale_fill_manual(values = cols2)+theme(axis.ticks.x=element_blank())+labs(x="Presence", y=varnms2[i])+stat_summary(fun.data = max.n, geom = "text", fun.y = max)+
     stat_summary(fun.data = min.n, geom = "text", fun.y = min)+stat_summary(fun.data = mean.n, geom = "text", fun.y = mean, col="white")+theme(legend.position="none")+ 
     scale_x_discrete(labels=c("continent" = "Continent", "hosts" = "Hosts", "hosts-abs" = "Hosts-abs", "mpb" = "Beetles", "mpb-abs" = "Beetles-abs"))
-  grid.newpage()
-  par(mar=c(2,2,4,2))
-  pushViewport(viewport(layout = grid.layout(1, 4))) # 1 rows, 4 columns
-  print(plot1, vp = vplayout(1, 1:2))  # the big plot covers rows 1 and cols 1:2
-  print(plot2, vp = vplayout(1, 3))
-  print(plot3, vp = vplayout(1, 4))
+  print(plot1, vp = vplayout(i, 1:2))  # the big plot covers rows 1 and cols 1:2
+  print(plot2, vp = vplayout(i, 3))
+  print(plot3, vp = vplayout(i, 4))
+}
+
+density.plot <- function(i){
+  p1 <- density(ndf[,vargrp[i]])
+  p2 <- density(ndf[ndf$hosts==1,][,vargrp[i]])
+  p3 <- density(ndf[ndf$beetles==1,][,vargrp[i]])
+  r <- range(c(p1$y,p2$y,p3$y))
+  plot(p3,col=cols[3], main=vargrp[i], xlab="", ylab="", cex.main=2, cex.lab=1.5, cex.axis=1.5, lwd=4, ylim=r)
+  lines(p2,col=cols[2], lwd=4)
+  lines(p1,col=cols[1], lwd=4)
+  polygon(p3, col="#7570B37D", border=cols[3])
+  print(paste(vargrp[i], "is done!"))
 }

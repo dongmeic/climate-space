@@ -15,9 +15,7 @@ setwd(out)
 
 vars1 <- c("ddAugJul", "AugTmax", "winterTmin", "summerP1")
 vars2 <- c("GSP", "summerP0", "PPT", "Tvar")
-vars <- c("ddAugJul", "AugTmax", "winterTmin", "summerP0", "PPT", "GSP", "summerP1", "Tvar")
-
-vargrp <- c(vars1, vars2)
+vargrp <- c("ddAugJul", "AugTmax", "winterTmin", "summerP0", "PPT", "GSP", "summerP1", "Tvar")
 
 varnms1 <- c("Sqrt(Day-degrees above 5.5 °C from Aug to Jul)",
 						 "Maximum temperature in Aug (°C)",
@@ -29,17 +27,8 @@ varnms2 <- c("Sqrt(Growing season precipitation, mm)",
 						 "Sqrt(Cumulative monthly Oct-Aug precipitation, mm)",
 						 "Seasonal temperature variation (Aug - Jul)")
 
-varnms <- c(varnms1, varnms2)
+vargrp <- c(vars1, vars2)
 cols <- c("grey70", "#1b9e77", "#7570b3")
-
-get.data <- function(var){
-  ncfile <- paste0("na10km_v2_",var, "_",years[1],".",years[nyr],".4d.nc")
-  ncin <- nc_open(paste0(ncpath, ncfile))
-  data <- ncvar_get(ncin,var)
-  fillvalue <- ncatt_get(ncin,var,"_FillValue")
-  data[data==fillvalue$value] <- NA
-  return(data)
-}
 
 # reorganize the data table
 df <- read.csv(paste0(csvpath, vargrp[1], "_", years[1], "_", years[nyr], ".csv"))
@@ -65,18 +54,23 @@ climate.space <- function(i){
 	return(plot)
 }
 
-png(paste0(out,"union_cs_var.png"), width=10, height=8, units="in", res=300)
-grid.newpage()
-par(mar=c(2,2,2,2))
-pushViewport(viewport(layout = grid.layout(2, 2)))
-plot1 <- climate.space(1)
-print(plot1, vp = vplayout(1, 1))
-plot2 <- climate.space(2)
-print(plot2, vp = vplayout(1, 2))
-plot3 <- climate.space(3)
-print(plot3, vp = vplayout(2, 1))
-plot4 <- climate.space(4)
-print(plot4, vp = vplayout(2, 2))
-dev.off()
+# png(paste0(out,"union_cs_var.png"), width=10, height=8, units="in", res=300)
+# grid.newpage()
+# par(mar=c(2,2,2,2))
+# pushViewport(viewport(layout = grid.layout(2, 2)))
+# plot1 <- climate.space(1)
+# print(plot1, vp = vplayout(1, 1))
+# plot2 <- climate.space(2)
+# print(plot2, vp = vplayout(1, 2))
+# plot3 <- climate.space(3)
+# print(plot3, vp = vplayout(2, 1))
+# plot4 <- climate.space(4)
+# print(plot4, vp = vplayout(2, 2))
+# dev.off()
 
-png(paste0(out,"union_cs_boxplots.png"), width=14, height=6, units="in", res=300)
+png(paste0(out,"union_cs_boxplots.png"), width=14, height=18, units="in", res=300)
+grid.newpage()
+par(mar=c(2,2,4,2))
+pushViewport(viewport(layout = grid.layout(4, 4)))
+for(i in 1:4){climate.space.paired(i)}
+dev.off()
