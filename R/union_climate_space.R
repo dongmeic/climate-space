@@ -15,6 +15,7 @@ setwd(out)
 
 vars1 <- c("ddAugJul", "AugTmax", "winterTmin", "summerP1")
 vars2 <- c("GSP", "summerP0", "PPT", "Tvar")
+vars <- c("ddAugJul", "AugTmax", "winterTmin", "summerP0", "PPT", "GSP", "summerP1", "Tvar")
 
 vargrp <- c(vars1, vars2)
 
@@ -77,3 +78,5 @@ print(plot3, vp = vplayout(2, 1))
 plot4 <- climate.space(4)
 print(plot4, vp = vplayout(2, 2))
 dev.off()
+
+png(paste0(out,"union_cs_boxplots.png"), width=14, height=6, units="in", res=300)
