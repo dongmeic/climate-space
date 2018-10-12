@@ -31,7 +31,7 @@ corehost <- readOGR(dsn=hostpath, layer="MPB_corehost_proj_disall")
 corehost <- spTransform(corehost, crs)
 labels <- c("Maximum continuous presence", "Maximum continuous absence", 
 						"Presence year after absence", "Absence year after presence", 
-						"Mean of presence length", "Neighboring presence")
+						"Mean of presence length", "Beetle persistance")
 plots <- list()
 #for(i in 1:length(varnms)){
 for(i in c(1,2,6)){
