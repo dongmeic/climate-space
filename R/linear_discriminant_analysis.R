@@ -27,7 +27,7 @@ par(mfrow=c(5,9))
 for(i in 1:43){
 	#hist(data[,i])
 	plotNormalHistogram(data[,i], main=colnames(data)[i])
-	#qqnorm(data[,i])
+	#qqnorm(data[,i]) # will take a lot of time here
 	#qqline(data[,i])
 	#print(ggqqplot(subsets[,i])) # use print function in the loop
 	#summary(p1 <- powerTransform(subsets[,i]))
@@ -161,17 +161,31 @@ for (field in names(data)) {
     hist(data[, field], main=paste(field, "'", sep=''), col=4)
   }
 }
-write.csv(paste0(inpath, "bioclimatic_values_1996_2015_t.csv"), row.names=FALSE)
+head(data) # all NAs in the year column?
+data$year <- unlist(lapply(1996:2015,function(i) rep(i,dim(ndf)[1]/length(1996:2015))))
+write.csv(data, paste0(inpath, "bioclimatic_values_1996_2015_t.csv"), row.names=FALSE)
 
-d <- dim(data)[2]
-# Remove hosts and year columns
-dat <- data[,-(d:(d-1))]; head(dat)
-d <- dim(dat)[2]
+png(paste0(out,"histograms_t.png"), width=18, height=6, units="in", res=300)
+par(mfrow=c(3,9))
+for(i in 1:which(names(data)=="ddAugJun")){
+	plotNormalHistogram(data[,i], main=colnames(data)[i])
+	print(i)
+}
+dev.off()
+
+# correlation matrix
+dat <- data[!(names(data) %in% ignore)]
+my_data <- scale(dat)
+res <- cor(my_data)
+sink(paste0(inpath,"CorrMatrix.txt"))
+round(res, 2)
+sink()
+res2 <- rcorr(my_data)
+
 # rescale the predictors
-dt <- cbind(dat[d], scale(dat[,-d]))
-# dt$beetles <- as.character(dt$beetles)
+my_data$beetles <- data$beetles
 # Linear Discriminant Analysis
-dt.lda <- lda(beetles ~ ., data=dt)
+dt.lda <- lda(beetles ~ ., data=my_data)
 sink(paste0(inpath,"lda.txt"))
 print(dt.lda)
 sink()
@@ -183,15 +197,6 @@ ct <- table(dt$beetles, fit$class)
 diag(prop.table(ct, 1))
 # total percent correct
 sum(diag(prop.table(ct)))
-
-# correlation matrix
-d <- dim(dat)[2]
-my_data <- scale(dat[,-d])
-res <- cor(my_data)
-sink(paste0(inpath,"CorrMatrix.txt"))
-round(res, 2)
-sink()
-res2 <- rcorr(my_data)
 
 # source: http://www.sthda.com/english/wiki/correlation-matrix-a-quick-start-guide-to-analyze-format-and-visualize-a-correlation-matrix-using-r-software
 # ++++++++++++++++++++++++++++
