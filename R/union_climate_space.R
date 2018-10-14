@@ -27,7 +27,6 @@ varnms2 <- c("Sqrt(Growing season precipitation, mm)",
 						 "Sqrt(Cumulative monthly Oct-Aug precipitation, mm)",
 						 "Seasonal temperature variation (Aug - Jul)")
 
-vargrp <- c(vars1, vars2)
 cols <- c("grey70", "#1b9e77", "#7570b3")
 
 # reorganize the data table

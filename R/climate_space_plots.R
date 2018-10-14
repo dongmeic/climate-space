@@ -53,7 +53,7 @@ par(mfrow=c(2,4),mar=c(3.5,3.5,3,1))
 for (i in 1:length(vargrp)){
   density.plot(i)
   if(i==1){
-    legend('topleft', lty=1, lwd=4, col=cols, legend=c("Continent", "Hosts", "Beetles"), bty='n')
+    legend('topright', lty=1, lwd=4, col=cols, legend=c("Continent", "Hosts", "Beetles"), cex = 1.5, bty='n')
   }
 }
 #plot(0,type='n',axes=FALSE,ann=FALSE)
@@ -102,7 +102,7 @@ for(i in 1:length(vargrp)){
 # }
 
 png("presence_boxplot_bioclm.png", width=12, height=6, units="in", res=300)
-layout(matrix(c(seq(1,9,by=2),seq(2,10,by=2),seq(9,17,by=2),seq(10,18,by=2),4,4,byrow = TRUE))
+layout(matrix(c(seq(1,7,by=2),seq(2,8,by=2),seq(9,15,by=2),seq(10,16,by=2)),4,4,byrow = TRUE))
 par(mar=c(3,3,3,1))
 for (i in 1:length(vargrp)){
   presence.boxplot(i)
@@ -111,5 +111,5 @@ for (i in 1:length(vargrp)){
 # legend('bottomleft',legend="Hosts",fill="#1B9E777D", cex = 2, bty='n')
 # plot(0,type='n',axes=FALSE,ann=FALSE)
 # legend('topleft',legend= "Beetles",fill="#7570B37D", cex = 2, bty='n')
-# dev.off()
+dev.off()
 print("all done!")
