@@ -40,10 +40,13 @@ get.df <- function(vars){
 	df.v[,-1]	
 }
 df <- get.df(vars)
-write.csv(df, "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/longterm_bioclim_mean.csv", row.names=FALSE)
+#write.csv(df, "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/longterm_bioclim_mean.csv", row.names=FALSE)
+#df <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/longterm_bioclim_mean.csv")
 
-g <- function(df, i){
-	df.s <- subset(df, var==vars[i])	
+g <- function(i){
+	indata <- read.csv(paste0(inpath,vars[i],"_",startyrs[i],"_1.csv"))
+	df <- aggregate(indata$var, by=list(prs=indata$prs, yrs=indata$yrs), FUN=mean)
+	df.s <- subset(df, prs == "mpb")
 	test <- cor.test(df.s$yrs, df.s$x)
 	g <- ggplot(data=df, aes(x=yrs, y=x,linetype = prs, color= prs)) + 
     geom_line(alpha=0.3) + 
@@ -82,3 +85,4 @@ print(plot6, vp = vplayout(3, 2))
 print(plot7, vp = vplayout(4, 1))
 print(plot8, vp = vplayout(4, 2))
 dev.off()
+
