@@ -57,20 +57,20 @@ im.convert("beetle_presence_*.png",output="beetle_presence.gif")
 
 plotbtl <- function(i){
   btl_slice <- btl[,,i]
-  p <- levelplot(btl_slice ~ x * y, data=grid, xlim=c(-2050000,20000), ylim=c(-2000000,2000000),
+  p <- levelplot(btl_slice ~ x * y, data=grid, xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
                  par.settings = list(axis.line = list(col = "transparent")), scales = list(draw = FALSE), margin=F, 
                  col.regions=myColors, main=list(label=toString(years[i]), cex=1.2), 
                  xlab="",ylab="", colorkey = FALSE, aspect="iso")
   p <- p + latticeExtra::layer(sp.polygons(canada.prov, lwd=0.8, col='dimgray'))
   p <- p + latticeExtra::layer(sp.polygons(us.states, lwd=0.8, col='dimgray'))
   p <- p + latticeExtra::layer(sp.polygons(lrglakes, lwd=0.8, col='lightblue'))
-  p <- p + latticeExtra::layer(sp.polygons(corehost, lwd=0.8, col=rgb(0,1,0,0.5)))
+  #p <- p + latticeExtra::layer(sp.polygons(corehost, lwd=0.8, col=rgb(0,1,0,0.5)))
   print(p)
 }
 
 plots <- lapply(1:20, function(i) plotbtl(i))
 
-png("composite_beetle_presence.png", width=8, height=12, units="in", res=300)
+png("composite_beetle_presence.png", width=8, height=10, units="in", res=300)
 par(mfrow=c(4,5), xpd=FALSE, mar=rep(0.5,4))
 print.plotlist(plots, layout=matrix(1:20, ncol=5, byrow=T))
 dev.off()
