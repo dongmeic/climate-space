@@ -78,11 +78,13 @@ get.summer.t40 <- function(daily.highs) {
 
 
 get.single.year.data <- function(
-    year, daily.lows, daily.highs, adjust.leap.year=F) {
+    year, daily.lows, daily.highs, adjust.leap.year=F, monthly=F) {
   leap.year <- is.leap.year(year)
   n.days <- ifelse(leap.year & adjust.leap.year, 366, 365)
-  #daily.lows  <- get.daily.from.monthly(monthly.lows,  n.days)
-  #daily.highs <- get.daily.from.monthly(monthly.highs, n.days)
+  if(monthly){
+  	daily.lows  <- get.daily.from.monthly(monthly.lows,  n.days)
+  	daily.highs <- get.daily.from.monthly(monthly.highs, n.days)
+  }
   MAR <- 60
   APR <- 91
   JUN <- 152
@@ -169,7 +171,7 @@ get.min.data <- function(daily.lows) {
 
 
 get.two.year.data <- function(
-    start.year, daily.means, daily.lows, adjust.leap.year=F) {
+    start.year, daily.means, daily.lows, adjust.leap.year=F, monthly=F) {
   y2.leap <- is.leap.year(start.year + 1)
   n.days <- ifelse(y2.leap & adjust.leap.year, 366, 365)
   OCT <- 62
@@ -181,8 +183,10 @@ get.two.year.data <- function(
   if (y2.leap) {
     winter.range <- DEC:(FEB + 28)
   }
-  #daily.means <- get.daily.from.monthly(monthly.means, n.days)
-  #daily.lows  <- get.daily.from.monthly(monthly.lows,  n.days)
+  if(monthly){
+    daily.means <- get.daily.from.monthly(monthly.means, n.days)
+  	daily.lows  <- get.daily.from.monthly(monthly.lows,  n.days)
+  }
 
   winterTmin <- min(daily.lows[winter.range])
   Ecs <- is.coldsnap(daily.lows[Ecs.range])
