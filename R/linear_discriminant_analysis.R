@@ -4,14 +4,10 @@
 library(MASS)
 library(Hmisc)
 library(dplyr)
-install.packages("corrplot", repos='http://cran.us.r-project.org')
 library(corrplot)
-install.packages("PerformanceAnalytics", repos='http://cran.us.r-project.org')
 library(PerformanceAnalytics)
-install.packages("ggpubr", repos='http://cran.us.r-project.org')
 library(ggpubr)
 library(car)
-if(!require(rcompanion)){install.packages("rcompanion", repos='http://cran.us.r-project.org')}
 library(rcompanion)
 
 inpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"

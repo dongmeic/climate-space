@@ -77,11 +77,12 @@ get.summer.t40 <- function(daily.highs) {
 }
 
 
-get.single.year.data <- function(year, monthly.lows, monthly.highs) {
+get.single.year.data <- function(
+    year, daily.lows, daily.highs, adjust.leap.year=F) {
   leap.year <- is.leap.year(year)
-  n.days <- ifelse(leap.year, 366, 365)
-  daily.lows  <- get.daily.from.monthly(monthly.lows,  n.days)
-  daily.highs <- get.daily.from.monthly(monthly.highs, n.days)
+  n.days <- ifelse(leap.year & adjust.leap.year, 366, 365)
+  #daily.lows  <- get.daily.from.monthly(monthly.lows,  n.days)
+  #daily.highs <- get.daily.from.monthly(monthly.highs, n.days)
   MAR <- 60
   APR <- 91
   JUN <- 152
@@ -89,7 +90,7 @@ get.single.year.data <- function(year, monthly.lows, monthly.highs) {
   Lcs.range <- MAR:(APR + 14)
   aug.range <- AUG:(AUG + 30)
   summer.range <- JUN:(AUG + 30)
-  if (leap.year) {
+  if (leap.year & adjust.leap.year) {
     Lcs.range <- Lcs.range + 1
     aug.range <- aug.range + 1
     summer.range <- summer.range + 1
@@ -156,22 +157,21 @@ get.min.data <- function(daily.lows) {
 	min24 <- sum(daily.lows <= -24)
 	min26 <- sum(daily.lows <= -26)
 	min28 <- sum(daily.lows <= -28)
-
-	list(min20=min20, min22=min22, min24=min24, min26=min26, min28=min28)
-# min30 <- sum(daily.lows <= -30)
-# min32 <- sum(daily.lows <= -32)
-# min34 <- sum(daily.lows <= -34)
-# min36 <- sum(daily.lows <= -36)
-# min38 <- sum(daily.lows <= -38)
-# min40 <- sum(daily.lows <= -40)
-# list(min30=min30, min32=min32, min34=min34, min36=min36, min38=min38,
-#      min40=min40)
+	min30 <- sum(daily.lows <= -30)
+	min32 <- sum(daily.lows <= -32)
+	min34 <- sum(daily.lows <= -34)
+	min36 <- sum(daily.lows <= -36)
+	min38 <- sum(daily.lows <= -38)
+	min40 <- sum(daily.lows <= -40)
+	list(min20=min20, min22=min22, min24=min24, min26=min26, min28=min28, min30=min30, 
+		 min32=min32, min34=min34, min36=min36, min38=min38, min40=min40)
 }
 
 
-get.two.year.data <- function(start.year, monthly.means, monthly.lows) {
+get.two.year.data <- function(
+    start.year, daily.means, daily.lows, adjust.leap.year=F) {
   y2.leap <- is.leap.year(start.year + 1)
-  n.days <- ifelse(y2.leap, 366, 365)
+  n.days <- ifelse(y2.leap & adjust.leap.year, 366, 365)
   OCT <- 62
   NOV <- 93
   DEC <- 123
@@ -181,18 +181,18 @@ get.two.year.data <- function(start.year, monthly.means, monthly.lows) {
   if (y2.leap) {
     winter.range <- DEC:(FEB + 28)
   }
-  daily.means <- get.daily.from.monthly(monthly.means, n.days)
-  daily.lows  <- get.daily.from.monthly(monthly.lows,  n.days)
+  #daily.means <- get.daily.from.monthly(monthly.means, n.days)
+  #daily.lows  <- get.daily.from.monthly(monthly.lows,  n.days)
 
-  #winterTmin <- min(daily.lows[winter.range])
-  #Ecs <- is.coldsnap(daily.lows[Ecs.range])
+  winterTmin <- min(daily.lows[winter.range])
+  Ecs <- is.coldsnap(daily.lows[Ecs.range])
   coldsnap.stats <- get.coldsnap.stats(daily.lows[winter.range])
-  #drop.data <- get.drop.stats(daily.means[winter.range])
-  #degree.days.data <- get.degree.days(daily.means)
+  drop.data <- get.drop.stats(daily.means[winter.range])
+  degree.days.data <- get.degree.days(daily.means)
   min.data <- get.min.data(daily.lows[winter.range])
-  list(#winterTmin=winterTmin, Ecs=Ecs, 
+  list(winterTmin=winterTmin, Ecs=Ecs, 
        coldsnap.stats=coldsnap.stats,
-       #drop.data=drop.data, degree.days.data=degree.days.data, 
+       drop.data=drop.data, degree.days.data=degree.days.data, 
        min.data=min.data
   )
 }
@@ -205,21 +205,21 @@ get.two.year.data <- function(start.year, monthly.means, monthly.lows) {
 #   monthly.means: ""      ""      "" ""   ""     "" ""      means
 #   monthly.lows:  ""      ""      "" ""   ""     "" ""      lows
 get.daily.stats <- function(
-    start.year, monthly.highs, monthly.means, monthly.lows) {
+    start.year, daily.highs, daily.means, daily.lows) {
   t <- start.year + 1
-  AUG <- 8
-  YEAR <- 12
+  AUG <- 214
+  YEAR <- 365
   
   # Months Aug (t-1)- Jul (t)
-  aug.jul.range <- AUG:(AUG + YEAR - 1)
+  aug.jul.range <- AUG:(AUG + YEAR - 31)
   # Months Jan (t) - Dec (t)
   jan.dec.range <- (YEAR + 1):(2*YEAR)
   
   #t.data <- get.single.year.data(
   #  t, monthly.lows[jan.dec.range], monthly.highs[jan.dec.range]) 
   two.year.data <- get.two.year.data(start.year, 
-                                     monthly.means[aug.jul.range], 
-                                     monthly.lows[aug.jul.range])
+                                     daily.means[aug.jul.range], 
+                                     daily.lows[aug.jul.range])
   out <- c(#unlist(t.data), 
            unlist(two.year.data))
   names(out) <- gsub(
