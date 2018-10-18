@@ -1,7 +1,7 @@
 # Created by Dongmei Chen
 # Writing daily bioclimatic variables
 
-if(0){
+if(1){
 	library(parallel)
 	library(doParallel)
 	library(foreach)
@@ -11,18 +11,18 @@ if(0){
 source("/gpfs/projects/gavingrp/dongmeic/climate-space/R/getDailyStatsfromMonthly.R")
 inpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
 setwd(inpath)
-start_year <- 1995; end_year <- 2015; years <- start_year:end_year; nt <- length(years)
+start_year <- 1901; end_year <- 1994; years <- start_year:end_year; nt <- length(years)
 
 print("calculating the biocliamtic variables using daily data")
 dim1 <- 277910; dim2 <- nt
 
 ptm <- proc.time()
-for(i in 1:nt){
+foreach(i = 1:nt)%dopar%{
 	indata1 <- read.csv(paste0(inpath, "na10km_v2_climatic_values_",years[i],".csv"))
 	indata2 <- read.csv(paste0(inpath, "na10km_v2_climatic_values_",years[i+1],".csv"))
 	indata <- rbind(indata1, indata2)
 	
-	df <- data.frame(winterTmin=double(), Ecs=double(), Ncs=double(), Acs=double(), drop0=double(),
+	df <- data.frame(Lcs=double(), maxAugT=double(), summerT40=double(), winterTmin=double(), Ecs=double(), Ncs=double(), Acs=double(), drop0=double(),
 									 drop5=double(), drop10=double(), drop15=double(), drop20=double(), drop20plus=double(),
 									 max.drop=double(), ddAugJul=double(), ddAugJun=double(), min20=double(), min22=double(), 
 									 min24=double(), min26=double(), min28=double(),min30=double(), min32=double(), 
