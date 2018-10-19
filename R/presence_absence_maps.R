@@ -70,7 +70,7 @@ plotalt <- function(i){
   alt_slice <- var3d[,,i]
   p <- levelplot(alt_slice ~ x * y, data=grid, xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
                  par.settings = list(axis.line = list(col = "transparent")), scales = list(draw = FALSE), margin=F, 
-                 col.regions=myColors, main=list(label=toString(years[i]), cex=1.2), 
+                 col.regions=myColors, main=list(label=toString(years[i]), cex=1.0), 
                  xlab="",ylab="", colorkey = FALSE, aspect="iso")
   p <- p + latticeExtra::layer(sp.polygons(canada.prov, lwd=0.8, col='dimgray'))
   p <- p + latticeExtra::layer(sp.polygons(us.states, lwd=0.8, col='dimgray'))

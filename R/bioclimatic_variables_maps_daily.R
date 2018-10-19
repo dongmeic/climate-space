@@ -70,11 +70,12 @@ myKey2 <- list(text=list(lab=c("0","1","2"), cex=c(1.2,1.2)),
 pos <- cbind(c(1,1),c(2,1),c(3,1),c(4,1),c(5,1),
 						 c(1,2),c(2,2),c(3,2),c(4,2),c(5,2),
 						 c(1,3),c(2,3),c(3,3),c(4,3),c(5,3),
-						 c(1,4),c(2,4),c(3,4),c(4,4),c(5,4)) 
-						              
+						 c(1,4),c(2,4),c(3,4),c(4,4),c(5,4))
+						 
+# check the codes before running						              
 for(i in 1:length(vargrp)){
   var_4d <- get.data(vargrp[i])
-  png(paste0("bioclimatic_maps_",vargrp[i],".png"), width=20, height=12, units="in", res=300)
+  png(paste0("bioclimatic_maps_",vargrp[i],".png"), width=8, height=10, units="in", res=300)
   plot.new()
   par(mfrow=c(5,4), xpd=FALSE, mar=rep(0.5,4))
   yr = 1
@@ -83,24 +84,24 @@ for(i in 1:length(vargrp)){
 		p <- levelplot(var_4d_slice ~ x * y, data=grid, 
 					par.settings = list(axis.line = list(col = "transparent")), col.regions=myColors,
 					scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr]), cex=1.5),
-					xlab="", ylab="", colorkey = FALSE)
+					xlab="", ylab="", colorkey = FALSE, aspect="iso")
 	}else if(i == 5){
 		p <- levelplot(var_4d_slice ~ x * y, data=grid, 
 			par.settings = list(axis.line = list(col = "transparent")), col.regions=myColors2,
 			scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr]), cex=1.5),
-			xlab="",ylab="", colorkey = FALSE)
+			xlab="",ylab="", colorkey = FALSE, aspect="iso")
 	}else if(i == 6 | i == 8){
 		p <- levelplot(var_4d_slice ~ x * y, data=grid, at=cutpts[,vargrp[i]], cuts=11, pretty=T, 
-			col.regions=brewer.pal(10,"RdBu"),
-			par.settings = list(axis.line = list(col = "transparent")), 
-			scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr]), cex=1.5),
-			xlab="",ylab="")
+			col.regions=brewer.pal(10,"RdBu"), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
+			par.settings = list(axis.line = list(col = "transparent")), colorkey = FALSE,
+			scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.0),
+			xlab="",ylab="", aspect="iso")
 	}else{
 		p <- levelplot(var_4d_slice ~ x * y, data=grid, at=cutpts[,vargrp[i]], cuts=11, pretty=T, 
 			col.regions=rev(brewer.pal(10,"RdBu")),
 			par.settings = list(axis.line = list(col = "transparent")), 
 			scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr]), cex=1.5),
-			xlab="",ylab="")
+			xlab="",ylab="", aspect="iso")
 	}
 	p <- p + latticeExtra::layer(sp.polygons(canada.prov, lwd=0.8, col='dimgray', alpha=0.3))
 	p <- p + latticeExtra::layer(sp.polygons(us.states, lwd=0.8, col='dimgray', alpha=0.3))
@@ -118,24 +119,24 @@ for(i in 1:length(vargrp)){
 		  p <- levelplot(var_4d_slice ~ x * y, data=grid, 
 			  par.settings = list(axis.line = list(col = "transparent")), col.regions=myColors,
 			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr]), cex=1.5),
-			  xlab="",ylab="", colorkey = FALSE)
+			  xlab="",ylab="", colorkey = FALSE, aspect="iso")
 		}else if(i == 5){
 			p <- levelplot(var_4d_slice ~ x * y, data=grid, 
 			  par.settings = list(axis.line = list(col = "transparent")), col.regions=myColors2,
 			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr]), cex=1.5),
-			  xlab="",ylab="", colorkey = FALSE)
+			  xlab="",ylab="", colorkey = FALSE, aspect="iso")
 		}else if(i == 6 | i == 8){
 			p <- levelplot(var_4d_slice ~ x * y, data=grid, at=cutpts[,vargrp[i]], cuts=11, pretty=T, 
-			  col.regions=brewer.pal(10,"RdBu"),
-			  par.settings = list(axis.line = list(col = "transparent")), 
-			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr]), cex=1.5),
-			  xlab="",ylab="")
+			  col.regions=brewer.pal(10,"RdBu"), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
+			  par.settings = list(axis.line = list(col = "transparent")), colorkey = FALSE,
+			  scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.0),
+			  xlab="",ylab="", aspect="iso")
 	  }else{
 	    p <- levelplot(var_4d_slice ~ x * y, data=grid, at=cutpts[,vargrp[i]], cuts=11, pretty=T, 
-			  col.regions=rev(brewer.pal(10,"RdBu")),
+			  col.regions=rev(brewer.pal(10,"RdBu")), 
 			  par.settings = list(axis.line = list(col = "transparent")), 
 			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr]), cex=1.5),
-			  xlab="",ylab="")
+			  xlab="",ylab="", aspect="iso")
 	  }
 	  p <- p + latticeExtra::layer(sp.polygons(canada.prov, lwd=0.8, col='dimgray', alpha=0.3))
 	  p <- p + latticeExtra::layer(sp.polygons(us.states, lwd=0.8, col='dimgray', alpha=0.3))
@@ -160,24 +161,24 @@ for(i in 1:length(vargrp)){
 		  p <- levelplot(var_4d_slice ~ x * y, data=grid, 
 			  par.settings = list(axis.line = list(col = "transparent")), col.regions=myColors,
 			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[j]), cex=1.5),
-			  xlab="",ylab="", colorkey = FALSE, key=myKey)
+			  xlab="",ylab="", colorkey = FALSE, key=myKey, aspect="iso")
 		}else if(i == 5){
 			p <- levelplot(var_4d_slice ~ x * y, data=grid, 
 			  par.settings = list(axis.line = list(col = "transparent")), col.regions=myColors2,
 			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[j]), cex=1.5),
-			  xlab="",ylab="", colorkey = FALSE, key=myKey2)
+			  xlab="",ylab="", colorkey = FALSE, key=myKey2, aspect="iso")
 		}else if(i == 6 | i == 8){
 			p <- levelplot(var_4d_slice ~ x * y, data=grid, at=cutpts[,vargrp[i]], cuts=11, pretty=T, 
 			  col.regions=brewer.pal(10,"RdBu"),
 			  par.settings = list(axis.line = list(col = "transparent")), 
 			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[j]), cex=1.5),
-			  xlab="",ylab="")
+			  xlab="",ylab="", aspect="iso")
 	  }else{
 	    p <- levelplot(var_4d_slice ~ x * y, data=grid, at=cutpts[,vargrp[i]], cuts=11, pretty=T, 
 			  col.regions=rev(brewer.pal(10,"RdBu")),
 			  par.settings = list(axis.line = list(col = "transparent")), 
 			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[j]), cex=1.5),
-			  xlab="",ylab="")
+			  xlab="",ylab="", aspect="iso")
 	}
     p <- p + latticeExtra::layer(sp.polygons(canada.prov, lwd=0.8, col='dimgray', alpha=0.3))
     p <- p + latticeExtra::layer(sp.polygons(us.states, lwd=0.8, col='dimgray', alpha=0.3))
