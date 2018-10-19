@@ -71,8 +71,9 @@ pos <- cbind(c(1,1),c(2,1),c(3,1),c(4,1),c(5,1),
 						 c(1,2),c(2,2),c(3,2),c(4,2),c(5,2),
 						 c(1,3),c(2,3),c(3,3),c(4,3),c(5,3),
 						 c(1,4),c(2,4),c(3,4),c(4,4),c(5,4))
-						 
-# check the codes before running						              
+						 				 
+# check the codes before running
+# i <- which(vargrp=="Acs")					              
 for(i in 1:length(vargrp)){
   var_4d <- get.data(vargrp[i])
   png(paste0("bioclimatic_maps_",vargrp[i],".png"), width=8, height=10, units="in", res=300)
@@ -126,11 +127,19 @@ for(i in 1:length(vargrp)){
 			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr]), cex=1.5),
 			  xlab="",ylab="", colorkey = FALSE, aspect="iso")
 		}else if(i == 6 | i == 8){
-			p <- levelplot(var_4d_slice ~ x * y, data=grid, at=cutpts[,vargrp[i]], cuts=11, pretty=T, 
-			  col.regions=brewer.pal(10,"RdBu"), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
-			  par.settings = list(axis.line = list(col = "transparent")), colorkey = FALSE,
-			  scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.0),
-			  xlab="",ylab="", aspect="iso")
+			if(1){
+				p <- levelplot(var_4d_slice ~ x * y, data=grid, at=cutpts[,vargrp[i]], cuts=11, pretty=T, 
+					col.regions=brewer.pal(10,"RdBu"),
+					par.settings = list(axis.line = list(col = "transparent")), colorkey = FALSE,
+					scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.0),
+					xlab="",ylab="", aspect="iso")		
+			}else{
+				p <- levelplot(var_4d_slice ~ x * y, data=grid, at=cutpts[,vargrp[i]], cuts=11, pretty=T, 
+					col.regions=brewer.pal(10,"RdBu"), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
+					par.settings = list(axis.line = list(col = "transparent")), colorkey = FALSE,
+					scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.0),
+					xlab="",ylab="", aspect="iso")
+			}
 	  }else{
 	    p <- levelplot(var_4d_slice ~ x * y, data=grid, at=cutpts[,vargrp[i]], cuts=11, pretty=T, 
 			  col.regions=rev(brewer.pal(10,"RdBu")), 
@@ -151,6 +160,19 @@ for(i in 1:length(vargrp)){
   }
   dev.off()
   print(vargrp[i])
+}
+
+# plot a legend separately
+if(0){
+	var_4d_slice <- var_4d[,,1,yr]
+	png(paste0("bioclimatic_legend_",vargrp[i],".png"), width=8, height=7.5, units="in", res=300)
+	p <- levelplot(var_4d_slice ~ x * y, data=grid, at=cutpts[,vargrp[i]], cuts=11, pretty=T, 
+					col.regions=brewer.pal(10,"RdBu"), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
+					par.settings = list(axis.line = list(col = "transparent")), colorkey=list(space="bottom", height=2, width=2),
+					scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.0),
+					xlab="",ylab="", aspect="iso")
+	print(p)
+	dev.off()
 }
 
 for(i in 1:length(vargrp)){
