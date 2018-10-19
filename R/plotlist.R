@@ -25,8 +25,7 @@ print.plotlist<-function(xx, layout=matrix(1:length(xx), nrow=1), more=F) {
       xx[[i]],
       position = ps,
       #split=c(rev(which(lyt==j, arr.ind=T)),rev(dim(lyt))),
-      more=ifelse(j != maxi & i<length(xx), T, more)
-    )
+      more=ifelse(j != maxi & i<length(xx), T, more))
   }
   invisible(F)
 }
