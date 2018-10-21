@@ -1,7 +1,7 @@
 # Created by Dongmei Chen
 # Writing daily bioclimatic variables
 
-if(1){
+if(0){
 	library(parallel)
 	library(doParallel)
 	library(foreach)
@@ -17,7 +17,8 @@ print("calculating the biocliamtic variables using daily data")
 dim1 <- 277910; dim2 <- nt
 
 ptm <- proc.time()
-foreach(i = 1:nt)%dopar%{
+#foreach(i = 1:nt)%dopar%{
+for(i in 1:nt){
 	indata1 <- read.csv(paste0(inpath, "na10km_v2_climatic_values_",years[i],".csv"))
 	indata2 <- read.csv(paste0(inpath, "na10km_v2_climatic_values_",years[i+1],".csv"))
 	indata <- rbind(indata1, indata2)
@@ -37,7 +38,7 @@ foreach(i = 1:nt)%dopar%{
 		df[j,] <- get.daily.stats(years[i], df.m$tmx, df.m$tmp, df.m$tmn)
 	}
 	print(paste("got data from", years[i+1]))
-	write.csv(df, paste0("daily_climate/CRU/bioclimatic_variables_daily_",years[i+1],".csv"), row.names = FALSE)  
+	write.csv(df, paste0("daily_climate/CRU/1901/bioclimatic_variables_daily_",years[i+1],".csv"), row.names = FALSE)  
 }
 proc.time() - ptm
 print("all done!")

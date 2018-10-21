@@ -4,6 +4,10 @@ is.leap.year <- function(year) {
 
 
 has.n.consecutive.trues <- function(x, n) {
+  x <- x[!is.na(x)]
+  if (!(len(x)) {
+    return (NA)
+  }
   max.consec <- 0
   for (val in x) {
     if (val) {
@@ -31,7 +35,7 @@ get.summer.t40 <- function(daily.highs) {
 }
 
 
-get.single.year.data <- function(year, daily.lows, daily.highs) {
+get.single.year.data <- function(year, daily.lows, daily.highs, leap.year.adj=F) {
   leap.year <- is.leap.year(year)
   MAR <- 60
   APR <- 91
@@ -40,7 +44,7 @@ get.single.year.data <- function(year, daily.lows, daily.highs) {
   Lcs.range <- MAR:(APR + 14)
   aug.range <- AUG:(AUG + 30)
   summer.range <- JUN:(AUG + 30)
-  if (leap.year) {
+  if (leap.year & leap.year.adj) {
     Lcs.range <- Lcs.range + 1
     aug.range <- aug.range + 1
     summer.range <- summer.range + 1
@@ -120,7 +124,7 @@ get.min.data <- function(daily.lows) {
 }
 
 
-get.two.year.data <- function(start.year, daily.means, daily.lows) {
+get.two.year.data <- function(start.year, daily.means, daily.lows, leap.year.adj=F) {
   y2.leap <- is.leap.year(start.year + 1)
   OCT <- 62
   NOV <- 93
@@ -128,7 +132,7 @@ get.two.year.data <- function(start.year, daily.means, daily.lows) {
   FEB <- 185
   winter.range <- DEC:(FEB + 27)
   Ecs.range <- (OCT + 14):(NOV + 29)
-  if (y2.leap) {
+  if (y2.leap & leap.year.adj) {
     winter.range <- DEC:(FEB + 28)
   }
   winterTmin <- min(daily.lows[winter.range])
