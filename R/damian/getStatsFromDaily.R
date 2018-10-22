@@ -5,7 +5,7 @@ is.leap.year <- function(year) {
 
 has.n.consecutive.trues <- function(x, n) {
   x <- x[!is.na(x)]
-  if (!(len(x)) {
+  if (!(length(x))){
     return (NA)
   }
   max.consec <- 0

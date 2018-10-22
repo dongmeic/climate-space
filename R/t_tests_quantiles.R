@@ -73,11 +73,8 @@ write.csv(t.df, paste0(inpath, "quantile/tvalues_median.csv"), row.names=FALSE)
 write.csv(p.df, paste0(inpath, "quantile/pvalues_median.csv"), row.names=FALSE)
 write.csv(e.df, paste0(inpath, "quantile/estimates.csv"), row.names=FALSE)
 
-i <- 1; j <- 7
-est.df <- read.csv(paste0(inpath, "quantile/", vars[i], "_", tau[j], "_estimates.csv"))
-
 # run without replicates
-e.df <- as.data.frame(matrix(,ncol=0,nrow=7))
+e.df <- as.data.frame(matrix(,ncol=0,nrow=8))
 for(i in 1:length(vars)){
 	q1 <- quantile(dt[dt$peak==1,][,vars[i]], tau)
 	q2 <- quantile(dt[dt$peak==0,][,vars[i]], tau)
@@ -91,3 +88,20 @@ for(i in 1:length(vars)){
 	print(vars[i])
 }
 write.csv(e.df, paste0(inpath, "quantile/quantile_diff.csv"), row.names=FALSE)
+
+diff.df1 <- as.data.frame(matrix(,ncol=0,nrow=7))
+diff.df2 <- as.data.frame(matrix(,ncol=0,nrow=7))
+for(j in 1:length(vars)){
+	for(i in 1:1000){
+		s1 <- sample(dt[dt$peak==1,][,vars[j]],5000)
+		s2 <- sample(dt[dt$peak==0,][,vars[j]],5000)
+		q1 <- as.numeric(quantile(s1, tau))
+		q2 <- as.numeric(quantile(s2, tau))
+		diff.df1 <- rbind(diff.df1, q1)
+		diff.df2 <- rbind(diff.df2, q2)
+	}
+	names(diff.df1) <- paste0("t", tau)
+	names(diff.df2) <- paste0("t", tau)
+	write.csv(diff.df1, paste0(inpath, "quantile/", vars[j], "_diff.csv"), row.names=FALSE)
+	write.csv(diff.df2, paste0(inpath, "quantile/", vars[j], "_diff.csv"), row.names=FALSE)
+}
