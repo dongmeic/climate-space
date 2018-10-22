@@ -89,10 +89,11 @@ for(i in 1:length(vars)){
 }
 write.csv(e.df, paste0(inpath, "quantile/quantile_diff.csv"), row.names=FALSE)
 
-df1 <- as.data.frame(matrix(,ncol=0,nrow=7))
-df2 <- as.data.frame(matrix(,ncol=0,nrow=7))
-df3 <- as.data.frame(matrix(,ncol=0,nrow=7))
+
 for(j in 1:length(vars)){
+	df1 <- as.data.frame(matrix(,ncol=0,nrow=7))
+	df2 <- as.data.frame(matrix(,ncol=0,nrow=7))
+	df3 <- as.data.frame(matrix(,ncol=0,nrow=7))
 	for(i in 1:1000){
 		s1 <- sample(dt[dt$peak==1,][,vars[j]],5000)
 		s2 <- sample(dt[dt$peak==0,][,vars[j]],5000)
