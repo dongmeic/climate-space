@@ -89,19 +89,25 @@ for(i in 1:length(vars)){
 }
 write.csv(e.df, paste0(inpath, "quantile/quantile_diff.csv"), row.names=FALSE)
 
-diff.df1 <- as.data.frame(matrix(,ncol=0,nrow=7))
-diff.df2 <- as.data.frame(matrix(,ncol=0,nrow=7))
+df1 <- as.data.frame(matrix(,ncol=0,nrow=7))
+df2 <- as.data.frame(matrix(,ncol=0,nrow=7))
+df3 <- as.data.frame(matrix(,ncol=0,nrow=7))
 for(j in 1:length(vars)){
 	for(i in 1:1000){
 		s1 <- sample(dt[dt$peak==1,][,vars[j]],5000)
 		s2 <- sample(dt[dt$peak==0,][,vars[j]],5000)
 		q1 <- as.numeric(quantile(s1, tau))
 		q2 <- as.numeric(quantile(s2, tau))
-		diff.df1 <- rbind(diff.df1, q1)
-		diff.df2 <- rbind(diff.df2, q2)
+		q3 <- q1 - q2
+		df1 <- rbind(df1, q1)
+		df2 <- rbind(df2, q2)
+		df3 <- rbind(df3, q3)
+		print(paste(vars[j], i))
 	}
-	names(diff.df1) <- paste0("t", tau)
-	names(diff.df2) <- paste0("t", tau)
-	write.csv(diff.df1, paste0(inpath, "quantile/", vars[j], "_diff.csv"), row.names=FALSE)
-	write.csv(diff.df2, paste0(inpath, "quantile/", vars[j], "_diff.csv"), row.names=FALSE)
+	names(df1) <- paste0("t", tau)
+	names(df2) <- paste0("t", tau)
+	names(df3) <- paste0("t", tau)
+	write.csv(df1, paste0(inpath, "quantile/", vars[j], "peak_csv"), row.names=FALSE)
+	write.csv(df2, paste0(inpath, "quantile/", vars[j], "nonpeak_csv"), row.names=FALSE)
+	write.csv(df3, paste0(inpath, "quantile/", vars[j], "diff_csv"), row.names=FALSE)
 }
