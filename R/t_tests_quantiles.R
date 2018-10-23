@@ -89,26 +89,39 @@ for(i in 1:length(vars)){
 }
 write.csv(e.df, paste0(inpath, "quantile/quantile_diff.csv"), row.names=FALSE)
 
+for(var in vars){
+	qv <- vector()
+	cum.mean <- vector()
+	for(i in 1:5000){
+		s1 <- sample(dt[dt$peak==1,][,var],5000)
+		s2 <- sample(dt[dt$peak==0,][,var],5000)
+		q1 <- as.numeric(quantile(s1, q))
+		q2 <- as.numeric(quantile(s2, q))
+		qv[i] <- q1 - q2
+		cum.mean[i] <- mean(qv[1:i])
+		print(i)
+	}
+}
 
-for(j in 1:length(vars)){
+for(var in vars){
 	df1 <- as.data.frame(matrix(,ncol=0,nrow=7))
 	df2 <- as.data.frame(matrix(,ncol=0,nrow=7))
 	df3 <- as.data.frame(matrix(,ncol=0,nrow=7))
 	for(i in 1:1000){
-		s1 <- sample(dt[dt$peak==1,][,vars[j]],5000)
-		s2 <- sample(dt[dt$peak==0,][,vars[j]],5000)
+		s1 <- sample(dt[dt$peak==1,][,var],5000)
+		s2 <- sample(dt[dt$peak==0,][,var],5000)
 		q1 <- as.numeric(quantile(s1, tau))
 		q2 <- as.numeric(quantile(s2, tau))
 		q3 <- q1 - q2
 		df1 <- rbind(df1, q1)
 		df2 <- rbind(df2, q2)
 		df3 <- rbind(df3, q3)
-		print(paste(vars[j], i))
+		print(paste(var, i))
 	}
 	names(df1) <- paste0("t", tau)
 	names(df2) <- paste0("t", tau)
 	names(df3) <- paste0("t", tau)
-	write.csv(df1, paste0(inpath, "quantile/", vars[j], "peak_csv"), row.names=FALSE)
-	write.csv(df2, paste0(inpath, "quantile/", vars[j], "nonpeak_csv"), row.names=FALSE)
-	write.csv(df3, paste0(inpath, "quantile/", vars[j], "diff_csv"), row.names=FALSE)
+	write.csv(df1, paste0(inpath, "quantile/", var, "peak_csv"), row.names=FALSE)
+	write.csv(df2, paste0(inpath, "quantile/", var, "nonpeak_csv"), row.names=FALSE)
+	write.csv(df3, paste0(inpath, "quantile/", var, "diff_csv"), row.names=FALSE)
 }
