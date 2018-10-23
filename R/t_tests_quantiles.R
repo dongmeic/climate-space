@@ -151,7 +151,7 @@ get.sample.sizes.needed <- function(cum.means) {
   apply(cum.means, 2, get.index.of.last.finite.value)
 }
 
-print(paste('Sample sizes needed for threshold', threshold))
+print(paste('Sample sizes needed for threshold', THRESHOLD))
 get.sample.sizes.needed(cum.means)
 
 # Your old code
