@@ -89,19 +89,52 @@ for(i in 1:length(vars)){
 }
 write.csv(e.df, paste0(inpath, "quantile/quantile_diff.csv"), row.names=FALSE)
 
-for(var in vars){
-	qv <- vector()
-	cum.mean <- vector()
-	for(i in 1:5000){
-		s1 <- sample(dt[dt$peak==1,][,var],5000)
-		s2 <- sample(dt[dt$peak==0,][,var],5000)
-		q1 <- as.numeric(quantile(s1, q))
-		q2 <- as.numeric(quantile(s2, q))
-		qv[i] <- q1 - q2
-		cum.mean[i] <- mean(qv[1:i])
-		print(i)
-	}
+
+
+# Added code:
+# You can change threshold to make it more or less strict.  The default is 0.01,
+# meaning 1% of the range of values in the variable
+get.cumulative.mean <- function(
+    vars, dt, q, max.iter=5000, n.samples=5000, threshold=0.01, use.threshold=T) {
+  for (variable in vars) {
+    if (use.threshold) {
+      v <- dt[, variable]
+      allowable.variance <- threshold * (max(v, na.rm=T) - min(v, na.rm=T))
+    }
+  	qv <- cum.mean <- numeric(iterations)
+  	for (i in 1:max.iter) {
+  	  if (i > 100 & i %% 100 == 0) {
+  	  	last100 <- cum.mean[(i - 100):i]
+  	  	if (var(last100) <= allowable.variance) {
+  	  	  return (cum.mean[:i])
+  	  	}
+  	  }
+  	  s1 <- sample(dt[dt$peak == 1, ][, variable], n.samples)
+  	  s2 <- sample(dt[dt$peak == 0, ][, variable], n.samples)
+  	  q1 <- as.numeric(quantile(s1, q))
+  	  q2 <- as.numeric(quantile(s2, q))
+  	  qv[i] <- mean(qv[1:i])
+  	}
+  }
+  cum.mean
 }
+
+cum.mean <- get.cumulative.mean(vars, dt, q)
+
+# Your old code
+#for(var in vars){
+#	qv <- vector()
+#	cum.mean <- vector()
+#	for(i in 1:5000){
+#		s1 <- sample(dt[dt$peak==1,][,var],5000)
+#		s2 <- sample(dt[dt$peak==0,][,var],5000)
+#		q1 <- as.numeric(quantile(s1, q))
+#		q2 <- as.numeric(quantile(s2, q))
+#		qv[i] <- q1 - q2
+#		cum.mean[i] <- mean(qv[1:i])
+#		print(i)
+#	}
+#}
 
 for(var in vars){
 	df1 <- as.data.frame(matrix(,ncol=0,nrow=7))
