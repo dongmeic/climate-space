@@ -97,16 +97,17 @@ write.csv(e.df, paste0(inpath, "quantile/quantile_diff.csv"), row.names=FALSE)
 
 # This gets the cumulative mean for a single variable:
 get.cumulative.mean <- function(
-    var, dt, q, max.iter=5000, n.samples=5000, threshold=0.01, use.threshold=T) {
+    variable, dt, q, max.iter=5000, n.samples=5000, threshold=0.01, 
+    use.threshold=T) {
   if (use.threshold) {
-    v <- dt[, var]
+    v <- dt[, variable]
     allowable.variance <- threshold * (max(v, na.rm=T) - min(v, na.rm=T))
   }
-  qv <- cum.mean <- rep(NA, iterations)
+  qv <- cum.mean <- rep(NA, max.iter)
   for (i in 1:max.iter) {
     if (i > 100 & i %% 100 == 0) {
-      last100 <- cum.mean[(i - 100):i]
-      if (var(last100) <= allowable.variance) {
+      last100 <- cum.mean[(i - 101):(i - 1)]
+      if (use.threshold & var(last100) <= allowable.variance) {
         return (cum.mean)
       }
     }
@@ -127,17 +128,31 @@ get.all.cumulative.means <- function(
     vars, dt, q, max.iter=5000, n.samples=5000, threshold=0.01, use.threshold=T) {
   cum.means <- matrix(NA, max.iter, length(vars))
   for (v in 1:length(vars)) {
-    cum.means[, v] <- get.cumulative.mean(vars[v], dt, q)
+    cum.means[, v] <- get.cumulative.mean(
+      vars[v], dt, q, max.iter, n.samples, threshold, use.threshold)
   }
   colnames(cum.means) <- vars
   cum.means
 }
 
-cum.means <- get.all.cumulative.means(vars, dt, q)
+THRESHOLD <- 0.01
+cum.means <- get.all.cumulative.means(vars, dt, q=0.95, threshold=THRESHOLD)
 
 # Test one:
 plot(cum.means[, 1]) # or
 #plot(cum.means[, 'var.name'])
+
+
+get.index.of.last.finite.value <- function(x) {
+  max(which(!is.na(x)))
+}
+
+get.sample.sizes.needed <- function(cum.means) {
+  apply(cum.means, 2, get.index.of.last.finite.value)
+}
+
+print(paste('Sample sizes needed for threshold', threshold))
+get.sample.sizes.needed(cum.means)
 
 # Your old code
 #for(var in vars){
