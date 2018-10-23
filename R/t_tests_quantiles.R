@@ -129,11 +129,11 @@ get.all.cumulative.means <- function(
   for (v in 1:length(vars)) {
     cum.means[, v] <- get.cumulative.mean(vars[v], dt, q)
   }
-  colnames(cum.menas) <- vars
+  colnames(cum.means) <- vars
   cum.means
 }
 
-cum.means <- get.all.cumulative.mean(vars, dt, q)
+cum.means <- get.all.cumulative.means(vars, dt, q)
 
 # Test one:
 plot(cum.means[, 1]) # or
