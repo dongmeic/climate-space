@@ -121,7 +121,7 @@ get.cumulative.mean <- function(
 }
  
  
-# This stores the cum.means for all variables in a matrix (each column in a 
+# This stores the cum.means for all variables in a matrix (each column is a 
 # variable)    	
 get.all.cumulative.means <- function(
     vars, dt, q, max.iter=5000, n.samples=5000, threshold=0.01, use.threshold=T) {
