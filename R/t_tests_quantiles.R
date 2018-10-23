@@ -114,7 +114,8 @@ get.cumulative.mean <- function(
     s2 <- sample(dt[dt$peak == 0, ][, variable], n.samples)
     q1 <- as.numeric(quantile(s1, q))
     q2 <- as.numeric(quantile(s2, q))
-    qv[i] <- mean(qv[1:i])
+    qv[i] <- q1 - q2
+    cum.mean[i] <- mean(qv[1:i])
   }
   cum.mean
 }
