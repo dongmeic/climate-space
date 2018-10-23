@@ -101,20 +101,20 @@ get.cumulative.mean <- function(
       v <- dt[, variable]
       allowable.variance <- threshold * (max(v, na.rm=T) - min(v, na.rm=T))
     }
-  	qv <- cum.mean <- numeric(iterations)
-  	for (i in 1:max.iter) {
-  	  if (i > 100 & i %% 100 == 0) {
-  	  	last100 <- cum.mean[(i - 100):i]
-  	  	if (var(last100) <= allowable.variance) {
-  	  	  return (cum.mean[:i])
-  	  	}
-  	  }
-  	  s1 <- sample(dt[dt$peak == 1, ][, variable], n.samples)
-  	  s2 <- sample(dt[dt$peak == 0, ][, variable], n.samples)
-  	  q1 <- as.numeric(quantile(s1, q))
-  	  q2 <- as.numeric(quantile(s2, q))
-  	  qv[i] <- mean(qv[1:i])
-  	}
+    qv <- cum.mean <- numeric(iterations)
+    for (i in 1:max.iter) {
+      if (i > 100 & i %% 100 == 0) {
+        last100 <- cum.mean[(i - 100):i]
+        if (var(last100) <= allowable.variance) {
+          return (cum.mean[:i])
+        }
+      }
+      s1 <- sample(dt[dt$peak == 1, ][, variable], n.samples)
+      s2 <- sample(dt[dt$peak == 0, ][, variable], n.samples)
+      q1 <- as.numeric(quantile(s1, q))
+      q2 <- as.numeric(quantile(s2, q))
+      qv[i] <- mean(qv[1:i])
+    }
   }
   cum.mean
 }
