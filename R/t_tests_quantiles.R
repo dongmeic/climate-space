@@ -4,15 +4,15 @@ inpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
 setwd(inpath)
 
 # use transformed data
-data <- read.csv(paste0(inpath, "bioclimatic_values_1996_2015_r.csv"))
-head(data)
-na10km <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/csvfiles/na10km_v2.csv")
-data$x <- rep(na10km$x, 20); data$y <- rep(na10km$y, 20)
+#data <- read.csv(paste0(inpath, "bioclimatic_values_1996_2015_r.csv"))
+#head(data)
+#na10km <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/csvfiles/na10km_v2.csv")
+#data$x <- rep(na10km$x, 20); data$y <- rep(na10km$y, 20)
 
-dt <- data[data$beetles==1,]
+#dt <- data[data$beetles==1,]
 
 #write.csv(dt, paste0(inpath, "bioclimatic_values_presence.csv"), row.names=FALSE)
-#dt <- read.csv(paste0(inpath, "bioclimatic_values_presence.csv"))
+dt <- read.csv(paste0(inpath, "bioclimatic_values_presence.csv"))
 
 peakyears <- 2006:2008
 nonpeakyears <- 1996:1998
@@ -89,19 +89,66 @@ for(i in 1:length(vars)){
 }
 write.csv(e.df, paste0(inpath, "quantile/quantile_diff.csv"), row.names=FALSE)
 
-for(var in vars){
-	qv <- vector()
-	cum.mean <- vector()
-	for(i in 1:5000){
-		s1 <- sample(dt[dt$peak==1,][,var],5000)
-		s2 <- sample(dt[dt$peak==0,][,var],5000)
-		q1 <- as.numeric(quantile(s1, q))
-		q2 <- as.numeric(quantile(s2, q))
-		qv[i] <- q1 - q2
-		cum.mean[i] <- mean(qv[1:i])
-		print(i)
-	}
+# You can change threshold to make it more or less strict.  The default is 0.01,
+# meaning 1% of the range of values in the variable
+
+# This gets the cumulative mean for a single variable:
+get.cumulative.mean <- function(
+    variable, dt, q, max.iter=5000, n.samples=5000, threshold=0.01, 
+    use.threshold=T) {
+  if (use.threshold) {
+    v <- dt[, variable]
+    allowable.variance <- threshold * (max(v, na.rm=T) - min(v, na.rm=T))
+  } else { allowable.variance <- Inf }
+  qv <- cum.mean <- rep(NA, max.iter)
+  for (i in 1:max.iter) {
+    if (i > 100 & i %% 100 == 0) {
+      last100 <- cum.mean[(i - 101):(i - 1)]
+      if (use.threshold & var(last100) <= allowable.variance) {
+        return (cum.mean)
+      }
+    }
+    s1 <- sample(dt[dt$peak == 1, ][, variable], n.samples)
+    s2 <- sample(dt[dt$peak == 0, ][, variable], n.samples)
+    q1 <- as.numeric(quantile(s1, q))
+    q2 <- as.numeric(quantile(s2, q))
+    qv[i] <- q1 - q2
+    cum.mean[i] <- mean(qv[1:i])
+  }
+  cum.mean
 }
+ 
+ 
+# This stores the cum.means for all variables in a matrix (each column is a variable)    	
+get.all.cumulative.means <- function(
+    vars, dt, q, max.iter=5000, n.samples=5000, threshold=0.01, use.threshold=T) {
+  cum.means <- matrix(NA, max.iter, length(vars))
+  for (v in 1:length(vars)) {
+    cum.means[, v] <- get.cumulative.mean(
+      vars[v], dt, q, max.iter, n.samples, threshold, use.threshold)
+  }
+  colnames(cum.means) <- vars
+  cum.means
+}
+
+THRESHOLD <- 0.000001
+cum.means <- get.all.cumulative.means(vars, dt, q=0.95, threshold=THRESHOLD, use.threshold=F)
+
+# Test one:
+plot(cum.means[, 1], type='l') # or
+#plot(cum.means[, 'var.name'], type='l')
+
+
+get.index.of.last.finite.value <- function(x) {
+  max(which(!is.na(x)))
+}
+
+get.sample.sizes.needed <- function(cum.means) {
+  apply(cum.means, 2, get.index.of.last.finite.value)
+}
+
+print(paste('Sample sizes needed for threshold', THRESHOLD))
+get.sample.sizes.needed(cum.means)
 
 for(var in vars){
 	df1 <- as.data.frame(matrix(,ncol=0,nrow=7))
