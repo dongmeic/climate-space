@@ -15,7 +15,7 @@ setwd(inpath)
 dt <- read.csv(paste0(inpath, "bioclimatic_values_presence.csv"))
 
 peakyears <- c(1998, 2006)   # 2006:2008
-nonpeakyears <- c(1997, 1995)
+nonpeakyears <- c(1997, 1995) # 1996:1998
 dt$peak <- ifelse(dt$year %in% peakyears, 1, ifelse(dt$year %in% nonpeakyears, 0, 2))
 
 vars <- c("ddAugJul","AugTmax","winterTmin","summerP0","PPT","GSP","summerP1","Tvar")
