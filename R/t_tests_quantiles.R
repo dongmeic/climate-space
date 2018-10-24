@@ -133,10 +133,12 @@ get.all.cumulative.means <- function(
 
 THRESHOLD <- 0.000001
 cum.means <- get.all.cumulative.means(vars, dt, q=0.95, threshold=THRESHOLD, use.threshold=F)
-
+write.csv(cum.means, paste0(inpath, "cumulative_means.csv"), row.names=FALSE)
 # Test one:
 plot(cum.means[, 1], type='l') # or
 #plot(cum.means[, 'var.name'], type='l')
+
+# plot all
 
 
 get.index.of.last.finite.value <- function(x) {
@@ -154,7 +156,7 @@ for(var in vars){
 	df1 <- as.data.frame(matrix(,ncol=0,nrow=7))
 	df2 <- as.data.frame(matrix(,ncol=0,nrow=7))
 	df3 <- as.data.frame(matrix(,ncol=0,nrow=7))
-	for(i in 1:1000){
+	for(i in 1:5000){
 		s1 <- sample(dt[dt$peak==1,][,var],5000)
 		s2 <- sample(dt[dt$peak==0,][,var],5000)
 		q1 <- as.numeric(quantile(s1, tau))
@@ -172,3 +174,10 @@ for(var in vars){
 	write.csv(df2, paste0(inpath, "quantile/", var, "nonpeak_csv"), row.names=FALSE)
 	write.csv(df3, paste0(inpath, "quantile/", var, "diff_csv"), row.names=FALSE)
 }
+
+for(var in vars){
+	
+
+}
+
+save.image(file="/gpfs/projects/gavingrp/dongmeic/beetle/output/RData/bootstrapped.RData")
