@@ -139,8 +139,8 @@ THRESHOLD <- 0.01
 cum.means <- get.all.cumulative.means(vars, dt, q=0.95, threshold=THRESHOLD)
 
 # Test one:
-plot(cum.means[, 1]) # or
-#plot(cum.means[, 'var.name'])
+plot(cum.means[, 1], type='l') # or
+#plot(cum.means[, 'var.name'], type='l)
 
 
 get.index.of.last.finite.value <- function(x) {
