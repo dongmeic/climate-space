@@ -44,24 +44,24 @@ print("all done!")
 
 # checking corrected data
 if(0){ # check single day
-	vtype <- "tmin"; y <- 2003; i <- 2
+	vtype <- "tmin"; y <- 2011; i <- 309
 	file <- paste0(vtype, substrRight(as.character(y), 2), formatC(i, width = 3, format = "d", flag = "0"), ".tif")
 	r <- raster(paste0(inpath, "/", y, "/", vtype, "/", file))
 	par(mfrow=c(1,1),mar=c(2,2,2,5))
-	plot(r)
+	plot(r, main=paste(y, vtype, i))
 }
 
 if(0){ # check one year
 	doy <- 1:365
 	out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/plots/"
-	vtype <- "tmin"; y <- 2003
+	vtype <- "prcp"; y <- 2003
 	ptm <- proc.time()
-	pdf(paste0(out,y,vtype,"_raster_correction.pdf"), width=12, height=6)
-	for(i in doy){
-		par(mfrow=c(1,2),mar=c(2,2,2,5))		
+	pdf(paste0(out,y,"_",vtype,"_raster_correction.pdf"), width=12, height=6)
+	par(mfrow=c(1,2),mar=c(2,2,2,5))	
+	for(i in doy){	
 		file <- paste0(vtype, substrRight(as.character(y), 2), formatC(i, width = 3, format = "d", flag = "0"), ".tif")
 		r <- raster(paste0(inpath, "/", y, "/", vtype, "/", file))	
-		plot(r)
+		plot(r, main=paste(y, vtype, i))
 		print(i)
 	}
 	dev.off()
