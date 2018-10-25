@@ -14,8 +14,8 @@ setwd(inpath)
 #write.csv(dt, paste0(inpath, "bioclimatic_values_presence.csv"), row.names=FALSE)
 dt <- read.csv(paste0(inpath, "bioclimatic_values_presence.csv"))
 
-peakyears <- c(1998, 2006)   # 2006:2008
-nonpeakyears <- c(1997, 1995) # 1996:1998
+peakyears <- 2006:2008
+nonpeakyears <- 1996:1998
 dt$peak <- ifelse(dt$year %in% peakyears, 1, ifelse(dt$year %in% nonpeakyears, 0, 2))
 
 vars <- c("ddAugJul","AugTmax","winterTmin","summerP0","PPT","GSP","summerP1","Tvar")
@@ -208,6 +208,7 @@ for(var in vars){
 	print(paste(which(vars==var), var, iters[which(vars==var)]))
 }
 
+library(RColorBrewer)
 cols <- brewer.pal(7,"Blues")
 density.plot <- function(var){
 	df <- read.csv(paste0(inpath, "quantile/", var, "diff_csv"))
@@ -230,6 +231,8 @@ density.plot <- function(var){
   print(paste(var, "is done!"))
 }
 
+out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/plots/"
+tau <- c(0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95)
 png(paste0(out,"quant_diff_density_plots.png"), width=12, height=6, units="in", res=300)
 par(mfrow=c(2,4),mar=c(3.5,3.5,3,1))
 for (i in 1:8){
