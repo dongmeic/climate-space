@@ -44,7 +44,7 @@ print("all done!")
 
 # checking corrected data
 if(0){ # check single day
-	vtype <- "tmin"; y <- 2011; i <- 309
+	vtype <- "tmean"; y <- 2010; i <- 258
 	file <- paste0(vtype, substrRight(as.character(y), 2), formatC(i, width = 3, format = "d", flag = "0"), ".tif")
 	r <- raster(paste0(inpath, "/", y, "/", vtype, "/", file))
 	par(mfrow=c(1,1),mar=c(2,2,2,5))
@@ -54,7 +54,7 @@ if(0){ # check single day
 if(0){ # check one year
 	doy <- 1:365
 	out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/plots/"
-	vtype <- "prcp"; y <- 2003
+	vtype <- "tmax"; y <- 2009
 	ptm <- proc.time()
 	pdf(paste0(out,y,"_",vtype,"_raster_correction.pdf"), width=12, height=6)
 	par(mfrow=c(1,2),mar=c(2,2,2,5))	

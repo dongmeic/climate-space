@@ -186,5 +186,5 @@ points(btl_pixels[btl_pixels$allyears==1,], pch=19, cex=0.1, col=rgb(0.8,0,0,0.2
 plot(bb_shp, add=TRUE)
 legend(-5000000, -2600000, bty="n", pch=19, col=rgb(0.8,0,0,0.8), cex=1.2, legend="MPB affected area")
 legend(-5000000, -3000000, bty="n", pch=15, col="lightblue", cex=1.2, legend="Large lakes")
-legend(-5500000, -3400000, bty="n", pch=0, lwd=2, col=rgb(0,0.6,0,1), cex=1.2, legend="Core host range")
+legend(-5000000, -3400000, bty="n", pch=0, col=rgb(0,0.6,0,1), cex=1.2, legend="Core host range")
 dev.off()
