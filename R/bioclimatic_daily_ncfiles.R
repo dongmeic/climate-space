@@ -11,8 +11,6 @@ ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/"
 ncfile <- paste0(ncpath,"na10km_v2.nc")
 ncin <- nc_open(ncfile)
 print(ncin)
-x <- ncvar_get(ncin, varid="x"); nx <- length(x)
-y <- ncvar_get(ncin, varid="y"); ny <- length(y)
 
 # get common variables and attributes
 # get dimension variables and attributes
