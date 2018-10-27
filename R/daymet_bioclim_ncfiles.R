@@ -71,6 +71,7 @@ time_def <- ncvar_def(dlname,tunits,list(tdim),NULL,dlname,prec="integer")
 print("set j and k index")
 roi.shp <- readOGR(dsn="/gpfs/projects/gavingrp/dongmeic/beetle/shapefiles", layer = "na10km_roi")
 roi.df <- roi.shp@data[,-1]
+x <- roi.df$x; y <- roi.df$y
 j2 <- sapply(roi.df$x, function(xy) which.min(abs(x-xy)))
 k2 <- sapply(roi.df$y, function(xy) which.min(abs(y-xy)))
 head(cbind(roi.df$x,roi.df$y,j2,k2))
@@ -90,9 +91,26 @@ varlnms <- c("late cold snap occurring between March through mid-April",
              "average duration of a cold snap during winter",
              "number of days of positive temperature changes on any two consecutive days",
              "number of days when a 0-5 °C drop on any two consecutive days during winter",
+             "number of days when a 5-10 °C drop on any two consecutive days during winter",
+             "number of days when a 10-15 °C drop on any two consecutive days during winter",
+             "number of days when a 15-20 °C drop on any two consecutive days during winter",
+             "number of days when a > 20 °C drop on any two consecutive days during winter",
+             "the largest temperature drop on any two consecutive days during winter",
              "accumulated degree days above 5.5 °C from August to July",
-             "accumulated degree days above 5.5 °C from August to June")
-dunits <- c("binary", "day", "day", "°C", "binary", "one", "one", "day", "day", "°C", "°C")
+             "accumulated degree days above 5.5 °C from August to June",
+             "number of days with minimum temperatures at or below -20 °C during winter",
+             "number of days with minimum temperatures at or below -22 °C during winter",
+             "number of days with minimum temperatures at or below -24 °C during winter",
+             "number of days with minimum temperatures at or below -26 °C during winter",
+             "number of days with minimum temperatures at or below -28 °C during winter",
+             "number of days with minimum temperatures at or below -30 °C during winter",
+             "number of days with minimum temperatures at or below -32 °C during winter",
+             "number of days with minimum temperatures at or below -34 °C during winter",
+             "number of days with minimum temperatures at or below -36 °C during winter",
+             "number of days with minimum temperatures at or below -38 °C during winter",
+             "number of days with minimum temperatures at or below -40 °C during winter")
+             
+dunits <- c("binary", rep("day", 2), "°C", "binary", rep("one", 2), rep("day", 2), rep("°C", 9), rep("day", 11))
             
 dim1 <- 277910; dim2 <- nt
 
