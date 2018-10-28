@@ -109,6 +109,7 @@ varlnms <- c("late cold snap occurring between March through mid-April",
 dunits <- c("binary", rep("day", 2), "°C", "binary", rep("one", 2), rep("day", 2), rep("°C", 9), rep("day", 11))
             
 dim1 <- 277910; dim2 <- nt
+roi.shp <- readOGR(dsn="/gpfs/projects/gavingrp/dongmeic/beetle/shapefiles", layer = "na10km_roi")
 
 print("writing 3D netCDF files")
 ptm <- proc.time()
@@ -124,10 +125,15 @@ foreach(k = 1:nvar)%dopar%{
     print(paste("got data for", varnms[k], years[i]))
   }
   write.csv(df, paste0("daymet_bioclimatic_variables_",varnms[k],".csv"), row.names = FALSE)
+  
+  na_df <- data.frame(matrix(NA, nrow = dim1, ncol = nt))
+  colnames(na_df) <- years
+  na_df[roi.shp@data[,"seq_1_leng"],] <- df
+  
   m <- rep(1:nt,each=dim1)
   temp_array <- array(fillvalue, dim=c(nx,ny,nt))
-  temp_array[cbind(j2,k2,m)] <- as.matrix(df)
-  ncfname <- paste0(ncpath,"ts/var/daymet_na10km_v2_",varnms[k],"_1996.2015.3d.nc")
+  temp_array[cbind(j2,k2,m)] <- as.matrix(na_df)
+  ncfname <- paste0(ncpath,"ts/var/daily/na10km_v2_daymet_",varnms[k],"_1996.2015.3d.nc")
   dname <- varnms[k]
   dlname <- varlnms[k]
   dunit <- dunits[k]

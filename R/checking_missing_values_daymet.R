@@ -3,7 +3,7 @@
 
 inpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
 setwd(inpath)
-start_year <- 2009; end_year <- 2013; years <- start_year:end_year; nt <- length(years)
+start_year <- 1997; end_year <- 1997; years <- start_year:end_year; nt <- length(years)
 
 print("calculating the biocliamtic variables using daily data")
 dim1 <- 77369; dim2 <- nt

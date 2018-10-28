@@ -44,7 +44,7 @@ print("all done!")
 
 # checking corrected data
 if(0){ # check single day
-	vtype <- "tmean"; y <- 2003; i <- 365
+	vtype <- "tmean"; y <- 2008; i <- 81
 	file <- paste0(vtype, substrRight(as.character(y), 2), formatC(i, width = 3, format = "d", flag = "0"), ".tif")
 	r <- raster(paste0(inpath, "/", y, "/", vtype, "/", file))
 	par(mfrow=c(1,1),mar=c(2,2,2,5))
