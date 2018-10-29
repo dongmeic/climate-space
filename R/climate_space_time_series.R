@@ -24,7 +24,7 @@ cols <- c("grey70", "#1b9e77", "#7570b3")
 
 #csvfile <- "bioclimatic_variables_1996_2015.csv" # from climate_space_union.R
 #indata <- read.csv(csvfile)
-
+n1 <- rep(c(1,2,3,4, 5),4); n2 <- c(rep(1,5),rep(2,5),rep(3,5),rep(4,5))
 climate_space_time_series <- function(i, labs=T){
   df.t <- read.csv(paste0(csvpath, vargrp.t[i], "_",years[1], "_",years[nyr], ".csv")) # climate_space_time_series.R
   df.p <- read.csv(paste0(csvpath, vargrp.p[i], "_",years[1], "_",years[nyr], ".csv"))
@@ -46,7 +46,7 @@ climate_space_time_series <- function(i, labs=T){
   par(mar=c(2,2,4,2))
   pushViewport(viewport(layout = grid.layout(4, 5)))
   for(yr in 1:20){
-  	print(climate.space(yr), vp = vplayout(n1[yr], n2[yr]))
+  	print(climate.space(yr), vp = vplayout(n2[yr], n1[yr]))
   }
   dev.off()
 }
@@ -55,7 +55,6 @@ climate_space_time_series <- function(i, labs=T){
 i <- 10
 climate_space_time_series(i, labs=F)
 
-n1 <- rep(c(1,2,3,4),5); n2 <- c(rep(1,4),rep(2,4),rep(3,4),rep(4,4),rep(5,4))
 foreach(i=1:length(vargrp.t))%dopar%{
   #df <- indata[,c(vargrp.t[i], vargrp.p[i], "prs", "yrs")]
 	climate_space_time_series(i)
