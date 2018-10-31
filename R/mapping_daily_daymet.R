@@ -19,8 +19,8 @@ varnms <- c("Lcs", "maxAugT", "summerT40", "winterTmin", "Ecs", "Ncs", "Acs", "d
 
 ncin <- nc_open("/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/na10km_v2.nc")
 x <- ncvar_get(ncin, varid="x"); nx <- length(x)
-yr <- ncvar_get(ncin, varid="yr"); ny <- length(yr)
-grid <- expand.grid(x=x, yr=yr)
+y <- ncvar_get(ncin, varid="y"); ny <- length(y)
+grid <- expand.grid(x=x, y=y)
 
 shppath <- "/gpfs/projects/gavingrp/dongmeic/beetle/shapefiles"
 canada.prov <- readOGR(dsn = shppath, layer = "na10km_can_prov")
@@ -31,29 +31,29 @@ proj4string(lrglakes) <- crs
 
 #Lcs, Ecs, Ncs 
 cutpts <- data.frame(maxAugT=c(0,5,7,9,11,13,17,21,25,29,31),
-winterTmin=c(-50,-40,-30,-20,-15,-10,-5,0,5,15,30),
+winterTmin=c(-50,-40,-30,-25,-20,-15,-10,-5,0,5,12),
 Acs=c(0,2,4,6,8,10,15,20,40,60,90),
-drop0=c(0,10,20,30,40,45,50,60,70,80,90),
-drop5=c(0,10,20,30,40,45,50,60,70,80,90),
-drop10=c(0,10,20,30,40,45,50,60,70,80,90),
-drop15=c(0,10,20,30,40,45,50,60,70,80,90),
-drop20=c(0,10,20,30,40,45,50,60,70,80,90),
-drop20plus=c(0,10,20,30,40,45,50,60,70,80,90),
+drop0=c(30,35,40,45,48,50,52,55,60,65,70),
+drop5=c(5,10,20,25,30,35,37.5,40,45,50,60),
+drop10=c(0,2,4,6,8,10,12,14,16,20,25),
+drop15=c(0,1,2,3,4,5,6,7,8,10,15),
+drop20=c(0,1,2,3,4,5,6,7,8,9,10),
+drop20plus=c(0,1,2,3,4,5,6,7,8,10,12),
 max.drop=c(1,5,8,10,12,15,18,20,30,40,50),
-ddAugJul=c(0,1000,2000,3000,4000,5000,6000,8000,9000,10000,11000),
-ddAugJun=c(0,1000,2000,3000,4000,5000,6000,7000,8000,9000,10000),
+ddAugJul=c(10,1000,2000,3000,4000,5000,6000,8000,9000,10000,11000),
+ddAugJun=c(5,1000,2000,3000,4000,5000,6000,7000,8000,9000,10000),
 summerT40=c(0,5,10,15,25,35,45,55,65,75,95),
-min20 = c(0,10,20,30,40,50,60,70,80,90,100),
-min22 = c(0,10,20,30,40,50,60,70,80,90,100),
-min24 = c(0,10,20,30,40,50,60,70,80,90,100),
-min26 = c(0,10,20,30,40,50,60,70,80,90,100),
-min28 = c(0,10,20,30,40,50,60,70,80,90,100),
-min30 = c(0,10,20,30,40,50,60,70,80,90,100),
-min32 = c(0,10,20,30,40,50,60,70,80,90,100),
-min34 = c(0,10,20,30,40,50,60,70,80,90,100),
-min36 <- c(0,10,20,30,40,50,60,70,80,90,100),
-min38 <- c(0,10,20,30,40,50,60,70,80,90,100),
-min40 <- c(0,10,20,30,40,50,60,70,80,90,100))
+min20 = c(0,5,10,20,30,40,50,60,70,80,90),
+min22 = c(0,5,10,20,30,40,50,60,70,80,90),
+min24 = c(0,5,10,20,30,40,50,60,70,80,90),
+min26 = c(0,5,10,20,30,40,50,60,70,80,90),
+min28 = c(0,5,10,15,20,30,40,50,65,75,85),
+min30 = c(0,5,10,15,20,25,30,40,50,60,80),
+min32 = c(0,5,10,15,20,25,30,40,50,60,80),
+min34 = c(0,2,5,10,15,20,25,30,40,55,75),
+min36 = c(0,1,2,5,10,15,20,25,35,55,75),
+min38 = c(0,1,2,5,10,15,20,25,35,55,75),
+min40 = c(0,1,2,5,10,15,20,25,35,55,75))
 
 get.data <- function(var){
   ncfile <- paste0("na10km_v2_daymet_", var, "_1996.2015.3d.nc")
@@ -78,8 +78,7 @@ pos <- cbind(c(1,1),c(2,1),c(3,1),c(4,1),c(5,1),
 						 c(1,3),c(2,3),c(3,3),c(4,3),c(5,3),
 						 c(1,4),c(2,4),c(3,4),c(4,4),c(5,4))
 						 				 
-# check the codes before running
-				              
+# check the codes before running				              
 for(var in varnms){
   var_3d <- get.data(var)
   png(paste0("daymet_maps_",var,".png"), width=8, height=10, units="in", res=300)
@@ -97,16 +96,16 @@ for(var in varnms){
 			par.settings = list(axis.line = list(col = "transparent")), col.regions=myColors2,
 			scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.2),
 			xlab="",ylab="", colorkey = FALSE, aspect="iso")
-	}else if(var %in% c("Acs", drops)){
+	}else if(var %in% c("Acs", drops, mins)){
 		p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=11, pretty=T, 
 			col.regions=brewer.pal(10,"RdBu"), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
-			par.settings = list(axis.line = list(col = "transparent")), colorkey = FALSE,
+			par.settings = list(axis.line = list(col = "transparent")),colorkey = FALSE,
 			scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.0),
 			xlab="",ylab="", aspect="iso")
 	}else{
 		p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=11, pretty=T, 
 			col.regions=rev(brewer.pal(10,"RdBu")), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
-			par.settings = list(axis.line = list(col = "transparent")), colorkey = FALSE,
+			par.settings = list(axis.line = list(col = "transparent")),colorkey = FALSE,
 			scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.2),
 			xlab="",ylab="", aspect="iso")
 	}
@@ -132,7 +131,7 @@ for(var in varnms){
 			  par.settings = list(axis.line = list(col = "transparent")), col.regions=myColors2,
 			  scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.2),
 			  xlab="",ylab="", colorkey = FALSE, aspect="iso")
-		}else if(var %in% c("Acs", drops)){
+		}else if(var %in% c("Acs", drops, mins)){
 			p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=11, pretty=T, 
 				col.regions=brewer.pal(10,"RdBu"), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
 				par.settings = list(axis.line = list(col = "transparent")), colorkey = FALSE,
@@ -187,7 +186,7 @@ for(var in varnms){
 			  par.settings = list(axis.line = list(col = "transparent")), col.regions=myColors2,
 			  scales = list(draw = FALSE), margin=F, main=list(label=yr, cex=1.5),
 			  xlab="",ylab="", colorkey = FALSE, key=myKey2, aspect="iso")
-		}else if(var %in% c("Acs", drops)){
+		}else if(var %in% c("Acs", drops, mins)){
 			p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=11, pretty=T, 
 			  col.regions=brewer.pal(10,"RdBu"), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
 			  par.settings = list(axis.line = list(col = "transparent")), 

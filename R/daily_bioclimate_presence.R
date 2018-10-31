@@ -43,9 +43,8 @@ roi.shp <- readOGR(dsn="/gpfs/projects/gavingrp/dongmeic/beetle/shapefiles", lay
 roi.xy <- roi.shp@data[,c("x", "y")]
 
 ndf <- read.csv(paste0(csvpath,"daymet_bioclimatic_variables_",years[1],".csv")) # from daymet_bioclimatic_variables_time_series_combined.R
-ndf <- cbind(ndf, na10km_btl_df[,c(paste0("prs_",(years[1]+1)),"vegetation")])
-b <- dim(ndf)[2]; a <- b - 1
-colnames(ndf)[a:b] <- c("beetles","hosts")
+ndf <- cbind(ndf, na10km_btl_df[,paste0("prs_",(years[1]+1))])
+colnames(ndf)[dim(ndf)[2]] <- "beetles"
 
 for(i in 2:length(years)){
   df <- read.csv(paste0(csvpath,"daymet_bioclimatic_variables_",years[i],".csv"))
