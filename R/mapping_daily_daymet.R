@@ -7,6 +7,10 @@ library(latticeExtra)
 library(gridExtra)
 library(RColorBrewer)
 library(animation)
+library(parallel)
+library(doParallel)
+library(foreach)
+registerDoParallel(cores=28)
 
 years <- 1996:2015; nyr <- length(years)
 ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/ts/var/daily/"
