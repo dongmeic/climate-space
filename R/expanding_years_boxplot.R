@@ -19,11 +19,12 @@ vars <- c("ddAugJul","AugTmax","winterTmin","summerP0","PPT","GSP","summerP1","T
 peak.boxplot <- function(var){
   df <- dt[dt$peak!=0,][,c(var,"peak")]
   colnames(df)[1] <- "bioclm"
-  boxplot(bioclm~peak,data=df, main=var, cex=1.5, horizontal = TRUE,col=cols, outcol=rgb(0,0,0,0.5),outcex=0.5,
+  boxplot(bioclm~peak,data=df, main=var, cex=1.5, horizontal = TRUE,col=cols, outcol=rgb(0,0,0,0.4),outcex=0.5,
    xlab="", ylab="")
 }
 
-cols <- rev(c('#e41a1c','#377eb8','#4daf4a','#984ea3'))
+#cols <- rev(c('#e41a1c','#377eb8','#4daf4a','#984ea3'))
+cols <- c('#f7f7f7','#cccccc','#969696','#525252')
 out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/plots/"
 png(paste0(out,"expanding_years_boxplot.png"), width=12, height=6, units="in", res=300)
 par(mfrow=c(2,4),mar=c(3.5,3.5,3,1))
