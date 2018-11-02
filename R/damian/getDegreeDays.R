@@ -12,15 +12,15 @@ get.degree.days <- function(daily.means, threshold, day.range='all') {
   if (day.range == 'aug.jun') daily.means <- daily.means[1:(n - 31)]
   
   days.above.threshold <- daily.means[daily.means > threshold]
-  sum(days.above.threshold, na.rm=T)
+  sum(days.above.threshold - threshold, na.rm=T)
 }
 
 
 # Test
 #daily.means <- c(0, 0, 0, 10, 20, 30, 0)
 #get.degree.days(daily.means, 0)  # should be 60
-#get.degree.days(daily.means, 10) # should be 50
-#get.degree.days(daily.means, 20) # should be 30
+#get.degree.days(daily.means, 10) # should be 30
+#get.degree.days(daily.means, 20) # should be 10
 #get.degree.days(daily.means, 30) # should be 0
 
 #daily.means <- rnorm(365, mean=15, sd=10)
