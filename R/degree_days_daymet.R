@@ -3,7 +3,16 @@
 
 inpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
 setwd(inpath)
-start_year <- 1995; end_year <- 1996; years <- start_year:end_year; nt <- length(years)
+start_year <- 1996; end_year <- 2015; years <- start_year:end_year; nt <- length(years)
+
+# 1 - run in bash; 0 - run in R
+if(1){
+	args <- commandArgs(trailingOnly=T)
+	print(paste('args:', args))
+	print("Starting...")
+	i <- as.numeric(args[1])
+	print(paste('i:', i))
+}
 
 print("calculating degree days using daily data")
 dim1 <- 277910; dim2 <- nt
@@ -37,22 +46,22 @@ get.degree.days.for.all.thresholds <- function(
 }
 
 ptm <- proc.time()
-for(y in 1:(nt-1)){
-	tmean.df.1 <- read.csv(paste0(inpath, "tmean/tmean", years[y],".csv"))
-	tmean.df.2 <- read.csv(paste0(inpath, "tmean/tmean", years[y+1],".csv"))
-  
-  AUG <- 213
-  YEAR <- 365
-  aug.jul.range <- AUG:(AUG + YEAR - 1)
-  
-	df <- data.frame(thres2.2all=double(), thres5.5all=double(), thres10all=double(), thres15all=double(), thres5.5aug.jun=double()) 
-	for(j in 1:dim1){
-		tmp <- c(as.numeric(tmean.df.1[j,3:367]), as.numeric(tmean.df.2[j,3:367]))
-		daily.means <- tmp[aug.jul.range]
-		df[j,] <- get.degree.days.for.all.thresholds(daily.means, thresholds, day.ranges)
-	}
-	print(paste("got data from", years[y+1]))
-	write.csv(df, paste0("daily_climate/Daymet/degree_days_daymet_",years[y+1],".csv"), row.names = FALSE)  
+#for(i in 1:(nt-1)){
+tmean.df.1 <- read.csv(paste0(inpath, "tmean/tmean", years[i],".csv"))
+tmean.df.2 <- read.csv(paste0(inpath, "tmean/tmean", years[i+1],".csv"))
+
+AUG <- 213
+YEAR <- 365
+aug.jul.range <- AUG:(AUG + YEAR - 1)
+
+df <- data.frame(thres2.2all=double(), thres5.5all=double(), thres10all=double(), thres15all=double(), thres5.5aug.jun=double()) 
+for(j in 1:dim1){
+	tmp <- c(as.numeric(tmean.df.1[j,3:367]), as.numeric(tmean.df.2[j,3:367]))
+	daily.means <- tmp[aug.jul.range]
+	df[j,] <- get.degree.days.for.all.thresholds(daily.means, thresholds, day.ranges)
 }
+print(paste("got data from", years[i+1]))
+write.csv(df, paste0("daily_climate/Daymet/degree_days_daymet_",years[i+1],".csv"), row.names = FALSE)  
+#}
 proc.time() - ptm
 print("all done!")
