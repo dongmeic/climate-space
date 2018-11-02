@@ -39,7 +39,7 @@ get.degree.days.for.all.thresholds <- function(
   for (i in 1:length(thresholds)) {
   	out[i] <- get.degree.days(daily.means, thresholds[i], day.ranges[i])
   }
-  names(out) <- paste('thresh', thresholds, day.ranges, sep='')
+  names(out) <- paste0(thresholds, day.ranges)
   out
 }
 
