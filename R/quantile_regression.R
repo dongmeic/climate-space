@@ -47,16 +47,16 @@ sink()
 attach(df)
 taus <- c(.05,.1,.25,.75,.90,.95)
 #png(paste0(out,"test_QR_plot.png"), width=6, height=6, units="in", res=300)
-png(paste0(out,"test_QR_plot.png"), width=12, height=6, units="in", res=300)
+png(paste0(out,"QR_plots.png"), width=12, height=6, units="in", res=300)
 #par(mfrow=c(1,1))
-par(mfrow=c(2,4))
+par(mfrow=c(2,4), mar=c(3.5,3.5,3,1))
 for (i in 1:8){
-	plot(year,df[,i],cex=.25, type="n", xlab="Year", main=colnames(df)[i], ylab=ylabs[i])
-	points(year,df[,i],pch=16,cex=.5,col=rgb(0.7,0.7,0.7,0.01))
-	abline(rq(df[,i]~year,tau=.5),col="black", lwd=1.5)
-	abline(lm(df[,i]~year),lty=2,col="red", lwd=1.5) #the dreaded ols line
+	plot(df$year,df[,i],cex=.25, type="n", main=colnames(df)[i], cex.main =1.5, xlab="", ylab="", cex.lab=1.5)
+	points(df$year,df[,i],pch=16,cex=.5,col=rgb(0.7,0.7,0.7,0.05))
+	abline(rq(df[,i]~df$year,tau=.5),col="black", lwd=1.5)
+	abline(lm(df[,i]~df$year),lty=2,col="red", lwd=1.5) #the dreaded ols line
 	for(k in 1:length(taus)){
-					 abline(rq(df[,i]~year,tau=taus[k]),col=rgb(0.5,0.5,0.5))
+					 abline(rq(df[,i]~df$year,tau=taus[k]),col=rgb(0.5,0.5,0.5))
 					 }
 	print(i)
 }

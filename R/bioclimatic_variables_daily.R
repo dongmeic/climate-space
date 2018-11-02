@@ -11,14 +11,14 @@ if(0){
 source("/gpfs/projects/gavingrp/dongmeic/climate-space/R/getDailyStatsfromMonthly.R")
 inpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
 setwd(inpath)
-start_year <- 1901; end_year <- 1994; years <- start_year:end_year; nt <- length(years)
+start_year <- 1983; end_year <- 1995; years <- start_year:end_year; nt <- length(years)
 
 print("calculating the biocliamtic variables using daily data")
 dim1 <- 277910; dim2 <- nt
 
 ptm <- proc.time()
 #foreach(i = 1:nt)%dopar%{
-for(i in 1:nt){
+for(i in 1:(nt-1)){
 	indata1 <- read.csv(paste0(inpath, "na10km_v2_climatic_values_",years[i],".csv"))
 	indata2 <- read.csv(paste0(inpath, "na10km_v2_climatic_values_",years[i+1],".csv"))
 	indata <- rbind(indata1, indata2)

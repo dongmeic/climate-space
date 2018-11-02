@@ -9,6 +9,10 @@ library(latticeExtra)
 library(gridExtra)
 library(RColorBrewer)
 library(animation)
+library(parallel)
+library(doParallel)
+library(foreach)
+registerDoParallel(cores=28)
 
 #source("/gpfs/projects/gavingrp/dongmeic/climate-space/R/plotlist.R")
 
