@@ -4,30 +4,17 @@
 # @param threshold: numeric scalar: temperature threshold
 # @param day.range: either 'all' or 'aug.jun'
 # @return: numeric scalar = sum of degrees above threshold for all days
-get.degree.days <- function(daily.means, threshold, day.range='all') {
+
+get.degree.days <- function(daily.means, threshold, day.range='all', ...) {
   if (!(day.range %in% c('all', 'aug.jun'))) {
     stop('day.range can only be "all" or "aug.jun"')
   }
   n <- length(daily.means)
   if (day.range == 'aug.jun') daily.means <- daily.means[1:(n - 31)]
   
-  days.above.threshold <- daily.means[daily.means > threshold]
+  days.above.threshold <- round(daily.means[daily.means > threshold] - threshold - 0.5)
   sum(days.above.threshold, na.rm=T)
 }
-
-
-# Test
-#daily.means <- c(0, 0, 0, 10, 20, 30, 0)
-#get.degree.days(daily.means, 0)  # should be 60
-#get.degree.days(daily.means, 10) # should be 50
-#get.degree.days(daily.means, 20) # should be 30
-#get.degree.days(daily.means, 30) # should be 0
-
-#daily.means <- rnorm(365, mean=15, sd=10)
-#get.degree.days(daily.means, threshold=5.5)
-#get.degree.days(daily.means, threshold=5.5, day.range='aug.jun') #should be less
-
-
 
 # Get degree days for all thresholds and date ranges given
 get.degree.days.for.all.thresholds <- function(
@@ -39,10 +26,9 @@ get.degree.days.for.all.thresholds <- function(
   for (i in 1:length(thresholds)) {
   	out[i] <- get.degree.days(daily.means, thresholds[i], day.ranges[i])
   }
-  names(out) <- paste0(thresholds, day.ranges)
+  names(out) <- paste0("thres",thresholds, day.ranges)
   out
 }
-
 
 # Test
 daily.means <- rnorm(365, mean=10, sd=10)
