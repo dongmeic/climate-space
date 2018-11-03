@@ -6,37 +6,29 @@ library(doParallel)
 library(foreach)
 registerDoParallel(cores=28)
 
-years <- 1907:2016
+years <- 1996:2015
 csvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
-
-# vars <- c("JanTmin", "MarTmin", "TMarAug", "summerTmean",
-#           "AugTmean", "AugTmax", "GSP", "PMarAug", "summerP0",
-#           "OctTmin", "fallTmean", "winterTmin", "Tmin", "Tmean",
-#           "Tvar", "TOctSep", "summerP1", "summerP2", "Pmean",
-#           "POctSep", "PcumOctSep", "PPT", "drop0", "drop5",
-#           "ddAugJul", "ddAugJun", "Acs", 
-#           "min20", "min22", "min24", "min26", "min28", "min30")
 
 setwd(csvpath)
 
 # first round
 combine.table <- function(yr){
 	data1 <- read.csv(paste0("bioclimatic_values_", years[yr], ".csv"))
-	data2 <- read.csv(paste0("bioclimatic_values_", years[yr], "_daily.csv"))
+	data2 <- read.csv(paste0("daily_climate/CRU/CRU_bioclim_var_", years[yr], ".csv"))
 	data <- cbind(data1, data2)
-	#data <- data[,vars]
-	write.csv(data, paste0("bioclimatic_values_", years[yr], ".csv"), row.names = FALSE)
-	#write.csv(data, paste0("bioclimatic_values_selected_", years[yr], ".csv"), row.names = FALSE)
+	write.csv(data, paste0("bioclim_values_CRU_", years[yr], ".csv"), row.names = FALSE)
 }
 
 # second round
 update.table <- function(yr){
-  data <- read.csv(paste0("bioclimatic_values_selected_", years[yr], ".csv"))
-	data <- data[,vars]
-	write.csv(data, paste0("bioclimatic_values_selected_", years[yr], ".csv"), row.names = FALSE)  
+  data <- read.csv(paste0("bioclimatic_values_", years[yr], ".csv"))
+	data$ddAugJul <- data$ddAugJul.1
+	data$ddAugJun <- data$ddAugJun.1
+	data <- data[,1:43]
+	write.csv(data, paste0("bioclim_values_CRU_", years[yr], ".csv"), row.names = FALSE)  
 }
 
-foreach(i=1:length(years))%dopar%{
+for(i in 1:length(years)){
   combine.table(i)
   #update.table(i)
   print(paste0("...got data for ", years[i], "..."))

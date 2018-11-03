@@ -3,7 +3,7 @@
 
 inpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
 setwd(inpath)
-start_year <- 1996; end_year <- 2015; years <- start_year:end_year; nt <- length(years)
+start_year <- 1995; end_year <- 2015; years <- start_year:end_year; nt <- length(years)
 
 # 1 - run in bash; 0 - run in R
 if(1){
@@ -15,7 +15,7 @@ if(1){
 }
 
 print("calculating degree days using daily data")
-dim1 <- 277910; dim2 <- nt
+dim1 <- 77369; dim2 <- nt
 
 thresholds <- c(2.2,   5.5,   10,    15,    5.5)
 day.ranges <- c('all', 'all', 'all', 'all', 'aug.jun')

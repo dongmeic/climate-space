@@ -12,9 +12,9 @@ if(1){
 	print(paste('i:', i))
 }
 
-inpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/monthly_mean"
+inpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables"
 setwd(inpath)
-start_year <- 1996; end_year <- 2016; years <- start_year:end_year; nt <- length(years)
+start_year <- 1901; end_year <- 1994; years <- start_year:end_year; nt <- length(years)
 
 print("calculating degree days using monthly data")
 dim1 <- 277910; dim2 <- nt
@@ -49,8 +49,8 @@ get.degree.days.for.all.thresholds <- function(
 
 ptm <- proc.time()
 #for(i in 1:(nt-1)){
-indata1 <- read.csv(paste0("na10km_v2_monthly_mean_",years[i],".csv"))
-indata2 <- read.csv(paste0("na10km_v2_monthly_mean_",years[i+1],".csv"))
+indata1 <- read.csv(paste0("monthly_mean/na10km_v2_monthly_mean_",years[i],".csv"))
+indata2 <- read.csv(paste0("monthly_mean/na10km_v2_monthly_mean_",years[i+1],".csv"))
 indata <- rbind(indata1, indata2)
 
 y2.leap <- is.leap.year(i+1)

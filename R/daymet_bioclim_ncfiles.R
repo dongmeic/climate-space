@@ -114,17 +114,17 @@ roi.shp <- readOGR(dsn="/gpfs/projects/gavingrp/dongmeic/beetle/shapefiles", lay
 print("writing 3D netCDF files")
 ptm <- proc.time()
 foreach(k = 1:nvar)%dopar%{
-  indata <- read.csv(paste0("daymet_bioclimatic_variables_",years[1],".csv"))
+  indata <- read.csv(paste0("daymet_bioclim_var_",years[1],".csv"))
   df <- data.frame(indata[,varnms[k]])
   colnames(df) <- years[1]
   for(i in 2:nt){
-    indata <- read.csv(paste0("daymet_bioclimatic_variables_",years[i],".csv"))
+    indata <- read.csv(paste0("daymet_bioclim_var_",years[i],".csv"))
     ndf <- data.frame(indata[,varnms[k]])
     colnames(ndf) <- years[i]
     df <- cbind(df,ndf)
     print(paste("got data for", varnms[k], years[i]))
   }
-  write.csv(df, paste0("daymet_bioclimatic_variables_",varnms[k],".csv"), row.names = FALSE)
+  write.csv(df, paste0("daymet_bioclim_var_",varnms[k],".csv"), row.names = FALSE)
   
   na_df <- data.frame(matrix(NA, nrow = dim1, ncol = nt))
   colnames(na_df) <- years

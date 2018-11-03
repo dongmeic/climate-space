@@ -112,17 +112,17 @@ dim1 <- 277910; dim2 <- nt
 print("writing 3D netCDF files")
 ptm <- proc.time()
 foreach(k = 1:nvar)%dopar%{
-  indata <- read.csv(paste0("bioclimatic_variables_daily_",years[1],".csv"))
+  indata <- read.csv(paste0("CRU_bioclim_var_",years[1],".csv"))
   df <- data.frame(indata[,varnms[k]])
   colnames(df) <- years[1]
   for(i in 2:nt){
-    indata <- read.csv(paste0("bioclimatic_variables_daily_",years[i],".csv"))
+    indata <- read.csv(paste0("CRU_bioclim_var_",years[i],".csv"))
     ndf <- data.frame(indata[,varnms[k]])
     colnames(ndf) <- years[i]
     df <- cbind(df,ndf)
     print(paste("got data for", varnms[k], years[i]))
   }
-  write.csv(df, paste0("bioclimatic_variables_daily_",varnms[k],".csv"), row.names = FALSE)
+  write.csv(df, paste0("CRU_bioclim_var_",varnms[k],".csv"), row.names = FALSE)
   m <- rep(1:nt,each=dim1)
   temp_array <- array(fillvalue, dim=c(nx,ny,nt))
   temp_array[cbind(j2,k2,m)] <- as.matrix(df)
