@@ -30,7 +30,7 @@ varnms2 <- c("Sqrt(Growing season precipitation, mm)",
 cols <- c("grey70", "#1b9e77", "#7570b3")
 
 # reorganize the data table
-df <- read.csv(paste0(csvpath, vargrp[1], "_", years[1], "_", years[nyr], ".csv"))
+df <- read.csv(paste0(csvpath, vargrp[1], "_", years[1], "_", years[nyr], ".csv")) # from climate_space_union.R
 df1 <- data.frame(df[,vargrp[1]])
 colnames(df1) <- vargrp[1]
 df2 <- df[,2:3]

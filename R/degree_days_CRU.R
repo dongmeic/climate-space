@@ -14,7 +14,7 @@ if(1){
 
 inpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables"
 setwd(inpath)
-start_year <- 1901; end_year <- 1994; years <- start_year:end_year; nt <- length(years)
+start_year <- 1994; end_year <- 1995; years <- start_year:end_year; nt <- length(years)
 
 print("calculating degree days using monthly data")
 dim1 <- 277910; dim2 <- nt

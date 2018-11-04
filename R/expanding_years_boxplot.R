@@ -3,7 +3,7 @@
 inpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
 setwd(inpath)
 
-dt <- read.csv(paste0(inpath, "bioclimatic_values_presence.csv"))
+dt <- read.csv(paste0(inpath, "bioclimatic_values_presence.csv")) # t_tests_quantiles.R
 
 peakyears <- 2006:2008
 nonpeakyears <- 1996:1998

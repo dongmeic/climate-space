@@ -129,9 +129,11 @@ get.best.transform.big <- function(data, field, n.samples, plt=T, time=T) {
   mean(exps)    
 }
 
-ignore <- c('Acs', 'Ecs', 'Lcs', 'Ncs', 'maxAugT', 'summerT40', 'min20',
-						'min22', 'min24', 'min26', 'min28', 'min30', 'min32', 'min34',
-						'min36', 'min38', 'min40', 'beetles', 'hosts', 'year')
+# add 'max.drop'
+ignore <- c('Acs', 'Ecs', 'Lcs', 'Ncs', 'maxAugT', 'summerT40', 
+						'drop10', 'drop15', 'drop20', 'drop20plus', 'max.drop',
+						'min20', 'min22', 'min24', 'min26', 'min28', 'min30', 'min32',
+						'min34', 'min36', 'min38', 'min40', 'beetles', 'hosts', 'year')
 
 SAMPLES <- 500
 best.exps <- c()
@@ -160,14 +162,17 @@ for (field in names(data)) {
     hist(data[, field], main=paste(field, "'", sep=''), col=4)
   }
 }
+
 head(data) # all NAs in the year column?
 #data$year <- unlist(lapply(1996:2015,function(i) rep(i,dim(ndf)[1]/length(1996:2015))))
 write.csv(data, paste0(inpath, "bioclimatic_values_1996_2015_t.csv"), row.names=FALSE)
+data <- read.csv(paste0(inpath, "bioclimatic_values_1996_2015_t.csv"))
 
-png(paste0(out,"histograms_t.png"), width=18, height=6, units="in", res=300)
+data.new <- data[,!(names(data) %in% ignore)]
+png(paste0(out,"histograms_trans.png"), width=18, height=6, units="in", res=300)
 par(mfrow=c(3,9))
-for(i in 1:which(names(data)=="ddAugJun")){
-	plotNormalHistogram(data[,i], main=colnames(data)[i])
+for(i in 1:dim(data.new)[2]){
+	plotNormalHistogram(data.new[,i], main=colnames(data.new)[i])
 	print(i)
 }
 dev.off()
