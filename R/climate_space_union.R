@@ -91,6 +91,9 @@ get.dtcol <- function(var){
 #  get.dtcol(vargrp[i])
 #}
 
+# i=which(vargrp=="ddAugJun")
+# i=which(vargrp=="ddAugJul")
+
 # reorganize the data table
 df <- read.csv(paste0(outcsvpath, vargrp[1], "_", years[1], "_", years[nyr], ".csv"))
 df1 <- data.frame(df[,vargrp[1]])

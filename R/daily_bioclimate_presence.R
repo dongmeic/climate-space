@@ -26,28 +26,28 @@ vars <- c("ddAugJun", "ddAugJul", "winterTmin", "Acs", "Ecs", "Lcs", "Ncs", "min
 								
 ClimDaily <- ndf[ndf$beetles==1,]
 btlClim <- ClimDaily[,vars]
-tt <- dim(ClimDaily)[1]
+t <- dim(ClimDaily)[1]
 hist(btlClim$Ecs)
 hist(ClimDaily$maxAugT)
 hist(ClimDaily$summerT40)
 
-sum(ClimDaily[,"maxAugT"]>=2)/n
-sum(ClimDaily[,"summerT40"]>0)/n
+sum(ClimDaily[,"maxAugT"]>=2)/t
+sum(ClimDaily[,"summerT40"]>0)/t
 
 d1 <- vector(); d2 <- vector()
 for(i in 1:length(vars)){
 	if(i == 1){
-		d1[i] <- sum(btlClim[,i]>305)/tt		
+		d1[i] <- sum(btlClim[,i]>305)/t		
 	}else if(i==2){
-		d1[i] <- sum(btlClim[,i]>833)/tt		
+		d1[i] <- sum(btlClim[,i]>833)/t	
 	}else if(i==3){
-		d1[i] <- sum(btlClim[,i]>-40)/tt		
+		d1[i] <- sum(btlClim[,i]>-40)/t	
 	}else if(i==19){
-		d1[i] <- sum(btlClim[,i]>2)/tt	
+		d1[i] <- sum(btlClim[,i]>2)/t	
 	}else if(i==20){
-		d1[i] <- sum(btlClim[,i]==0)/tt
+		d1[i] <- sum(btlClim[,i]==0)/t
 	}else{
-		d1[i] <- sum(btlClim[,i]==0)/tt
+		d1[i] <- sum(btlClim[,i]==0)/t
 	}
 	d2[i] <- 1 - d1[i]	
 }
@@ -89,17 +89,17 @@ n <- dim(btlClim)[1]
 d1 <- vector(); d2 <- vector()
 for(i in 1:length(vars)){
 	if(i == 1){
-		d1[i] <- sum(btlClim[,i]>305)/tt		
+		d1[i] <- sum(btlClim[,i]>305)/t		
 	}else if(i==2){
-		d1[i] <- sum(btlClim[,i]>833)/tt		
+		d1[i] <- sum(btlClim[,i]>833)/t		
 	}else if(i==3){
-		d1[i] <- sum(btlClim[,i]>-40)/tt		
+		d1[i] <- sum(btlClim[,i]>-40)/t		
 	}else if(i==19){
-		d1[i] <- sum(btlClim[,i]>2)/tt	
+		d1[i] <- sum(btlClim[,i]>2)/t	
 	}else if(i==20){
-		d1[i] <- sum(btlClim[,i]==0)/tt
+		d1[i] <- sum(btlClim[,i]==0)/t
 	}else{
-		d1[i] <- sum(btlClim[,i]==0)/tt
+		d1[i] <- sum(btlClim[,i]==0)/t
 	}
 	d2[i] <- 1 - d1[i]	
 }
