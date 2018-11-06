@@ -124,8 +124,8 @@ get.all.cumulative.means <- function(
   cum.means
 }
 
-THRESHOLD <- 0.000001
-cum.means <- get.all.cumulative.means(vars, dt, q=0.95, threshold=THRESHOLD, use.threshold=F)
+THRESHOLD <- 0.000000001
+cum.means <- get.all.cumulative.means(vars, dt, q=0.95, threshold=THRESHOLD, use.threshold=T)
 write.csv(cum.means, paste0(inpath, "cumulative_means.csv"), row.names=FALSE)
 cum.means <- read.csv(paste0(inpath, "cumulative_means.csv"))
 

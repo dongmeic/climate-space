@@ -8,13 +8,14 @@ out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/plots/"
 setwd(out)
 
 # run Line 4 to 24 in PCA_bioclimatic_variables.R if reading data is too slow; data <- ndf
-data <- read.csv(paste0(inpath, "bioclimatic_values_1996_2015_r.csv"))
+#data <- read.csv(paste0(inpath, "bioclimatic_values_1996_2015_r.csv"))
+data <- read.csv(paste0(inpath, "bioclim_vars_both_1996_2015_r.csv"))
 head(data)
 
 # reference: https://cran.r-project.org/web/packages/quantreg/vignettes/rq.pdf
 dt <- data[data$beetles==1,]
 df <- dt[,c("ddAugJul","AugTmax","winterTmin","summerP0","PPT","GSP","summerP1","Tvar","year")]
-write.csv(df, paste0(inpath, "data_for_QR.csv"), row.names=FALSE)
+#write.csv(df, paste0(inpath, "data_for_QR_both.csv"), row.names=FALSE)
 ylabs <- c("Day-degrees above 5.5 °C from Aug to Jul",
 						"Maximum temperature in Aug (°C)",
 						"Minimum winter temperature (°C)",
@@ -25,7 +26,7 @@ ylabs <- c("Day-degrees above 5.5 °C from Aug to Jul",
 						"Seasonal temperature variation (Aug - Jul)")
 
 #df <- read.csv(paste0(inpath, "data_for_QR.csv"))
-sink(paste0(inpath,"QR_summary.txt"))
+sink(paste0(inpath,"QR_summary_both.txt"))
 fit <- rq(ddAugJul~year, tau=c(.05, .1, .25, .5, .75, .9, .95), data=df)
 summary(fit)
 fit <- rq(AugTmax~year, tau=c(.05, .1, .25, .5, .75, .9, .95), data=df)
@@ -47,7 +48,7 @@ sink()
 attach(df)
 taus <- c(.05,.1,.25,.75,.90,.95)
 #png(paste0(out,"test_QR_plot.png"), width=6, height=6, units="in", res=300)
-png(paste0(out,"QR_plots.png"), width=12, height=6, units="in", res=300)
+png(paste0(out,"QR_plots_both.png"), width=12, height=6, units="in", res=300)
 #par(mfrow=c(1,1))
 par(mfrow=c(2,4), mar=c(3.5,3.5,3,1))
 for (i in 1:8){
