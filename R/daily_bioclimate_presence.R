@@ -17,14 +17,14 @@ for(i in 2:length(years)){
   ndf <- rbind(ndf,df)
   print(paste(years[i], "done!"))
 }
-ndf <- cbind(ndf, year=unlist(lapply(1996:2015,function(i) rep(i,dim(ndf)[1]/length(1996:2015)))))
-write.csv(ndf, paste0(inpath, "daily_bioclimatic_values_1996_2015_r.csv"), row.names=FALSE)
+crubioclm <- cbind(ndf, year=unlist(lapply(1996:2015,function(i) rep(i,dim(ndf)[1]/length(1996:2015)))))
+#write.csv(crubioclm, paste0(inpath, "daily_bioclimatic_values_1996_2015_r.csv"), row.names=FALSE)
 
 #ndf <- read.csv(paste0(inpath, "daily_bioclimatic_values_1996_2015_r.csv"))
-vars <- c("ddAugJun", "ddAugJul", "winterTmin", "Acs", "Ecs", "Lcs", "Ncs", "min20", "min22", "min24", "min26", 
+vars <- c("ddAugJun", "ddAugJul", "winterTmin", "Acs", "Ecs", "Lcs", "min20", "min22", "min24", "min26", 
 					"min28", "min30", "min32", "min34", "min36", "min38", "min40", "maxAugT", "summerT40")
 								
-ClimDaily <- ndf[ndf$beetles==1,]
+ClimDaily <- crubioclm[crubioclm$beetles==1,]
 btlClim <- ClimDaily[,vars]
 t <- dim(ClimDaily)[1]
 hist(btlClim$Ecs)
@@ -37,14 +37,14 @@ sum(ClimDaily[,"summerT40"]>0)/t
 d1 <- vector(); d2 <- vector()
 for(i in 1:length(vars)){
 	if(i == 1){
-		d1[i] <- sum(btlClim[,i]>305)/t		
+		d1[i] <- sum(btlClim[,i]>305) / t		
 	}else if(i==2){
 		d1[i] <- sum(btlClim[,i]>833)/t	
 	}else if(i==3){
 		d1[i] <- sum(btlClim[,i]>-40)/t	
-	}else if(i==19){
+	}else if(i==18){
 		d1[i] <- sum(btlClim[,i]>2)/t	
-	}else if(i==20){
+	}else if(i==19){
 		d1[i] <- sum(btlClim[,i]==0)/t
 	}else{
 		d1[i] <- sum(btlClim[,i]==0)/t
@@ -81,25 +81,30 @@ dmClim <- cbind(ndf, year=unlist(lapply(1996:2015,function(i) rep(i,dim(ndf)[1]/
 write.csv(dmClim, paste0(csvpath, "daymet_bioclim_1996_2015_r.csv"), row.names=FALSE)
 
 ClimDaily <- dmClim[dmClim$beetles==1,]
-vars <- c("ddAugJun", "ddAugJul", "winterTmin", "Acs", "Ecs", "Lcs", "Ncs", "min20", "min22", "min24", "min26", 
+
+sink(paste0(inpath,"bioclim_summary_statistics_daymet.txt"))
+summary(ClimDaily)
+sink()
+
+vars <- c("ddAugJun", "ddAugJul", "winterTmin", "Acs", "Ecs", "Lcs", "min20", "min22", "min24", "min26", 
 					"min28", "min30", "min32", "min34", "min36", "min38", "min40", "maxAugT", "summerT40")
 btlClim <- ClimDaily[,vars]
 btlClim <- btlClim[complete.cases(btlClim),]
-n <- dim(btlClim)[1]
+k <- dim(btlClim)[1]
 d1 <- vector(); d2 <- vector()
 for(i in 1:length(vars)){
 	if(i == 1){
-		d1[i] <- sum(btlClim[,i]>305)/t		
+		d1[i] <- sum(btlClim[,i]>305) / k		
 	}else if(i==2){
-		d1[i] <- sum(btlClim[,i]>833)/t		
+		d1[i] <- sum(btlClim[,i]>833)/k		
 	}else if(i==3){
-		d1[i] <- sum(btlClim[,i]>-40)/t		
+		d1[i] <- sum(btlClim[,i]>-40)/k		
+	}else if(i==18){
+		d1[i] <- sum(btlClim[,i]>2)/k	
 	}else if(i==19){
-		d1[i] <- sum(btlClim[,i]>2)/t	
-	}else if(i==20){
-		d1[i] <- sum(btlClim[,i]==0)/t
+		d1[i] <- sum(btlClim[,i]==0)/k
 	}else{
-		d1[i] <- sum(btlClim[,i]==0)/t
+		d1[i] <- sum(btlClim[,i]==0)/k
 	}
 	d2[i] <- 1 - d1[i]	
 }
