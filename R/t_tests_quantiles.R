@@ -1,4 +1,4 @@
-# run in an interactive mode
+# run in an interactive mode or in srun
 
 inpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
 setwd(inpath)
@@ -28,8 +28,7 @@ peakyears <- 2006:2008
 nonpeakyears <- 1996:1998
 dt$peak <- ifelse(dt$year %in% peakyears, 1, ifelse(dt$year %in% nonpeakyears, 0, 2))
 
-#vars <- c("ddAugJul","AugTmax","winterTmin","summerP0","PPT","GSP","summerP1","Tvar")
-vars <- c("ddAugJul","AugTmax","summerP0","PPT","winterTmin","GSP","Pmean","Tvar")
+vars <- c("ddAugJul","AugTmax","winterTmin","summerP0","PPT","GSP","summerP1","Tvar")
 
 tau <- c(0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95)
 
@@ -169,8 +168,8 @@ get.sample.sizes.needed <- function(cum.means) {
   apply(cum.means, 2, get.index.of.last.finite.value)
 }
 
-print(paste('Sample sizes needed for threshold', THRESHOLD))
-get.sample.sizes.needed(cum.means)
+#print(paste('Sample sizes needed for threshold', THRESHOLD))
+#get.sample.sizes.needed(cum.means)
 
 get.diff.matrix <- function(dt, var, iter){
 	tau <- c(0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95)
@@ -196,8 +195,8 @@ get.diff.matrix <- function(dt, var, iter){
 	write.csv(df3, paste0(inpath, "quantile/", var, "_diff.csv"), row.names=FALSE)
 }
 
-#iters <- c(1000, 2000, 2000, 1000, 1000, 3000, 1000, 1000)
-iters <- c(5000, 1900, 5000, 5000, 2100, 5000, 5000, 1600)
+#iters <- c(5000, 1900, 5000, 5000, 2100, 5000, 5000, 1600)
+iters <- c(2000, 2000, 1000, 1000, 2000, 2000, 1000, 1000)
 for(var in vars){
 	get.diff.matrix(dt, var, iters[which(vars==var)])
 	print(paste(which(vars==var), var, iters[which(vars==var)]))
@@ -229,12 +228,16 @@ density.plot <- function(var){
 out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/plots/"
 tau <- c(0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95)
 
-png(paste0(out,"quant_diff_density_plots_both.png"), width=12, height=6, units="in", res=300)
+if(CRU){
+	png(paste0(out,"quant_diff_density_plots.png"), width=12, height=6, units="in", res=300)
+}else{
+	png(paste0(out,"quant_diff_density_plots_both.png"), width=12, height=6, units="in", res=300)
+}
 par(mfrow=c(2,4),mar=c(3.5,3.5,3,1))
 for (i in 1:8){
   density.plot(vars[i])
   if(i==4){
-    legend('topleft', lty=1, lwd=2, col=cols, legend=tau, cex = 1.5, bty='n')
+    legend('topright', lty=1, lwd=2, col=cols, legend=tau, cex = 1.5, bty='n')
   }
 }
 dev.off()

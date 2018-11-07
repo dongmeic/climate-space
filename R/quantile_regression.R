@@ -19,7 +19,7 @@ head(data)
 
 # reference: https://cran.r-project.org/web/packages/quantreg/vignettes/rq.pdf
 dt <- data[data$beetles==1,]
-df <- dt[,c("ddAugJul","AugTmax","summerP0","PPT","winterTmin","GSP","Pmean","Tvar","year")]
+df <- dt[,c("ddAugJul", "AugTmax", "winterTmin", "summerP0", "PPT", "GSP", "summerP1", "Tvar", "year")]
 if(CRU){
 	write.csv(df, paste0(inpath, "data_for_QR.csv"), row.names=FALSE)
 }else{

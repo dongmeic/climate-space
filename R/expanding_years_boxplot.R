@@ -14,8 +14,7 @@ dt$peak <- ifelse(dt$year %in% peakyears, 4,
 					 ifelse(dt$year %in% expanding1,2,
 					 ifelse(dt$year %in% expanding2,3,0))))
 
-#vars <- c("ddAugJul","AugTmax","winterTmin","summerP0","PPT","GSP","summerP1","Tvar")
-vars <- c("ddAugJul","AugTmax","summerP0","PPT","winterTmin","GSP","Pmean","Tvar")
+vars <- c("ddAugJul","AugTmax","winterTmin","summerP0","PPT","GSP","summerP1","Tvar")
 
 peak.boxplot <- function(var){
   df <- dt[dt$peak!=0,][,c(var,"peak")]
