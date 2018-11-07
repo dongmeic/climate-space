@@ -1,5 +1,5 @@
 # Created by Dongmei Chen
-# run in an interactive mode
+# run in an interactive mode or in srun
 
 library(ggplot2)
 library(grid)
@@ -10,18 +10,18 @@ setwd(outpath)
 
 vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
 
-vars <- c("ddAugJul", "AugTmax", "winterTmin", "summerP0", "PPT", "GSP", "summerP1", "Tvar")
-varnms <- c("Degree days above 5.5 °C from Aug to Jul",
+vars <- c("ddAugJul", "AugTmax", "summerP0", "PPT", "winterTmin", "GSP", "Pmean", "Tvar")
+varnms <- c("Degree-days above 5.5 °C from Aug to Jul",
 					  "Maximum temperature in Aug",
-					  "Minimum winter temperature",
 					  "Summer precipitation in current year",
 					  "Cumulative monthly Oct-Aug precipitation",
+					  "Minimum winter temperature",
 					  "Growing season precipitation",
-					  "Summer precipitation in previous year",
+					  "Mean precipitation from Aug to Jul",
 					  "Seasonal temperature variation from Aug to Jul")
 
-startyrs <- c(1902, 1901, 1902, 1901, 1907, 1901, 1902, 1902)
-units <- c("(DD)", "(°C)", "(°C)", "(mm)", "(mm)", "(mm)", "(mm)","")
+startyrs <- c(1902, 1901, 1901, 1907, 1902, 1901, 1902, 1902)
+units <- c("(DD)", "(°C)", "(mm)", "(mm)", "(°C)", "(mm)", "(mm)","")
 
 cols <- c("grey70", "#1b9e77", "#7570b3")
 rect <- data.frame(xmin=1996, xmax=2015, ymin=-Inf, ymax=Inf)

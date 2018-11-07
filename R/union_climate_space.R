@@ -13,14 +13,14 @@ csvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/climate_space/times_s
 ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/ts/var/"
 setwd(out)
 
-vars1 <- c("ddAugJul", "AugTmax", "winterTmin", "summerP1")
+vars1 <- c("ddAugJul", "AugTmax", "winterTmin", "Pmean")
 vars2 <- c("GSP", "summerP0", "PPT", "Tvar")
-vargrp <- c("ddAugJul", "AugTmax", "winterTmin", "summerP0", "PPT", "GSP", "summerP1", "Tvar")
+vargrp <- c("ddAugJul", "AugTmax", "winterTmin", "summerP0", "PPT", "GSP", "Pmean", "Tvar")
 
-varnms1 <- c("Sqrt(Day-degrees above 5.5 °C from Aug to Jul)",
+varnms1 <- c("Sqrt(Degree-days above 5.5 °C from Aug to Jul)",
 						 "Maximum temperature in Aug (°C)",
 						 "Minimum winter temperature (°C)",
-						 "Sqrt(Summer precipitation in previous year, mm)")
+						 "Sqrt(Mean precipitation from Aug to Jul, mm)")
 
 varnms2 <- c("Sqrt(Growing season precipitation, mm)",
 						 "Sqrt(Summer precipitation in current year, mm)",
@@ -73,3 +73,5 @@ par(mar=c(2,2,4,2))
 pushViewport(viewport(layout = grid.layout(4, 4)))
 for(i in 1:4){climate.space.paired(i)}
 dev.off()
+
+print("all done")

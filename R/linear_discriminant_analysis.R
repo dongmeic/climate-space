@@ -191,8 +191,9 @@ sink()
 dt <- as.data.frame(my_data)
 dt$beetles <- data$beetles
 # Linear Discriminant Analysis
-dt.lda <- lda(beetles ~ AugTmax + GSP + summerP0 + winterTmin + Tvar + summerP1 + PPT + drop5 + ddAugJul, data=dt)
-sink(paste0(inpath,"lda.txt"))
+dt.lda <- lda(beetles ~ AugTmax + GSP + summerP0 + winterTmin + Tvar + Pmean + PPT + drop5 + ddAugJul, data=dt)
+#dt.lda <- lda(beetles ~ AugTmax + GSP + summerP0 + winterTmin + drop5 + ddAugJul, data=dt)
+sink(paste0(inpath,"lda_Pmean.txt"))
 print(dt.lda)
 sink()
 
@@ -232,6 +233,10 @@ if(0){
 
 	# checking climate space pairs
 	df <- dt[dt$beetles==1,]
+	par(mfrow=c(1,2))
+	plot(df$ddAugJul, df$summerP0)
+	plot(df$AugTmax, df$winterTmin)
+	
 	par(mfrow=c(2,4))
 	plot(df$ddAugJul, df$Acs)
 	plot(df$ddAugJun,df$min20)
