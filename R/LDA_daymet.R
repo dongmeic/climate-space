@@ -25,7 +25,7 @@ for(i in 1:20){allrows <- c(allrows, rows+(i-1)*d)}
 df_monthly_roi <- df_monthly[allrows,]
 dim(df_monthly_roi)
 csvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/daily_climate/Daymet/"
-dmClim <- read.csv(paste0(csvpath, "daymet_bioclim_1996_2015_r.csv"))
+dmClim <- read.csv(paste0(csvpath, "daymet_bioclim_1996_2015_r.csv")) # from daily_bioclimate_presence.R
 bioClim <- cbind(df_monthly_roi, dmClim)
 write.csv(bioClim, paste0(inpath, "bioclim_vars_both_1996_2015_r.csv"), row.names=FALSE)
 

@@ -1,3 +1,4 @@
+# Run in an interactive mode
 
 inpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
 
@@ -59,32 +60,34 @@ write.csv(df, paste0(inpath, "daily_winter_tmp.csv"), row.names=FALSE)
 
 # read from daymet
 years <- 1996:2015
-csvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/daily_climate/Daymet/"
+csvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
 drops <- c("drop5", "drop10", "drop15", "drop20", "drop20plus", "max.drop")
 mins <- c("min20", "min22", "min24", "min26", "min28", "min30", "min32", "min34", "min36", "min38", "min40")
 cs <- c("Lcs", "Ecs", "Ncs", "Acs")
+more <- c('Oct20', 'Oct30', 'Oct40', 'OctMin','Jan20', 'Jan30', 'Jan40', 'JanMin',
+					'Mar20', 'Mar30', 'Mar40', 'MarMin', 'minT', 'AugMax', 'maxT', 'OptTsum')
 vars <- c("maxAugT", "summerT40", "winterTmin", "drop0", drops, "ddAugJul", "ddAugJun", mins)
 
 library(rgdal)
 roi.shp <- readOGR(dsn="/gpfs/projects/gavingrp/dongmeic/beetle/shapefiles", layer = "na10km_roi")
 
-ndf <- read.csv(paste0(csvpath,"daymet_bioclim_var_",years[1],".csv")) # from daymet_bioclimatic_variables_time_series_combined.R
+ndf <- read.csv(paste0(csvpath,"bioclim_values_Daymet_",years[1],".csv")) # from daymet_combined.R
 ndf <- cbind(ndf, roi.shp@data[,paste0("prs_",(years[1]+1))])
 colnames(ndf)[dim(ndf)[2]] <- "beetles"
 
 for(i in 2:length(years)){
-  df <- read.csv(paste0(csvpath,"daymet_bioclimatic_variables_",years[i],".csv"))
+  df <- read.csv(paste0(csvpath,"bioclim_values_Daymet_",years[i],".csv"))
   df <- cbind(df, roi.shp@data[,paste0("prs_",(years[1]+1))])
   colnames(df)[dim(df)[2]] <- "beetles"
   ndf <- rbind(ndf,df)
   print(paste(years[i], "done!"))
 }
 dmClim <- cbind(ndf, year=unlist(lapply(1996:2015,function(i) rep(i,dim(ndf)[1]/length(1996:2015)))))
-#write.csv(dmClim, paste0(csvpath, "daymet_bioclim_1996_2015_r.csv"), row.names=FALSE)
+write.csv(dmClim, paste0(csvpath, "daymet_bioclim_1996_2015_r.csv"), row.names=FALSE)
 
 ClimDaily <- dmClim[dmClim$beetles==1,]
 
-sink(paste0(inpath,"bioclim_summary_statistics_daymet.txt"))
+sink(paste0(csvpath,"bioclim_summary_statistics_daymet.txt"))
 summary(ClimDaily)
 sink()
 
