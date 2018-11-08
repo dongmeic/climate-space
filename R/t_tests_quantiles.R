@@ -4,7 +4,7 @@ inpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
 setwd(inpath)
 
 CRU = 1
-if(0){
+if(1){
 	if(CRU){
 		data <- read.csv(paste0(inpath, "bioclimatic_values_1996_2015_r.csv"))
 	}else{
@@ -15,10 +15,10 @@ if(0){
 #na10km <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/csvfiles/na10km_v2.csv")
 #data$x <- rep(na10km$x, 20); data$y <- rep(na10km$y, 20)
 
-#dt <- data[data$beetles==1,]
+dt <- data[data$beetles==1,]
 if(CRU){
-	#write.csv(dt, paste0(inpath, "bioclimatic_values_presence.csv"), row.names=FALSE)
-	dt <- read.csv(paste0(inpath, "bioclimatic_values_presence.csv"))
+	write.csv(dt, paste0(inpath, "bioclimatic_values_presence.csv"), row.names=FALSE)
+	#dt <- read.csv(paste0(inpath, "bioclimatic_values_presence.csv"))
 }else{
 	#write.csv(dt, paste0(inpath, "bioclim_vars_presence_both.csv"), row.names=FALSE)
 	dt <- read.csv(paste0(inpath, "bioclim_vars_presence_both.csv"))
@@ -196,7 +196,7 @@ get.diff.matrix <- function(dt, var, iter){
 }
 
 #iters <- c(5000, 1900, 5000, 5000, 2100, 5000, 5000, 1600)
-iters <- c(2000, 2000, 1000, 1000, 2000, 2000, 1000, 1000)
+iters <- c(1000, 1000, 1000, 2000, 2000, 1000, 2000, 2000)
 for(var in vars){
 	get.diff.matrix(dt, var, iters[which(vars==var)])
 	print(paste(which(vars==var), var, iters[which(vars==var)]))
@@ -236,7 +236,7 @@ if(CRU){
 par(mfrow=c(2,4),mar=c(3.5,3.5,3,1))
 for (i in 1:8){
   density.plot(vars[i])
-  if(i==4){
+  if(i==5){
     legend('topright', lty=1, lwd=2, col=cols, legend=tau, cex = 1.5, bty='n')
   }
 }

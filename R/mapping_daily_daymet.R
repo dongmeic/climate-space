@@ -165,6 +165,8 @@ for(var in varnms){
 
 # plot a legend separately
 if(0){
+	var <- "Acs"; yr <- 1
+	var_3d <- get.data(var)
 	var_3d_slice <- var_3d[,,yr]
 	png(paste0("daymet_legend_",var,".png"), width=8, height=7.5, units="in", res=300)
 	p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=11, pretty=T, 

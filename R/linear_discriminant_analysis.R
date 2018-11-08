@@ -191,12 +191,12 @@ sink()
 dt <- as.data.frame(my_data)
 dt$beetles <- data$beetles
 # Linear Discriminant Analysis
-dt.lda <- lda(beetles ~ AugTmax + GSP + summerP0 + winterTmin + Tvar + Pmean + PPT + drop5 + ddAugJul, data=dt)
-#dt.lda <- lda(beetles ~ AugTmax + GSP + summerP0 + winterTmin + drop5 + ddAugJul, data=dt)
-sink(paste0(inpath,"lda_Pmean.txt"))
+dt.lda <- lda(beetles ~ AugTmax + GSP + summerP0 + winterTmin + Tvar + summerP1 + PPT + drop5 + ddAugJul, data=dt)
+sink(paste0(inpath,"lda.txt"))
 print(dt.lda)
 sink()
 
+save.image(file="/gpfs/projects/gavingrp/dongmeic/beetle/output/RData/LDA.RData")
 if(0){
 	# Assess the accuracy of the prediction
 	# percent correct for each category of "beetles"

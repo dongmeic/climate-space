@@ -41,7 +41,9 @@ for(i in 1:length(vars)){
 	}else if(i==2){
 		d1[i] <- sum(btlClim[,i]>833)/t	
 	}else if(i==3){
-		d1[i] <- sum(btlClim[,i]>-40)/t	
+		d1[i] <- sum(btlClim[,i]>-40)/t
+	}else if(i==4){	
+		d1[i] <- sum(btlClim[,i]<=4)/t
 	}else if(i==18){
 		d1[i] <- sum(btlClim[,i]>2)/t	
 	}else if(i==19){
@@ -78,7 +80,7 @@ for(i in 2:length(years)){
   print(paste(years[i], "done!"))
 }
 dmClim <- cbind(ndf, year=unlist(lapply(1996:2015,function(i) rep(i,dim(ndf)[1]/length(1996:2015)))))
-write.csv(dmClim, paste0(csvpath, "daymet_bioclim_1996_2015_r.csv"), row.names=FALSE)
+#write.csv(dmClim, paste0(csvpath, "daymet_bioclim_1996_2015_r.csv"), row.names=FALSE)
 
 ClimDaily <- dmClim[dmClim$beetles==1,]
 
@@ -98,7 +100,9 @@ for(i in 1:length(vars)){
 	}else if(i==2){
 		d1[i] <- sum(btlClim[,i]>833)/k		
 	}else if(i==3){
-		d1[i] <- sum(btlClim[,i]>-40)/k		
+		d1[i] <- sum(btlClim[,i]>-40)/k	
+	}else if(i==4){	
+		d1[i] <- sum(btlClim[,i]<=4)/k	
 	}else if(i==18){
 		d1[i] <- sum(btlClim[,i]>2)/k	
 	}else if(i==19){
@@ -111,3 +115,4 @@ for(i in 1:length(vars)){
 df <- data.frame(prs=d1, abs=d2, var=vars)
 write.csv(df, paste0(inpath, "daily_winter_tmp_daymet.csv"), row.names=FALSE)
 
+save.image(file="/gpfs/projects/gavingrp/dongmeic/beetle/output/RData/summary_daily.RData")
