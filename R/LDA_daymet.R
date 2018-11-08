@@ -11,23 +11,28 @@ library(rgdal)
 
 inpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
 out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/plots/"
-data <- read.csv(paste0(inpath, "bioclimatic_values_1996_2015_r.csv"))
-head(data); 
-d <- dim(data)[1]/20
-df_monthly <- data[,1:22]
-df_monthly <- df_monthly[, -which(names(df_monthly) %in% c("winterTmin"))]
-write.csv(df_monthly, paste0(inpath, "bioclim_vars_monthly_1996_2015_r.csv"), row.names=FALSE)
-dim(df_monthly)
-roi.shp <- readOGR(dsn="/gpfs/projects/gavingrp/dongmeic/beetle/shapefiles", layer = "na10km_roi")
-rows <- roi.shp@data[,"seq_1_leng"]
-allrows <- c()
-for(i in 1:20){allrows <- c(allrows, rows+(i-1)*d)}
-df_monthly_roi <- df_monthly[allrows,]
-dim(df_monthly_roi)
-csvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/daily_climate/Daymet/"
-dmClim <- read.csv(paste0(csvpath, "daymet_bioclim_1996_2015_r.csv")) # from daily_bioclimate_presence.R
-bioClim <- cbind(df_monthly_roi, dmClim)
-write.csv(bioClim, paste0(inpath, "bioclim_vars_both_1996_2015_r.csv"), row.names=FALSE)
+setwd(out)
+
+if(0){
+	data <- read.csv(paste0(inpath, "bioclimatic_values_1996_2015_r.csv"))
+	head(data)
+	d <- dim(data)[1]/20
+	df_monthly <- data[,1:22]
+	df_monthly <- df_monthly[, -which(names(df_monthly) %in% c("winterTmin"))]
+	write.csv(df_monthly, paste0(inpath, "bioclim_vars_monthly_1996_2015_r.csv"), row.names=FALSE)
+	dim(df_monthly)
+	roi.shp <- readOGR(dsn="/gpfs/projects/gavingrp/dongmeic/beetle/shapefiles", layer = "na10km_roi")
+	rows <- roi.shp@data[,"seq_1_leng"]
+	allrows <- c()
+	for(i in 1:20){allrows <- c(allrows, rows+(i-1)*d)}
+	df_monthly_roi <- df_monthly[allrows,]
+	write.csv(df_monthly_roi, paste0(inpath, "bioclim_vars_m_roi_1996_2015_r.csv"), row.names=FALSE)
+	dim(df_monthly_roi)
+	dmClim <- read.csv(paste0(inpath, "daymet_bioclim_1996_2015_r.csv")) # from daily_bioclimate_presence.R
+	bioClim <- cbind(df_monthly_roi, dmClim)
+	write.csv(bioClim, paste0(inpath, "bioclim_vars_both_1996_2015_r.csv"), row.names=FALSE)
+}
+bioClim <- read.csv(paste0(inpath, "bioclim_vars_both_1996_2015_r.csv"))
 
 # https://github.com/dongmeic/SDM/blob/master/R/models/logisticModEDA.R.ipynb
 # Find the best exponential transform (x' = x^a) or log transform 
@@ -122,13 +127,13 @@ get.best.transform.big <- function(data, field, n.samples, plt=T, time=T) {
 }
 
 # add 'max.drop'
-ignore <- c('Acs', 'Ecs', 'Lcs', 'Ncs','summerT40', 'drop10','drop15', 'drop20', 'drop20plus', 
+ignore <- c('Acs', 'Ecs', 'Lcs', 'Ncs','summerT40', 'drop10','drop15', 'drop20', 'drop20plus',
+						'Oct20', 'Oct30', 'Oct40', 'Jan20', 'Jan30', 'Jan30', 'Mar20', 'Mar30', 'Mar40',
 						'min20', 'min22', 'min24', 'min26', 'min28', 'min30', 'min32',
 						'min34', 'min36', 'min38', 'min40', 'beetles', 'hosts', 'year')
 
 SAMPLES <- 500
 best.exps <- c()
-#par(mfrow=c(1, 1))
 
 for (field in names(data)) {
   if (!(field %in% ignore)) {
@@ -157,11 +162,11 @@ for (field in names(data)) {
 head(data) # all NAs in the year column?
 #data$year <- unlist(lapply(1996:2015,function(i) rep(i,dim(ndf)[1]/length(1996:2015))))
 write.csv(data, paste0(inpath, "bioclim_vars_both_1996_2015_t.csv"), row.names=FALSE)
-data <- read.csv(paste0(inpath, "bioclim_vars_both_1996_2015_t.csv"))
+#data <- read.csv(paste0(inpath, "bioclim_vars_both_1996_2015_t.csv"))
 
 data.new <- data[,!(names(data) %in% ignore)]
-png(paste0(out,"histograms_trans_both.png"), width=14, height=8, units="in", res=300)
-par(mfrow=c(4,7))
+png("histograms_trans_both.png", width=14, height=10, units="in", res=300)
+par(mfrow=c(5,7))
 for(i in 1:dim(data.new)[2]){
 	plotNormalHistogram(data.new[,i], main=colnames(data.new)[i])
 	print(i)
@@ -169,7 +174,7 @@ for(i in 1:dim(data.new)[2]){
 dev.off()
 
 # correlation matrix
-data <- read.csv(paste0(inpath, "bioclim_vars_both_1996_2015_t.csv"))
+#data <- read.csv(paste0(inpath, "bioclim_vars_both_1996_2015_t.csv"))
 dat <- data[,!(names(data) %in% ignore)]
 my_data <- scale(dat)
 res <- cor(my_data)
@@ -182,11 +187,11 @@ sink()
 dt <- as.data.frame(my_data)
 dt$beetles <- data$beetles
 # Linear Discriminant Analysis
-#dt.lda <- lda(beetles ~ AugTmax + GSP + summerP0 + winterTmin + Tvar + summerP1 + PPT + drop5 + ddAugJul + maxAugT + max.drop, data=dt)
-dt.lda <- lda(beetles ~ AugTmax + GSP + summerP0 + winterTmin + Tvar + POctSep + PPT + drop5 + ddAugJul + maxAugT + max.drop, data=dt)
+dt.lda <- lda(beetles ~ AugTmax + GSP + summerP0 + winterTmin + Tvar + PPT + drop5 + ddAugJul + maxAugT + max.drop + OptTsum + maxT, data=dt)
 sink(paste0(inpath,"lda_daymet.txt"))
 print(dt.lda)
 sink()
 
-load("/gpfs/projects/gavingrp/dongmeic/beetle/output/RData/LDA_daymet.RData")
-save.image(file="/gpfs/projects/gavingrp/dongmeic/beetle/output/RData/LDA_daymet.RData")
+print("all done")
+#load("/gpfs/projects/gavingrp/dongmeic/beetle/output/RData/LDA_daymet.RData")
+#save.image(file="/gpfs/projects/gavingrp/dongmeic/beetle/output/RData/LDA_daymet.RData")
