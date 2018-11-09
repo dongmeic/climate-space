@@ -38,3 +38,9 @@ get.daily.stats <- function(daily.highs, daily.means, daily.lows) {
   out
 }
 
+get.cv.gsp <- function(daily.prcp){
+	gsp.range <- 91:181
+	input <- na.omit(daily.prcp[gsp.range])
+	cv.gsp <- sqrt(var(input))/mean(input)
+	cv.gsp
+}

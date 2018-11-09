@@ -28,7 +28,8 @@ peakyears <- 2006:2008
 nonpeakyears <- 1996:1998
 dt$peak <- ifelse(dt$year %in% peakyears, 1, ifelse(dt$year %in% nonpeakyears, 0, 2))
 
-vars <- c("ddAugJul","AugTmax","winterTmin","summerP0","PPT","GSP","summerP1","Tvar")
+vars <- c("ddAugJul", "maxAugT", "OptTsum", "winterTmin", "summerP2", "MarTmin",
+						 "drop5", "GSP", "PPT", "AugMax", "OctMin", "Tvar")
 
 tau <- c(0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95)
 
@@ -150,11 +151,11 @@ if(CRU){
 # plot all
 out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/plots/"
 if(CRU){
-	png(paste0(out,"cumulative_means.png"), width=12, height=6, units="in", res=300)
+	png(paste0(out,"cumulative_means.png"), width=12, height=9, units="in", res=300)
 }else{
-	png(paste0(out,"cumulative_means_daymet.png"), width=12, height=6, units="in", res=300)
+	png(paste0(out,"cumulative_means_daymet.png"), width=12, height=9, units="in", res=300)
 }
-par(mfrow=c(2,4), mar=c(2.5, 2.5, 3.5, 2))
+par(mfrow=c(3,4), mar=c(2.5, 2.5, 3.5, 2))
 for(i in 1:8){
 	plot(cum.means[, i], type='l', col=i, xlab="", ylab="", main=vars[i], lwd=2)
 }

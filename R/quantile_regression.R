@@ -3,7 +3,7 @@
 
 library(quantreg)
 
-CRU = 1
+CRU = 0
 
 inpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
 out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/plots/"
@@ -20,8 +20,8 @@ head(data)
 # reference: https://cran.r-project.org/web/packages/quantreg/vignettes/rq.pdf
 dt <- data[data$beetles==1,]
 #df <- dt[,c("ddAugJul", "AugTmax", "winterTmin", "summerP0", "PPT", "GSP", "summerP1", "Tvar", "year")]
-df <- dt[,c("ddAugJul", "maxAugT", "OptTsum", "winterTmin", "summerP0", "drop5", 
-						"GSP", "AugMax", "Tvar", "OctMin", "PPT", "max.drop", "year")]
+df <- dt[,c("ddAugJul", "maxAugT", "OptTsum", "winterTmin", "summerP2", "MarTmin",
+						 "drop5", "GSP", "PPT", "AugMax", "OctMin", "Tvar", "year")]
 if(CRU){
 	write.csv(df, paste0(inpath, "data_for_QR.csv"), row.names=FALSE)
 }else{
@@ -38,17 +38,25 @@ if(CRU){
 }
 fit <- rq(ddAugJul~year, tau=taus, data=df)
 summary(fit)
-fit <- rq(AugTmax~year, tau=taus, data=df)
+fit <- rq(maxAugT~year, tau=taus, data=df)
+summary(fit)
+fit <- rq(OptTsum~year, tau=taus, data=df)
 summary(fit)
 fit <- rq(winterTmin~year, tau=taus, data=df)
 summary(fit)
-fit <- rq(summerP0~year, tau=taus, data=df)
+fit <- rq(summerP2~year, tau=taus, data=df)
 summary(fit)
-fit <- rq(PPT~year, tau=taus, data=df)
+fit <- rq(MarTmin~year, tau=taus, data=df)
+summary(fit)
+fit <- rq(drop5~year, tau=taus, data=df)
 summary(fit)
 fit <- rq(GSP~year, tau=taus, data=df)
 summary(fit)
-fit <- rq(summerP1~year, tau=taus, data=df)
+fit <- rq(PPT~year, tau=taus, data=df)
+summary(fit)
+fit <- rq(AugMax~year, tau=taus, data=df)
+summary(fit)
+fit <- rq(OctMin~year, tau=taus, data=df)
 summary(fit)
 fit <- rq(Tvar~year, tau=taus, data=df)
 summary(fit)
