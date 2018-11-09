@@ -27,9 +27,11 @@ if(0){
 	for(i in 1:20){allrows <- c(allrows, rows+(i-1)*d)}
 	df_monthly_roi <- df_monthly[allrows,]
 	write.csv(df_monthly_roi, paste0(inpath, "bioclim_vars_m_roi_1996_2015_r.csv"), row.names=FALSE)
+	df_monthly_roi <- read.csv(paste0(inpath, "bioclim_vars_m_roi_1996_2015_r.csv"))
 	dim(df_monthly_roi)
 	dmClim <- read.csv(paste0(inpath, "daymet_bioclim_1996_2015_r.csv")) # from daily_bioclimate_presence.R
 	bioClim <- cbind(df_monthly_roi, dmClim)
+	bioClim$hosts <- roi.shp$hosts
 	write.csv(bioClim, paste0(inpath, "bioclim_vars_both_1996_2015_r.csv"), row.names=FALSE)
 }
 bioClim <- read.csv(paste0(inpath, "bioclim_vars_both_1996_2015_r.csv"))
@@ -128,19 +130,19 @@ get.best.transform.big <- function(data, field, n.samples, plt=T, time=T) {
 
 # add 'max.drop'
 ignore <- c('Acs', 'Ecs', 'Lcs', 'Ncs','summerT40', 'drop10','drop15', 'drop20', 'drop20plus',
-						'Oct20', 'Oct30', 'Oct40', 'Jan20', 'Jan30', 'Jan30', 'Mar20', 'Mar30', 'Mar40',
+						'Oct20', 'Oct30', 'Oct40', 'Jan20', 'Jan30', 'Jan40', 'Mar20', 'Mar30', 'Mar40',
 						'min20', 'min22', 'min24', 'min26', 'min28', 'min30', 'min32',
 						'min34', 'min36', 'min38', 'min40', 'beetles', 'hosts', 'year')
 
 SAMPLES <- 500
 best.exps <- c()
 
-for (field in names(data)) {
+for (field in names(bioClim)) {
   if (!(field %in% ignore)) {
-    min.x <- min(data[, field],
+    min.x <- min(bioClim[, field],
                  na.rm=T)
     best.exp <- get.best.transform.big(
-        list(data), field, SAMPLES, plt=T, time=T)
+        list(bioClim), field, SAMPLES, plt=T, time=T)
     cat(field, ': ', best.exp, '\n', sep='')
     best.exps[field] <- best.exp
   }
@@ -148,36 +150,37 @@ for (field in names(data)) {
 
 # transform and check the distributions before and after the transformation
 par(mfrow=c(2, 2))
-for (field in names(data)) {
+for (field in names(bioClim)) {
   if (!(field %in% ignore)) {
-    hist(data[, field], main=field, col=4)
+    hist(bioClim[, field], main=field, col=4)
       
-    min.x <- min(data[, field], na.rm=T)
-    data[, field] <- (data[, field] + abs(min.x) + 1)^best.exps[field]
+    min.x <- min(bioClim[, field], na.rm=T)
+    bioClim[, field] <- (bioClim[, field] + abs(min.x) + 1)^best.exps[field]
     
-    hist(data[, field], main=paste(field, "'", sep=''), col=4)
+    hist(bioClim[, field], main=paste(field, "'", sep=''), col=4)
   }
 }
 
-head(data) # all NAs in the year column?
+head(bioClim) # all NAs in the year column?
 #data$year <- unlist(lapply(1996:2015,function(i) rep(i,dim(ndf)[1]/length(1996:2015))))
-write.csv(data, paste0(inpath, "bioclim_vars_both_1996_2015_t.csv"), row.names=FALSE)
-#data <- read.csv(paste0(inpath, "bioclim_vars_both_1996_2015_t.csv"))
+#bioClim <- bioClim[, -which(names(bioClim) %in% c("Jan40"))]
+write.csv(bioClim, paste0(inpath, "bioclim_vars_both_1996_2015_t.csv"), row.names=FALSE)
+#bioClim <- read.csv(paste0(inpath, "bioclim_vars_both_1996_2015_t.csv"))
 
-data.new <- data[,!(names(data) %in% ignore)]
+dat <- bioClim[,!(names(bioClim) %in% ignore)]
 png("histograms_trans_both.png", width=14, height=10, units="in", res=300)
 par(mfrow=c(5,7))
-for(i in 1:dim(data.new)[2]){
-	plotNormalHistogram(data.new[,i], main=colnames(data.new)[i])
+for(i in 1:dim(dat)[2]){
+	plotNormalHistogram(dat[,i], main=colnames(dat)[i])
 	print(i)
 }
 dev.off()
 
 # correlation matrix
-#data <- read.csv(paste0(inpath, "bioclim_vars_both_1996_2015_t.csv"))
-dat <- data[,!(names(data) %in% ignore)]
+#bioClim <- read.csv(paste0(inpath, "bioclim_vars_both_1996_2015_t.csv"))
+
 my_data <- scale(dat)
-res <- cor(my_data)
+res <- cor(my_data, use = "complete.obs")
 sink(paste0(inpath,"CorrMatrix_daymet.txt"))
 round(res, 2)
 sink()
@@ -185,9 +188,10 @@ sink()
 
 # rescale the predictors
 dt <- as.data.frame(my_data)
-dt$beetles <- data$beetles
+dt$beetles <- bioClim$beetles
 # Linear Discriminant Analysis
-dt.lda <- lda(beetles ~ AugTmax + GSP + summerP0 + winterTmin + Tvar + PPT + drop5 + ddAugJul + maxAugT + max.drop + OptTsum + maxT, data=dt)
+dt.lda <- lda(beetles ~ GSP + summerP2 + winterTmin + Tvar + PPT + OctMin + drop5 + ddAugJul + maxAugT + max.drop + OptTsum + AugMax + MarTmin, data=dt)
+#dt.lda <- lda(beetles ~ ., data=dt)
 sink(paste0(inpath,"lda_daymet.txt"))
 print(dt.lda)
 sink()

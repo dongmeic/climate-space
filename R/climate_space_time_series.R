@@ -26,7 +26,7 @@ cols <- c("grey70", "#1b9e77", "#7570b3")
 #indata <- read.csv(csvfile)
 n1 <- rep(c(1,2,3,4, 5),4); n2 <- c(rep(1,5),rep(2,5),rep(3,5),rep(4,5))
 climate_space_time_series <- function(i, labs=T){
-  df.t <- read.csv(paste0(csvpath, vargrp.t[i], "_",years[1], "_",years[nyr], ".csv")) # climate_space_time_series.R
+  df.t <- read.csv(paste0(csvpath, vargrp.t[i], "_",years[1], "_",years[nyr], ".csv")) # from climate_space_union.R
   df.p <- read.csv(paste0(csvpath, vargrp.p[i], "_",years[1], "_",years[nyr], ".csv"))
   df <- cbind(data.frame(tmp=df.t[,1]),data.frame(pre=df.p[,1]),data.frame(prs=df.t[,2]),data.frame(yrs=df.t[,3]))
   climate.space <- function(j){

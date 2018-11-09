@@ -4,7 +4,6 @@
 library(ncdf4)
 library(abind)
 
-inpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"; setwd(inpath)
 start_year <- 1996; end_year <- 2015; years <- start_year:end_year; nt <- length(years)
 ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/"
 ncfile <- paste0(ncpath,"na10km_v2.nc")

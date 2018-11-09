@@ -37,3 +37,4 @@ get.daily.stats <- function(daily.highs, daily.means, daily.lows) {
                   'minT', 'AugMax', 'maxT', 'OptTsum')
   out
 }
+

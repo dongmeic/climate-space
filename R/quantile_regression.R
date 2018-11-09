@@ -19,7 +19,9 @@ head(data)
 
 # reference: https://cran.r-project.org/web/packages/quantreg/vignettes/rq.pdf
 dt <- data[data$beetles==1,]
-df <- dt[,c("ddAugJul", "AugTmax", "winterTmin", "summerP0", "PPT", "GSP", "summerP1", "Tvar", "year")]
+#df <- dt[,c("ddAugJul", "AugTmax", "winterTmin", "summerP0", "PPT", "GSP", "summerP1", "Tvar", "year")]
+df <- dt[,c("ddAugJul", "maxAugT", "OptTsum", "winterTmin", "summerP0", "drop5", 
+						"GSP", "AugMax", "Tvar", "OctMin", "PPT", "max.drop", "year")]
 if(CRU){
 	write.csv(df, paste0(inpath, "data_for_QR.csv"), row.names=FALSE)
 }else{
@@ -56,10 +58,10 @@ attach(df)
 if(CRU){
 	png(paste0(out,"QR_plots.png"), width=12, height=6, units="in", res=300)
 }else{
-	png(paste0(out,"QR_plots_both.png"), width=12, height=6, units="in", res=300)
+	png(paste0(out,"QR_plots_both.png"), width=12, height=9, units="in", res=300)
 }
-par(mfrow=c(2,4), mar=c(3.5,3.5,3,1))
-for (i in 1:8){
+par(mfrow=c(3,4), mar=c(3.5,3.5,3,1))
+for (i in 1:12){
 	plot(df$year,df[,i],cex=.25, type="n", main=colnames(df)[i], cex.main =1.5, xlab="", ylab="", cex.lab=1.5)
 	points(df$year,df[,i],pch=16,cex=.5,col=rgb(0.7,0.7,0.7,0.05))
 	abline(rq(df[,i]~df$year,tau=.5),col="black", lwd=1.5)
