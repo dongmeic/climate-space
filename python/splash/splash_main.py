@@ -52,10 +52,19 @@ from data import Data
 from splash import Splash
 
 
-def main():
-    if len(sys.argv) < 3:
-        print('Usage: main.py lat elv')
-        sys.exit(1)
+def parse_path(path):
+    path_parts = path.split('/')
+    infile = path_parts[-1]
+    outfile = 'ET_' + infile
+    outfile = '/'.join(path_parts[:-1]) + '/' + outfile
+    year = path_parts[-2]
+    identifier, latitude, elevation, end = infile.split('_')
+    assert end.replace('.csv', '') == year, \
+        'Year in file name does not match directory'
+    return float(latitude), float(elevation), outfile
+
+
+def main(path=None):
     # Create a root logger:
     root_logger = logging.getLogger()
     root_logger.setLevel(logging.INFO)
@@ -68,30 +77,17 @@ def main():
 
     # Send logging handler to root logger:
     root_logger.addHandler(root_handler)
-    example = 1
-    my_data = Data()
-    if example == 1:
-        # Example 1: read CSV file:
-        my_file = 'data/example_data.csv'
-        my_data.read_csv(my_file)
-    elif example == 2:
-        # Example 2: read TXT files:
-        my_sf_file = 'daily_sf_2000_cruts.txt'
-        my_pn_file = 'daily_pn_2000_wfdei.txt'
-        my_tair_file = 'daily_tair_2000_wfdei.txt'
-        my_data.read_txt(my_sf_file, 'sf')
-        my_data.read_txt(my_pn_file, 'pn')
-        my_data.read_txt(my_tair_file, 'tair')
 
-    # Consistency Test #4: Spin-Up
-    #my_lat = 37.7
-    #my_elv = 142.
-    my_lat = float(sys.argv[1])
-    my_elv = float(sys.argv[2])
-    my_class = Splash(my_lat, my_elv)
+    my_data = Data()
+    my_data.read_csv(path)
+    latitude, elevation, outfile = parse_path(path)
+    print('Computing Splash Evapotranspiration with:\n'
+          '  lat: %.2f\n  elevation: %.2f\n'
+          'and writing to %s...\n' % (latitude, elevation, outfile))
+    my_class = Splash(latitude, elevation)
     my_class.spin_up(my_data)
     #my_class.print_daily_sm()
-    my_class.print_daily_aet()
+    my_class.write_daily_aet(outfile)
 
     
 if __name__ == '__main__':
