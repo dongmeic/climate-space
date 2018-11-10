@@ -26,8 +26,8 @@ if(0){
 	allrows <- c()
 	for(i in 1:20){allrows <- c(allrows, rows+(i-1)*d)}
 	df_monthly_roi <- df_monthly[allrows,]
-	write.csv(df_monthly_roi, paste0(inpath, "bioclim_vars_m_roi_1996_2015_r.csv"), row.names=FALSE)
-	df_monthly_roi <- read.csv(paste0(inpath, "bioclim_vars_m_roi_1996_2015_r.csv"))
+	#write.csv(df_monthly_roi, paste0(inpath, "bioclim_vars_m_roi_1996_2015_r.csv"), row.names=FALSE)
+	#df_monthly_roi <- read.csv(paste0(inpath, "bioclim_vars_m_roi_1996_2015_r.csv"))
 	dim(df_monthly_roi)
 	dmClim <- read.csv(paste0(inpath, "daymet_bioclim_1996_2015_r.csv")) # from daily_bioclimate_presence.R
 	bioClim <- cbind(df_monthly_roi, dmClim)
@@ -136,7 +136,7 @@ ignore <- c('Acs', 'Ecs', 'Lcs', 'Ncs','summerT40', 'drop10','drop15', 'drop20',
 
 SAMPLES <- 500
 best.exps <- c()
-
+# field <- "cv.gsp"
 for (field in names(bioClim)) {
   if (!(field %in% ignore)) {
     min.x <- min(bioClim[, field],
@@ -164,8 +164,9 @@ for (field in names(bioClim)) {
 head(bioClim) # all NAs in the year column?
 #data$year <- unlist(lapply(1996:2015,function(i) rep(i,dim(ndf)[1]/length(1996:2015))))
 #bioClim <- bioClim[, -which(names(bioClim) %in% c("Jan40"))]
-write.csv(bioClim, paste0(inpath, "bioclim_vars_both_1996_2015_t.csv"), row.names=FALSE)
-#bioClim <- read.csv(paste0(inpath, "bioclim_vars_both_1996_2015_t.csv"))
+bioClim.t <- read.csv(paste0(inpath, "bioclim_vars_both_1996_2015_t.csv"))
+bioClim.t$cv.gsp <- bioClim[,field]
+write.csv(bioClim.t, paste0(inpath, "bioclim_vars_both_1996_2015_t.csv"), row.names=FALSE)
 
 dat <- bioClim[,!(names(bioClim) %in% ignore)]
 png("histograms_trans_both.png", width=14, height=10, units="in", res=300)
@@ -190,9 +191,9 @@ sink()
 dt <- as.data.frame(my_data)
 dt$beetles <- bioClim$beetles
 # Linear Discriminant Analysis
-dt.lda <- lda(beetles ~ GSP + summerP2 + winterTmin + Tvar + PPT + OctMin + drop5 + ddAugJul + maxAugT + max.drop + OptTsum + AugMax + MarTmin, data=dt)
+dt.lda <- lda(beetles ~ summerP2 + JanMin + Tvar + PPT + OctMin + drop5 + ddAugJul + maxAugT + max.drop + OptTsum + AugMax + MarTmin + cv.gsp, data=dt)
 #dt.lda <- lda(beetles ~ ., data=dt)
-sink(paste0(inpath,"lda_daymet.txt"))
+sink(paste0(inpath,"lda_daymet_JanMin.txt"))
 print(dt.lda)
 sink()
 

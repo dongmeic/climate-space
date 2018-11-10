@@ -156,7 +156,7 @@ if(CRU){
 	png(paste0(out,"cumulative_means_daymet.png"), width=12, height=9, units="in", res=300)
 }
 par(mfrow=c(3,4), mar=c(2.5, 2.5, 3.5, 2))
-for(i in 1:8){
+for(i in 1:12){
 	plot(cum.means[, i], type='l', col=i, xlab="", ylab="", main=vars[i], lwd=2)
 }
 dev.off()
@@ -197,7 +197,7 @@ get.diff.matrix <- function(dt, var, iter){
 }
 
 #iters <- c(5000, 1900, 5000, 5000, 2100, 5000, 5000, 1600)
-iters <- c(1000, 1000, 1000, 2000, 2000, 1000, 2000, 2000)
+iters <- c(2000, 500, 1000, 2000, 2000, 1000, 1000, 2000, 3000, 2000, 2000, 2000)
 for(var in vars){
 	get.diff.matrix(dt, var, iters[which(vars==var)])
 	print(paste(which(vars==var), var, iters[which(vars==var)]))
@@ -230,15 +230,15 @@ out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/plots/"
 tau <- c(0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95)
 
 if(CRU){
-	png(paste0(out,"quant_diff_density_plots.png"), width=12, height=6, units="in", res=300)
+	png(paste0(out,"quant_diff_density_plots.png"), width=12, height=9, units="in", res=300)
 }else{
-	png(paste0(out,"quant_diff_density_plots_both.png"), width=12, height=6, units="in", res=300)
+	png(paste0(out,"quant_diff_density_plots_both.png"), width=12, height=9, units="in", res=300)
 }
-par(mfrow=c(2,4),mar=c(3.5,3.5,3,1))
-for (i in 1:8){
+par(mfrow=c(3,4),mar=c(3.5,3.5,3,1))
+for (i in 1:12){
   density.plot(vars[i])
-  if(i==5){
-    legend('topright', lty=1, lwd=2, col=cols, legend=tau, cex = 1.5, bty='n')
+  if(i==9){
+    legend('topleft', lty=1, lwd=2, col=cols, legend=tau, cex = 1.5, bty='n')
   }
 }
 dev.off()
