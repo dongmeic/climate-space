@@ -16,7 +16,7 @@ import sys
 import splash_main as splash
 
 
-DATA_DIR = './data'
+DATA_DIR = '/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/SPLASH'
 if len(sys.argv) < 2:
     print('Missing argument.\nUsage:\n  ./start.py [YEARS]')
     sys.exit(1)
