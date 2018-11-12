@@ -355,9 +355,10 @@ class Splash:
 
     def write_daily_aet(self, path):
         with open(path, 'w') as outfile:
-            outfile.write('Day,Actual ET (mm)')
+            #outfile.write('Day,Actual ET (mm)')
             for i in range(len(self.aet_vec)):
-                outfile.write('%d,%0.6f' % (i + 1, self.aet_vec[i]))
+                #outfile.write('%d,%0.6f' % (i + 1, self.aet_vec[i]))
+                outfile.write('%0.5f,' % self.aet_vec[i])
         print('Writing complete.\n')
         
 

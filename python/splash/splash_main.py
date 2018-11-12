@@ -87,6 +87,7 @@ def main(path=None):
     my_class = Splash(latitude, elevation)
     my_class.spin_up(my_data)
     #my_class.print_daily_sm()
+    #my_class.print_daily_aet()
     my_class.write_daily_aet(outfile)
 
     
