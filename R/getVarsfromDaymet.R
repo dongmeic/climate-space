@@ -16,11 +16,11 @@ get.opt.T <- function(daily.means) {
 get.daily.stats <- function(daily.highs, daily.means, daily.lows) {
 	YEAR <- 365
 	oct.range <- 274:304
-	jan.range <- (1 + YEAR - 1):(31 + YEAR - 1)
-	mar.range <- (60 + YEAR - 1):(90 + YEAR - 1)
+	jan.range <- (1 + YEAR):(31 + YEAR)
+	mar.range <- (60 + YEAR):(90 + YEAR)
 	AUG <- 213
-  aug.range <- (213 + YEAR - 1):(243 + YEAR - 1)
-  summer.range <- (152 + YEAR - 1):(243 + YEAR - 1)
+  aug.range <- (213 + YEAR):(243 + YEAR)
+  summer.range <- (152 + YEAR):(243 + YEAR)
   aug.jul.range <- AUG:(AUG + YEAR - 1)
   Octmins <- get.min.data(daily.lows[oct.range])
   Janmins <- get.min.data(daily.lows[jan.range])
@@ -39,7 +39,7 @@ get.daily.stats <- function(daily.highs, daily.means, daily.lows) {
 }
 
 get.cv.gsp <- function(daily.prcp){
-	gsp.range <- 121:304
+	gsp.range <- 91:181
 	input <- na.omit(daily.prcp[gsp.range])
 	cv.gsp <- sqrt(var(input))/mean(input)
 	cv.gsp
