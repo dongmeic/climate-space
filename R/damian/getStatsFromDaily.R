@@ -134,8 +134,8 @@ get.min.data <- function(daily.lows) {
   winter30 <- sum(daily.lows[winter.range] <= -30)
   winter40 <- sum(daily.lows[winter.range] <= -40)
   OctMin <- min(daily.lows[oct.range])
-  JanMin <- min(daily.lows[Jan.range])
-  MarMin <- min(daily.lows[Mar.range])
+  JanMin <- min(daily.lows[jan.range])
+  MarMin <- min(daily.lows[mar.range])
   winterMin <- min(daily.lows[winter.range])
   minT <- min(daily.lows[aug.jul.range])
   list(Oct20=Oct20, Oct30=Oct30, Oct40=Oct40,
@@ -147,17 +147,19 @@ get.min.data <- function(daily.lows) {
 }
 
 
-get.two.year.data <- function(daily.means, daily.lows) {
+get.two.year.data <- function(daily.lows, daily.means, daily.highs) {
   OCT <- 62
   NOV <- 93
   DEC <- 123
   FEB <- 185
   Ecs.range <- (OCT + 14):(NOV + 29)
+  winter.range <- DEC:(FEB+27)
+  maxT <- max(daily.highs)
   Ecs <- is.coldsnap(daily.lows[Ecs.range])
   coldsnap.stats <- get.coldsnap.stats(daily.lows[winter.range])
   drop.data <- get.drop.stats(daily.means[winter.range])
   degree.days.data <- get.degree.days(daily.means) 
-  list(Ecs=Ecs,coldsnap.stats=coldsnap.stats,
+  list(maxT=maxT, Ecs=Ecs,coldsnap.stats=coldsnap.stats,
        drop.data=drop.data, degree.days.data=degree.days.data)
 }
 
@@ -168,7 +170,7 @@ get.two.year.data <- function(daily.means, daily.lows) {
 #   daily.highs: numeric vector; 730-731 data points of daily highs
 #   daily.means: ""      ""      ""  ""   ""     "" ""   ""   means
 #   daily.lows:  ""      ""      ""  ""   ""     "" ""   ""   lows
-get.daily.stats <- function(daily.highs, daily.means, daily.lows) {
+get.daily.stats <- function(daily.lows, daily.means, daily.highs) {
   AUG <- 213
   YEAR <- 365
   # Months Aug (t-1)- Jul (t)
@@ -179,7 +181,7 @@ get.daily.stats <- function(daily.highs, daily.means, daily.lows) {
   t.data <- get.single.year.data(
  		daily.lows[jan.dec.range], daily.means[jan.dec.range], daily.highs[jan.dec.range]) 
   two.year.data <- get.two.year.data(
-    daily.means[aug.jul.range], daily.lows[aug.jul.range])
+    daily.lows[aug.jul.range], daily.means[aug.jul.range], daily.highs[aug.jul.range])
   min.data <- get.min.data(daily.lows)
   out <- c(unlist(t.data), unlist(two.year.data),unlist(min.data))
   names(out) <- gsub('coldsnap.stats.|drop.data.|degree.days.data.', 
@@ -201,4 +203,4 @@ get.daily.stats <- function(daily.highs, daily.means, daily.lows) {
 #lines(high, col=2)
 #lines(low, col=4)
 
-#get.daily.stats(high, x, low)
+#get.daily.stats(low, x, high)
