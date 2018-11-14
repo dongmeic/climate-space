@@ -8,8 +8,8 @@ setwd(outpath)
 
 na10km.shp <- readOGR("/gpfs/projects/gavingrp/dongmeic/beetle/shapefiles/na10km_mask_pts.shp")
 na10km <- "+proj=laea +lat_0=50 +lon_0=-100 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0"
-vars <- c('tmax', 'tmin', 'tmean', 'prcp', 'vp')
-years <- 1995:2015
+vars <- c('tmax', 'tmin', 'tmean', 'prcp')
+years <- 1991:1994
 yeardays <- 1:365
 
 # 1 - run in bash; 0 - run in R
