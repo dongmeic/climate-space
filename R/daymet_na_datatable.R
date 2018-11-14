@@ -6,7 +6,8 @@ inpath <- "/gpfs/projects/gavingrp/dongmeic/daymet/ncfiles_na/"
 outpath <- "/gpfs/projects/gavingrp/dongmeic/daymet/datatable_na"
 setwd(outpath)
 
-na10km.shp <- readOGR("/gpfs/projects/gavingrp/dongmeic/beetle/shapefiles/na10km_mask_pts.shp")
+#na10km.shp <- readOGR("/gpfs/projects/gavingrp/dongmeic/beetle/shapefiles/na10km_mask_pts.shp")
+na10km.shp <- readOGR("/gpfs/projects/gavingrp/dongmeic/beetle/shapefiles/daymet_na10km.shp")
 na10km <- "+proj=laea +lat_0=50 +lon_0=-100 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0"
 vars <- c('tmax', 'tmin', 'tmean', 'prcp')
 years <- 1991:2015

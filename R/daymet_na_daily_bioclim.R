@@ -16,7 +16,7 @@ if(1){
 }
 
 print("calculating the biocliamtic variables using daily data")
-dim <- 277910
+dim <- 210748
 # test: i <- 2; j <- 53600
 
 ptm <- proc.time()
