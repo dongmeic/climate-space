@@ -56,4 +56,5 @@ sf,tair,pn
 where the headers are sf (sunshine fraction), tair (air temperature), pn (precipitation), and each row is one day of data for an entire year.
 
 See the <a href="https://bitbucket.org/labprentice/splash/overview">original SPLASH repo</a> for input details.
-*NOTE:* In the above link, it states that latitude is to be expressed in radians, but all example inputs are expressed in degrees.  Check outputs to make sure that values are reasonable.  If not, this is likely the reason.
+
+**NOTE:** In the above link, it states that latitude is to be expressed in radians, but all example inputs are expressed in degrees.  Check outputs to make sure that values are reasonable.  If not, this is likely the reason.
