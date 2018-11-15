@@ -28,6 +28,7 @@ In the `start.py` file, the `DIR_PATH` should be set to the directory where inpu
 Where 0001, 0002, etc. are the cell identifiers, and LAT and ELEV are the latitude and elevation values for that cell.
 
 Data will be written in a mirrored `output` directory:
+```
 .../output
     1996/
         ET_s0001_LAT_ELEV_1996.csv
