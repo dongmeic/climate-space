@@ -46,6 +46,7 @@
 # 2018-07-17
 
 import logging
+import os
 import sys
 
 from data import Data
@@ -56,13 +57,29 @@ def parse_path(path):
     path_parts = path.split('/')
     infile = path_parts[-1]
     outfile = 'ET_' + infile
-    outfile = '/'.join(path_parts[:-1]) + '/' + outfile
+    outdir = ('/'.join(path_parts[:-1])).replace('input', 'output')
     year = path_parts[-2]
     identifier, latitude, elevation, end = infile.split('_')
     assert end.replace('.csv', '') == year, \
         'Year in file name does not match directory'
-    return float(latitude), float(elevation), outfile
+    return float(latitude), float(elevation), outdir, outfile, int(year)
 
+
+def write_data(data, splash, outdir, outfile, year):
+    values = 'eet', 'pet', 'aet', 'wn'
+    with open('%s/%s' % (outdir, outfile), 'w') as f:
+        f.write('equilET,potentialET,actualET,soilMoisture\n')
+        for i in range(data.num_lines):
+            splash.run_one_day(i + 1,
+                               year,
+                               splash.wn_vec[i],
+                               data.sf_vec[i],
+                               data.tair_vec[i],
+                               data.pn_vec[i])
+            vals = ','.join(splash.get_vals(values)) + '\n'
+            f.write(vals)
+    print('Writing done.')
+                                                                        
 
 def main(path=None):
     # Create a root logger:
@@ -77,19 +94,32 @@ def main(path=None):
 
     # Send logging handler to root logger:
     root_logger.addHandler(root_handler)
-
+    latitude, elevation, outdir, outfile, year = parse_path(path)
+    #values = 'eet', 'pet', 'aet', 'wn'
     my_data = Data()
-    my_data.read_csv(path)
-    latitude, elevation, outfile = parse_path(path)
+    my_data.read_csv(path, y=year)
     print('Computing Splash Evapotranspiration with:\n'
           '  lat: %.2f\n  elevation: %.2f\n'
-          'and writing to %s...\n' % (latitude, elevation, outfile))
+          'and writing to %s/%s...\n' % (latitude, elevation, outdir, outfile))
     my_class = Splash(latitude, elevation)
     my_class.spin_up(my_data)
-    #my_class.print_daily_sm()
-    #my_class.print_daily_aet()
-    my_class.write_daily_aet(outfile)
+    if not os.path.isdir(outdir):
+         os.makedirs(outdir)
+    write_data(my_data, my_class, outdir, outfile, year)
+    #with open('%s/%s' % (outdir, outfile), 'w') as f:
+    #    f.write('equilET,potentialET,actualET,soilMoisture\n')
+    #    for i in range(my_data.num_lines):
+    #        my_class.run_one_day(i + 1,
+    #                             year,
+    #                             my_class.wn_vec[i],
+    #                             my_data.sf_vec[i],
+    #                             my_data.tair_vec[i],
+    #                             my_data.pn_vec[i])
+    #        vals = ','.join(my_class.get_vals(values)) + '\n'
+    #        f.write(vals)
+    #print('Writing done.')
 
+    
     
 if __name__ == '__main__':
     main()
