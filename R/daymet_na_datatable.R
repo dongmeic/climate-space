@@ -8,8 +8,10 @@ setwd(outpath)
 
 #na10km.shp <- readOGR("/gpfs/projects/gavingrp/dongmeic/beetle/shapefiles/na10km_mask_pts.shp")
 na10km.shp <- readOGR("/gpfs/projects/gavingrp/dongmeic/beetle/shapefiles/daymet_na10km.shp")
+d <- dim(na10km.shp)[1]
 na10km <- "+proj=laea +lat_0=50 +lon_0=-100 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0"
-vars <- c('tmax', 'tmin', 'tmean', 'prcp')
+#vars <- c('tmax', 'tmin', 'tmean', 'prcp')
+vars <- c('vp')
 years <- 1991:2015
 yeardays <- 1:365
 
@@ -24,7 +26,7 @@ if(1){
 
 ptm <- proc.time()
 for(var in vars){
-	df <- as.data.frame(matrix(,ncol=0,nrow=277910))
+	df <- as.data.frame(matrix(,ncol=0,nrow=d))
 	if(var != "tmean"){
 		ncfile <- paste0(inpath, years[yr], "/daymet_v3_", var, "_", years[yr], "_na.nc4")
 		for (day in yeardays){
