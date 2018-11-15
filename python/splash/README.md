@@ -13,7 +13,7 @@ Run as:
 
 In the `start.py` file, the `DIR_PATH` should be set to the directory where input data are stored.  `DIR_PATH` should end in `.../input` (no trailing '/').  The organization of `input` should be as follows:
 ```
-.../input
+.../input/
     1996/
         s0001_LAT_ELEV_1996.csv
         s0002_LAT_ELEV_1996.csv
@@ -29,7 +29,7 @@ Where 0001, 0002, etc. are the cell identifiers, and LAT and ELEV are the latitu
 
 Data will be written in a mirrored `output` directory:
 ```
-.../output
+.../output/
     1996/
         ET_s0001_LAT_ELEV_1996.csv
         ET_s0002_LAT_ELEV_1996.csv
