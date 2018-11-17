@@ -1,6 +1,6 @@
 #! /bin/bash
 
-DATA_DIR="./data/input" # <- Change this
+DATA_DIR="/gpfs/projects/gavingrp/dongmeic/daymet/evapo_na/input"
 
 for YEAR in `ls $DATA_DIR`; do
     for FILE_NAME in `ls $DATA_DIR/$YEAR`; do
