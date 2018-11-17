@@ -4,13 +4,19 @@
 
 JAN <- 1:31; FEB <- 32:59; MAR <- 60:90; APR <- 91:120;
 MAY <- 121:151; JUN <- 152:181; JUL <- 182:212; AUG <- 213:243;
-SEP <- 244:273; OCT <- 274:304; NOV <- 305:334; DEC <- 335:365
+SEP <- 244:273; OCT <- 274:304; NOV <- 305:334; DEC <- 335:365;
+YEAR <- 365
 
 doy <- c(1,32,60,91,121,152,182,213,244,274,305,335)
-mdays <- c(31,28,31,30,31,30,31,31,30,31,30,31)
+#mdays <- c(31,28,31,30,31,30,31,31,30,31,30,31)
+mdays <- c(31,30,31,30,31,31,28,31,30,31,30,31)
 
-monthly.df <- function(var.v, fun){
-	df <- data.frame(var=var.v,month=unlist(sapply(1:12, function(x) rep(x, mdays[x]))))
+
+monthly.df <- function(dt, fun){
+	#df <- data.frame(var=var.v,month=unlist(sapply(1:12, function(x) rep(x, mdays[x]))))
+	aug.jul.range <- doy[8]:(doy[8]+YEAR-1)
+	var.v <- dt[aug.jul.range]
+	df <- data.frame(var=var.v,month=unlist(sapply(c(8:12,1:7), function(x) rep(x, mdays[x]))))
 	aggregate(var ~ month, data = df, fun)
 }
 
@@ -41,7 +47,6 @@ cwd <- function(pet, aet){
 pt.coef <- function(eet,aet){
 	(sum(aet)/12)/(sum(eet)/12)
 }
-
 
 # Test
 # simulate daily data

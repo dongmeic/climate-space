@@ -35,7 +35,7 @@ for(i in 1:d){
 		next
 	}else{
 		df <- data.frame(vp=col)
-		outnm <- paste0("vp",i, "_", rows$lat[i], "_", rows$etopo1[i], "_", years[yr],".csv")
+		outnm <- paste0("vp",rows$rows[i], "_", rows$lat[i], "_", rows$etopo1[i], "_", years[yr],".csv")
 		write.csv(df, file.path(years[yr],outnm), row.names = FALSE)
 	}
 }

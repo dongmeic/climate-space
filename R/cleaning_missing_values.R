@@ -28,5 +28,13 @@ if(yr > 5){
 	write.csv(df.updated, paste0("bioclm_na/dm_bioclm_var_",years[yr],"_na.csv"), row.names = FALSE)
 }
 
+if(yr > 4){
+	df <- read.csv(paste0("datatable_na/vp/vp_",years[yr],".csv"))
+	df.updated <- df[rows$rows,]
+	write.csv(df.updated, paste0("datatable_na/vp/vp_",years[yr],".csv"), row.names = FALSE)	
+}
+
 print(paste("processed",years[yr],"..."))
 proc.time() - ptm
+
+print("all done!")
