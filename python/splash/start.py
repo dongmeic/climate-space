@@ -34,6 +34,7 @@ def main():
         for f in files:
             inpath = '%s/%d/%s' % (DATA_DIR, int(year), f)
             splash.main(inpath)
+            del inpath
     
 
 def get_years(years):
