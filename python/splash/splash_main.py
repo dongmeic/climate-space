@@ -113,4 +113,5 @@ def main(path=None):
     
     
 if __name__ == '__main__':
-    main()
+    INPATH = sys.argv[1]
+    main(INPATH)
