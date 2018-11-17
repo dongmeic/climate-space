@@ -82,6 +82,10 @@ def write_data(data, splash, outdir, outfile, year):
                                                                         
 
 def main(path=None):
+    latitude, elevation, outdir, outfile, year = parse_path(path)
+    if os.path.exists('%s/%s' % (outdir, outfile)):
+        print('File %s exists, continuing...' % outfile)
+        return
     # Create a root logger:
     root_logger = logging.getLogger()
     root_logger.setLevel(logging.INFO)
@@ -94,8 +98,6 @@ def main(path=None):
 
     # Send logging handler to root logger:
     root_logger.addHandler(root_handler)
-    latitude, elevation, outdir, outfile, year = parse_path(path)
-    #values = 'eet', 'pet', 'aet', 'wn'
     my_data = Data()
     my_data.read_csv(path, y=year)
     print('Computing Splash Evapotranspiration with:\n'
@@ -106,19 +108,8 @@ def main(path=None):
     if not os.path.isdir(outdir):
          os.makedirs(outdir)
     write_data(my_data, my_class, outdir, outfile, year)
-    #with open('%s/%s' % (outdir, outfile), 'w') as f:
-    #    f.write('equilET,potentialET,actualET,soilMoisture\n')
-    #    for i in range(my_data.num_lines):
-    #        my_class.run_one_day(i + 1,
-    #                             year,
-    #                             my_class.wn_vec[i],
-    #                             my_data.sf_vec[i],
-    #                             my_data.tair_vec[i],
-    #                             my_data.pn_vec[i])
-    #        vals = ','.join(my_class.get_vals(values)) + '\n'
-    #        f.write(vals)
-    #print('Writing done.')
-
+    del my_data
+    del my_class
     
     
 if __name__ == '__main__':
