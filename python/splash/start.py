@@ -16,8 +16,8 @@ import sys
 import splash_main as splash
 
 
-DATA_DIR = './data/input'
-#DATA_DIR = '/gpfs/projects/gavingrp/dongmei/daymet/evapo_na/input'
+#DATA_DIR = './data/input'
+DATA_DIR = '/gpfs/projects/gavingrp/dongmei/daymet/evapo_na/input'
 
 if len(sys.argv) < 2:
     print('Missing argument.\nUsage:\n  ./start.py [YEARS]')
