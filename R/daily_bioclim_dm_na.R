@@ -43,10 +43,11 @@ for(j in 1:d){
 	prcp <- c(tmp_prcp1[,3], tmp_prcp2[,3])
 	aet <- c(ets1[,3], ets2[,3])
 	df[j,] <- c(wd=wd(prcp, aet, tmp), vpd=sum(vpd.v), mi=mi(prcp, aet), cwd=sum(cwd.v), pt.coef=pt.coef(ets2$equilET,ets2$actualET))	
+	#print(j)
 }
 
 print(paste("got data from", years[i]))
-write.csv(df, paste0("bioclm_na/dm_bioclm_var_",years[i],"_na.csv"), row.names = FALSE)  
+write.csv(df, paste0("bioclm_na/dm_bioclm_var_",years[i],"_na_wd.csv"), row.names = FALSE)  
 
 proc.time() - ptm
 print("all done!")
