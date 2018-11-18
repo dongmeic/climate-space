@@ -8,7 +8,7 @@ setwd(inpath)
 
 rows <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/csvfiles/daymet_na10km.csv")
 d <- dim(rows)[1]
-years <- 1996:2015; nyr <- length(years)
+years <- 1996:2015
 
 # 1 - run in bash; 0 - run in R
 if(1){
@@ -20,13 +20,12 @@ if(1){
 }
 
 print("calculating the biocliamtic variables using daily data")
-dim <- 210748
 # test: i <- 2; j <- 53600
 
 ptm <- proc.time()
 df <- data.frame(wd=double(), vpd=double(), mi=double(), cwd=double(), pt.coef=double())
 
-for(j in 1:dim){
+for(j in 1:d){
 	vpd.v <- vector()
 	cwd.v <- vector()
 	for(k in 0:5){
@@ -43,10 +42,10 @@ for(j in 1:dim){
 	tmp <- c(tmp_prcp1[,2], tmp_prcp2[,2])
 	prcp <- c(tmp_prcp1[,3], tmp_prcp2[,3])
 	aet <- c(ets1[,3], ets2[,3])
-	df[j,] <- c(wd=wd(prcp, aet, tmp), vpd=sum(vpd.v), mi=ets2$soilMoisture, cwd=sum(cwd.v), pt.coef=pt.coef(ets2$equilET,ets2$actualET))	
+	df[j,] <- c(wd=wd(prcp, aet, tmp), vpd=sum(vpd.v), mi=mi(prcp, aet), cwd=sum(cwd.v), pt.coef=pt.coef(ets2$equilET,ets2$actualET))	
 }
 
-print(paste("got data from", years[i+1]))
+print(paste("got data from", years[i]))
 write.csv(df, paste0("bioclm_na/dm_bioclm_var_",years[i],"_na.csv"), row.names = FALSE)  
 
 proc.time() - ptm
