@@ -81,23 +81,26 @@ def write_data(data, splash, outdir, outfile, year):
     print('Writing done.')
                                                                         
 
-def main(path=None):
+def main(path=None, logging=False):
     latitude, elevation, outdir, outfile, year = parse_path(path)
     if os.path.exists('%s/%s' % (outdir, outfile)):
         print('File %s exists, continuing...' % outfile)
         return
+
     # Create a root logger:
-    root_logger = logging.getLogger()
-    root_logger.setLevel(logging.INFO)
+    if logging:
+        root_logger = logging.getLogger()
+        root_logger.setLevel(logging.INFO)
 
-    # Instantiating logging handler and record format:
-    root_handler = logging.FileHandler("main.log")
-    rec_format = "%(asctime)s:%(levelname)s:%(name)s:%(funcName)s:%(message)s"
-    formatter = logging.Formatter(rec_format, datefmt="%Y-%m-%d %H:%M:%S")
-    root_handler.setFormatter(formatter)
+        # Instantiating logging handler and record format:
+        root_handler = logging.FileHandler("main.log")
+        rec_format = "%(asctime)s:%(levelname)s:%(name)s:%(funcName)s:%(message)s"
+        formatter = logging.Formatter(rec_format, datefmt="%Y-%m-%d %H:%M:%S")
+        root_handler.setFormatter(formatter)
 
-    # Send logging handler to root logger:
-    root_logger.addHandler(root_handler)
+        # Send logging handler to root logger:
+        root_logger.addHandler(root_handler)
+        
     my_data = Data()
     my_data.read_csv(path, y=year)
     print('Computing Splash Evapotranspiration with:\n'
