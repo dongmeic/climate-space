@@ -41,10 +41,9 @@ vars <- c("JanTmin", "MarTmin", "TMarAug", "summerTmean",
 
 head(df)
 pca <- princomp(df[,vars], cor=T)
-summary(pca, loadings <- T)
 
 sink(paste0(csvpath,"pca_summary.txt"))
-summary(pca)
+summary(pca, loadings <- T)
 sink()
 
 write.csv(x = unclass(loadings(pca)), file = paste0(csvpath,"pca_loading.csv"))

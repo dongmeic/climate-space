@@ -141,7 +141,7 @@ get.min.data <- function(daily.lows) {
   list(Oct20=Oct20, Oct30=Oct30, Oct40=Oct40,
   		 Jan20=Jan20, Jan30=Jan30, Jan40=Jan40,
   		 Mar20=Mar20, Mar30=Mar30, Mar40=Mar40,
-  		 Mar20=Mar20, Mar30=Mar30, Mar40=Mar40,
+  		 winter20=winter20, winter30=winter30, winter40=winter40,
   		 OctMin=OctMin, JanMin=JanMin, MarMin=MarMin,
   		 winterMin=winterMin, minT=minT)
 }

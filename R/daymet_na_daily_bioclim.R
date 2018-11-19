@@ -31,7 +31,7 @@ df <- data.frame(Lcs=double(), maxAugT=double(), summerT40=double(), OptTsum=dou
 								 Ecs=double(), Ncs=double(), Acs=double(), drop0=double(), drop5=double(), drop10=double(),
 								 drop15=double(), drop20=double(), drop20plus=double(), max.drop=double(), ddAugJul=double(), ddAugJun=double(),
 								 Oct20=double(), Oct30=double(), Oct40=double(), Jan20=double(), Jan30=double(), Jan40=double(),
-								 Mar20=double(), Mar30=double(), Mar40=double(), Mar20=double(), Mar30=double(), Mar40=double(),
+								 Mar20=double(), Mar30=double(), Mar40=double(), winter20=double(), winter30=double(), winter40=double(),
 								 OctMin=double(), JanMin=double(), MarMin=double(), winterMin=double(), minT=double(), cv.gsp=double())
 for(j in 1:dim){
 	tmx <- c(as.numeric(tmax.df.1[j,]), as.numeric(tmax.df.2[j,]))
