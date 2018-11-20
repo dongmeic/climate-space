@@ -6,27 +6,28 @@ library(doParallel)
 library(foreach)
 registerDoParallel(cores=28)
 
+source("/gpfs/projects/gavingrp/dongmeic/climate-space/R/combine_CRU_Daymet.R")
 years <- 1996:2015; nyr <- length(years)
 out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/climate_space/paired/ts"
 setwd(out)
 
-vargrp1 <- c("ddAugJul", "OptTsum", "summerP2", "drop5", "PPT", "OctMin",
-						 "JanTmin", "TMarAug", "summerTmean", "AugTmean", "AugTmax",
-						 "OctTmin", "fallTmean", "Tmin", "Tmean", "Acs", "Mar20", "Oct20")
-				
-vargrp2 <- c("maxAugT", "winterTmin", "MarTmin", "GSP", "AugMax", "Tvar",
-						 "summerP1", "PMarAug", "summerP0", "POctSep", "PcumOctSep",
-						 "drop0", "min20", "Jan20", "Pmean", "maxT", "minT", "JanMin")
+vargrp1 <- c("JanTmin", "MarTmin", "TMarAug", "summerTmean", "AugTmean","OctTmin", "fallTmean",
+							"Tmin", "Tmean", "TOctSep", "OptTsum","AugMaxT", "maxT", "ddAugJul", "ddAugJun",
+							"OctMin", "JanMin", "MarMin", "winterMin", "minT")
+
+vargrp2 <- c("GSP", "PMarAug", "summerP0", "Tvar",  "summerP1", "summerP2",  "Pmean",  
+						 "POctSep", "PcumOctSep", "PPT", "maxAugT", "drop0", "drop5", "max.drop",
+						 "cv.gsp", "wd", "vpd", "mi", "cwd", "pt.coef")
        
 cols <- c("grey70", "#1b9e77", "#e41a1c")
 
 inpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
-bioClim <- read.csv(paste0(inpath, "bioclim_vars_both_1996_2015_r.csv")) # LDA_daymet.R
+bioClim <- get_data()
 df <- bioClim[bioClim$beetles==1,]
 df.host <- bioClim[bioClim$hosts==1,]
 
 climate_space_time_series <- function(var1, var2){	
-  png(paste0("cs_both_",var1,"_",var2,"_ts.png"), width=15, height=12, units="in", res=300)
+  png(paste0("cs_both_na_",var1,"_",var2,"_ts.png"), width=15, height=12, units="in", res=300)
   par(mfrow=c(4,5),mar=c(2,2,4,2))
   for(yr in years){
   	bioClim.ss <- subset(bioClim, year==yr)
