@@ -22,12 +22,15 @@ vargrp2 <- c("GSP", "PMarAug", "summerP0", "Tvar",  "summerP1", "summerP2",  "Pm
 cols <- c("grey70", "#1b9e77", "#e41a1c")
 
 inpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
-bioClim <- get_data()
+#bioClim <- get_data()
+df <- read.csv(paste0(inpath, "bioclim_vars_both_na_1996_2015_t.csv"))
+ignore <- c('beetles', 'hosts', 'year')
+bioClim <- cbind(scale(df[,!(names(df) %in% ignore)]), df[,(names(df) %in% ignore)])
 df <- bioClim[bioClim$beetles==1,]
 df.host <- bioClim[bioClim$hosts==1,]
 
 climate_space_time_series <- function(var1, var2){	
-  png(paste0("cs_both_na_",var1,"_",var2,"_ts.png"), width=15, height=12, units="in", res=300)
+  png(paste0("cs_both_na_t_",var1,"_",var2,"_ts.png"), width=15, height=12, units="in", res=300)
   par(mfrow=c(4,5),mar=c(2,2,4,2))
   for(yr in years){
   	bioClim.ss <- subset(bioClim, year==yr)
