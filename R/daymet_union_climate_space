@@ -1,0 +1,68 @@
+library(ggplot2)
+library(gridExtra)
+library(MASS)
+library(parallel)
+library(doParallel)
+library(foreach)
+registerDoParallel(cores=28)
+
+source("/gpfs/projects/gavingrp/dongmeic/climate-space/R/combine_CRU_Daymet.R")
+source("/gpfs/projects/gavingrp/dongmeic/climate-space/R/boxplot_settings.R")
+out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/climate_space/paired/ts"
+setwd(out)
+
+vargrp1 <- c("JanTmin", "MarTmin", "TMarAug", "summerTmean", "AugTmean","OctTmin", "fallTmean",
+							"Tmin", "Tmean", "TOctSep", "OptTsum","AugMaxT", "maxT", "ddAugJul", "ddAugJun",
+							"OctMin", "JanMin", "MarMin", "winterMin", "minT")
+
+vargrp2 <- c("drop0", "drop5", "PMarAug","summerP0", "summerP1", "max.drop", "GSP",
+							"PPT", "Pmean", "POctSep", "cv.gsp", "maxAugT", "wd", "summerP2", "PcumOctSep",
+							"Tvar", "vpd", "mi", "cwd", "pt.coef")
+
+svars <- c("GSP", "PMarAug", "summerP0","summerP1", "summerP2", 
+           "Pmean","POctSep", "PcumOctSep", "PPT", "ddAugJul", "ddAugJun")
+
+outpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
+bioClim <- get_data()
+bioClim <- bioClim[complete.cases(bioClim),]
+bioClim$hosts <- ifelse(bioClim$beetles==1 & bioClim$hosts==0, 1, bioClim$hosts)
+bioClim.beetle <- subset(bioClim, beetles==1)
+bioClim.host <- subset(bioClim, hosts==1)
+
+var1 <- "ddAugJul"; var2 <- "summerP2"
+na <- bioClim[,c(var1, var2)]; a <- dim(na)[1]
+vgt <- bioClim.host[,c(var1, var2)]; b <- dim(vgt)[1]
+btl <- bioClim.beetle[,c(var1, var2)]; c <- dim(btl)[1]
+df <- rbind(na, vgt, btl)
+prs <- data.frame(prs=c(rep("continent",a),rep("hosts",b),rep("mpb",c))
+
+
+scatterPlot <- ggplot(df2, aes(x, y)) + geom_point(aes(color = group)) + scale_color_manual(values = my3cols) + theme(legend.position=c(0,1), legend.justification=c(0,1))
+
+
+
+
+
+
+
+
+
+set.seed(1234)
+x <- c(rnorm(350, mean = -1), rnorm(350, mean = 1.5), rnorm(350, mean = 4))
+y <- c(rnorm(350, mean = -0.5), rnorm(350, mean = 1.7), rnorm(350, mean = 2.5))
+group <- as.factor(rep(c(1, 2, 3), each = 350))
+df2 <- data.frame(x, y, group) 
+head(df2) 
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+
+
+
+scatterPlot <- ggplot(df2, aes(x, y)) + geom_point(aes(color = group)) + scale_color_manual(values = my3cols) + theme(legend.position=c(0,1), legend.justification=c(0,1))
+# Marginal density plot of x (top panel) 
+xdensity <- ggplot(df2, aes(x)) + geom_density(aes(fill = group), alpha=.8) + scale_fill_manual(values = my3cols) + theme(legend.position = "none")
+# Marginal density plot of y (right panel) 
+ydensity <- ggplot(df2, aes(y)) + geom_density(aes(fill=group), alpha=.8) + scale_fill_manual(values = my3cols) + theme(legend.position = "none") + coord_flip()
+
+blankPlot <- ggplot()+geom_blank()+ theme_void()
+
+grid.arrange(xdensity, blankPlot, scatterPlot, ydensity, ncol=2, nrow=2, widths=c(4, 1.4), heights=c(1.4, 4))
