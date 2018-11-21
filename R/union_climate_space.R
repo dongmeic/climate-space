@@ -1,7 +1,6 @@
 # Created by Dongmei Chen
 # Copy from climate_space_union.R
 
-library(ncdf4)
 library(ggplot2)
 library(grid)
 

@@ -13,6 +13,7 @@ source("/gpfs/projects/gavingrp/dongmeic/climate-space/R/data_transform.R")
 
 outpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
 indata <- get_data()
+indata$hosts <- ifelse(indata$beetles==1 & indata$hosts==0, 1, indata$hosts)
 #write.csv(indata, paste0(outpath, "bioclim_vars_both_na_1996_2015_r.csv"), row.names=FALSE)
 a <- dim(indata)[2]
 indata.cc <- indata[complete.cases(indata),]
@@ -161,7 +162,7 @@ taus <- c(0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95)
 
 THRESHOLD <- 0.000000001
 cum.means <- get.all.cumulative.means(vars, dt, q=0.95, threshold=THRESHOLD, use.threshold=F)
-write.csv(cum.means, paste0(inpath, "cumulative_means_daymet.csv"), row.names=FALSE)
+write.csv(cum.means, paste0(outpath, "cumulative_means_daymet.csv"), row.names=FALSE)
 
 png(paste0(out,"cumulative_means_daymet.png"), width=12, height=9, units="in", res=300)
 par(mfrow=c(3,4), mar=c(2.5, 2.5, 3.5, 2))
@@ -170,7 +171,7 @@ for(i in 1:12){
 }
 dev.off()
 
-iters <- c(2000, 500, 1000, 2000, 2000, 1000, 1000, 2000, 3000, 2000, 2000, 2000)
+iters <- c(3000, 3000, 2000, 500, 3000, 3000, 2000, 1000, 2000, 2000, 2000, 2000)
 for(var in vars){
 	get.diff.matrix(dt, var, iters[which(vars==var)])
 	print(paste(which(vars==var), var, iters[which(vars==var)]))
@@ -182,7 +183,7 @@ par(mfrow=c(3,4),mar=c(3.5,3.5,3,1))
 for (i in 1:12){
   density.plot(vars[i])
   if(i==9){
-    legend('topleft', lty=1, lwd=2, col=cols, legend=taus, cex = 1.5, bty='n')
+    legend('topright', lty=1, lwd=2, col=cols, legend=taus, cex = 1.5, bty='n')
   }
 }
 dev.off()
