@@ -22,10 +22,10 @@ vargrp2 <- c("GSP", "PMarAug", "summerP0", "Tvar",  "summerP1", "summerP2",  "Pm
 cols <- c("grey70", "#1b9e77", "#e41a1c")
 
 inpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
-#bioClim <- get_data()
-df <- read.csv(paste0(inpath, "bioclim_vars_both_na_1996_2015_t.csv"))
-ignore <- c('beetles', 'hosts', 'year')
-bioClim <- cbind(scale(df[,!(names(df) %in% ignore)]), df[,(names(df) %in% ignore)])
+bioClim <- get_data()
+#df <- read.csv(paste0(inpath, "bioclim_vars_both_na_1996_2015_t.csv"))
+#ignore <- c('beetles', 'hosts', 'year')
+#bioClim <- cbind(scale(df[,!(names(df) %in% ignore)]), df[,(names(df) %in% ignore)])
 df <- bioClim[bioClim$beetles==1,]
 df.host <- bioClim[bioClim$hosts==1,]
 
