@@ -7,7 +7,6 @@ library(foreach)
 registerDoParallel(cores=28)
 
 source("/gpfs/projects/gavingrp/dongmeic/climate-space/R/combine_CRU_Daymet.R")
-source("/gpfs/projects/gavingrp/dongmeic/climate-space/R/boxplot_settings.R")
 out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/climate_space/paired/ts"
 setwd(out)
 
@@ -19,9 +18,6 @@ vargrp2 <- c("drop0", "drop5", "PMarAug","summerP0", "summerP1", "max.drop", "GS
 							"PPT", "Pmean", "POctSep", "cv.gsp", "maxAugT", "wd", "summerP2", "PcumOctSep",
 							"Tvar", "vpd", "mi", "cwd", "pt.coef")
 
-svars <- c("GSP", "PMarAug", "summerP0","summerP1", "summerP2", 
-           "Pmean","POctSep", "PcumOctSep", "PPT", "ddAugJul", "ddAugJun")
-
 outpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
 bioClim <- get_data()
 bioClim <- bioClim[complete.cases(bioClim),]
@@ -29,40 +25,31 @@ bioClim$hosts <- ifelse(bioClim$beetles==1 & bioClim$hosts==0, 1, bioClim$hosts)
 bioClim.beetle <- subset(bioClim, beetles==1)
 bioClim.host <- subset(bioClim, hosts==1)
 
-var1 <- "ddAugJul"; var2 <- "summerP2"
-na <- bioClim[,c(var1, var2)]; a <- dim(na)[1]
-vgt <- bioClim.host[,c(var1, var2)]; b <- dim(vgt)[1]
-btl <- bioClim.beetle[,c(var1, var2)]; c <- dim(btl)[1]
-df <- rbind(na, vgt, btl)
-prs <- data.frame(prs=c(rep("continent",a),rep("hosts",b),rep("mpb",c))
+u_cs_plot <- function(var1, var2){
+	df <- bioClim[,c(var1, var2, "beetles", "hosts")]
+	names(df)[1:2] <- c("var1", "var2")
+	df <- df[order(df$hosts),]
+	p <- ggplot(df, aes(x=var1, y=var2, z = beetles))
+	p <- p + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+									panel.background = element_blank(), axis.line = element_line(colour = "black"))
+	p <- p + theme(legend.position="none")
+	p <- p + geom_point(aes(color=as.character(hosts)), size=0.8)+scale_colour_manual(values = c("#d3d3d380", "#1b9e7780"))
+	p <- p + stat_summary_hex(bins=30, colour=rgb(1,1,1,0),fun=function(x) sum(x)/length(x))
+	p <- p + scale_fill_gradient(low=rgb(0.8,0.8,0.8,0.8), high=rgb(0.85,0.37,0.01,0.8), limits = c(0, 1))
+	p <- p + labs(x=var1, y=var2)
+	return(p)
+}
 
+n1 <- rep(c(1,2,3,4, 5),4); n2 <- c(rep(1,5),rep(2,5),rep(3,5),rep(4,5))
+vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
+png("cs_union.png", width=15, height=12, units="in", res=300)
+grid.newpage()
+par(mar=c(2,2,4,2))
+pushViewport(viewport(layout = grid.layout(4, 5)))
+foreach(i=1:length(vargrp1))%dopar%{
+	p <- u_cs_plot(vargrp1[i], vargrp2[i])
+	print(p, vp = vplayout(n2[i], n1[i]))
+}
+dev.off()
 
-scatterPlot <- ggplot(df2, aes(x, y)) + geom_point(aes(color = group)) + scale_color_manual(values = my3cols) + theme(legend.position=c(0,1), legend.justification=c(0,1))
-
-
-
-
-
-
-
-
-
-set.seed(1234)
-x <- c(rnorm(350, mean = -1), rnorm(350, mean = 1.5), rnorm(350, mean = 4))
-y <- c(rnorm(350, mean = -0.5), rnorm(350, mean = 1.7), rnorm(350, mean = 2.5))
-group <- as.factor(rep(c(1, 2, 3), each = 350))
-df2 <- data.frame(x, y, group) 
-head(df2) 
-my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
-
-
-
-scatterPlot <- ggplot(df2, aes(x, y)) + geom_point(aes(color = group)) + scale_color_manual(values = my3cols) + theme(legend.position=c(0,1), legend.justification=c(0,1))
-# Marginal density plot of x (top panel) 
-xdensity <- ggplot(df2, aes(x)) + geom_density(aes(fill = group), alpha=.8) + scale_fill_manual(values = my3cols) + theme(legend.position = "none")
-# Marginal density plot of y (right panel) 
-ydensity <- ggplot(df2, aes(y)) + geom_density(aes(fill=group), alpha=.8) + scale_fill_manual(values = my3cols) + theme(legend.position = "none") + coord_flip()
-
-blankPlot <- ggplot()+geom_blank()+ theme_void()
-
-grid.arrange(xdensity, blankPlot, scatterPlot, ydensity, ncol=2, nrow=2, widths=c(4, 1.4), heights=c(1.4, 4))
+print("all done")
