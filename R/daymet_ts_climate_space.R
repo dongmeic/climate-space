@@ -18,7 +18,6 @@ vargrp2 <- c("drop0", "drop5", "PMarAug","summerP0", "summerP1", "max.drop", "GS
 							"PPT", "Pmean", "POctSep", "cv.gsp", "maxAugT", "wd", "summerP2", "PcumOctSep",
 							"Tvar", "vpd", "mi", "cwd", "pt.coef")
 
-outpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
 bioClim <- get_data()
 bioClim <- bioClim[complete.cases(bioClim),]
 bioClim$hosts <- ifelse(bioClim$beetles==1 & bioClim$hosts==0, 1, bioClim$hosts)
