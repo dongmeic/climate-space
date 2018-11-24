@@ -34,7 +34,8 @@ corehost <- readOGR(dsn=hostpath, layer="MPB_corehost_proj_disall")
 corehost <- spTransform(corehost, crs)
 
 # yearly transitions (0-stay the same as 0, 1-stay the same as 1; 2-from 1 to 0; 3-from 0 to 1)
-myColors <- c('#377eb8', '#e41a1c', '#4daf4a', '#984ea3')
+#myColors <- c('#377eb8', '#e41a1c', '#4daf4a', '#984ea3')
+myColors <- c('#abd9e9', '#d7191c', '#2c7bb6', '#fdae61')
 myKey <- list(text=list(lab=c("00","01","10","11"), cex=c(1.2,1.2)), 
               rectangles=list(col = myColors), space="inside", width = 0.3, columns=1)
 

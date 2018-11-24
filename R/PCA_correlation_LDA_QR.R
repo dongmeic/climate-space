@@ -1,4 +1,6 @@
 # the script is to run PCA, correlation matrix, LDA and QR
+# run in interactive mode
+
 library(MASS)
 library(Hmisc)
 library(dplyr)
@@ -17,12 +19,19 @@ indata$hosts <- ifelse(indata$beetles==1 & indata$hosts==0, 1, indata$hosts)
 #write.csv(indata, paste0(outpath, "bioclim_vars_both_na_1996_2015_r.csv"), row.names=FALSE)
 a <- dim(indata)[2]
 indata.cc <- indata[complete.cases(indata),]
-df <- indata.cc[,-a:-(a-2)] # remove the last three columns
-pca <- princomp(df)
+indata.cc$prs <- indata.cc$beetles + indata.cc$hosts
+test <- indata.cc[sample(nrow(indata.cc), 500000),]
+write.csv(test, paste0(outpath, "bioclim_vars_na_r_test.csv"), row.names=FALSE)
+df <- indata.cc[,-a:-(a-3)] # remove the last four columns
+#dat <- df[,!(names(df) %in% ignore)]
+pca <- prcomp(df, scale. = TRUE)
+#pca <- princomp(df, cor = TRUE)
 sink(paste0(outpath,"pca_summary.txt"))
 summary(pca, loadings <- T)
 sink()
-write.csv(x = unclass(loadings(pca)), file = paste0(outpath,"pca_loading.csv"))
+head(pca$rotation)
+#write.csv(x = unclass(loadings(pca)), file = paste0(outpath,"pca_loading.csv"))
+write.csv(x = pca$rotation, file = paste0(outpath,"pca_loading.csv"))
 
 out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/plots/"
 png(paste0(out,"PCA_variable_selection.png"), width=12, height=9, units="in", res=300)
@@ -91,49 +100,42 @@ round(res, 2)
 sink()
 
 dt <- as.data.frame(my_data)
-dt$beetles <- indata.cc$beetles
+#dt$beetles <- indata.cc$beetles
+dt$prs <- indata.cc$prs
 # Linear Discriminant Analysis
-dt.lda <- lda(beetles ~ ., data=dt)
+#dt.lda <- lda(beetles ~ ., data=dt)
+dt.lda <- lda(prs ~ ., data=dt)
 sink(paste0(outpath,"lda_daymet_all.txt"))
 print(dt.lda)
 sink()
 
-dt.lda <- lda(beetles ~ summerP2 + winterMin + Tvar + PPT + OctMin + drop5 + ddAugJul + maxAugT 
-												+ OptTsum + AugMaxT + MarMin + cv.gsp + wd + pt.coef + cwd, data=dt)
+dt.lda <- lda(beetles ~ summerP2 + Tmin + Tvar + PPT + drop5 + ddAugJul + AugTmax + wd + mi, data=dt)
 sink(paste0(outpath,"lda_daymet.txt"))
 print(dt.lda)
 sink()
 
 dt <- indata.cc[indata.cc$beetles==1,]
-df <- dt[,c("cwd", "OptTsum", "ddAugJul", "maxAugT", "Tvar", "cv.gsp", "wd", "winterMin",
-            "PPT", "summerP2", "AugMaxT", "pt.coef", "year")]
+#df <- dt[,c("ddAugJul", "wd", "mi", "AugTmax", "Tvar", "summerP2", "year")]
+df <- dt[,c("Tvar", "ddAugJul", "Tmin", "AugTmax", "wd", "mi", "year")]
 write.csv(df, paste0(outpath, "data_for_QR_both.csv"), row.names=FALSE)
 #df <- read.csv(paste0(outpath, "data_for_QR.csv"))
 taus <- c(.05,.1,.25,.75,.90,.95)
 sink(paste0(outpath,"QR_summary_both.txt"))
-fit <- rq(cwd~year, tau=taus, data=df)
+fit <- rq(Tvar~year, tau=taus, data=df)
 summary(fit)
 fit <- rq(ddAugJul~year, tau=taus, data=df)
 summary(fit)
-fit <- rq(Tvar~year, tau=taus, data=df)
+fit <- rq(Tmin~year, tau=taus, data=df)
 summary(fit)
-fit <- rq(cv.gsp~year, tau=taus, data=df)
+fit <- rq(AugTmax~year, tau=taus, data=df)
 summary(fit)
 fit <- rq(wd~year, tau=taus, data=df)
 summary(fit)
-fit <- rq(winterMin~year, tau=taus, data=df)
-summary(fit)
-fit <- rq(PPT~year, tau=taus, data=df)
-summary(fit)
-fit <- rq(summerP2~year, tau=taus, data=df)
-summary(fit)
-fit <- rq(AugMaxT~year, tau=taus, data=df)
-summary(fit)
-fit <- rq(pt.coef~year, tau=taus, data=df)
+fit <- rq(mi~year, tau=taus, data=df)
 summary(fit)
 sink()					 
 
-png(paste0(out,"QR_plots_both.png"), width=12, height=9, units="in", res=300)
+png(paste0(out,"QR_plots.png"), width=12, height=9, units="in", res=300)
 par(mfrow=c(3,4), mar=c(3.5,3.5,3,1))
 for (i in 1:12){
 	plot(df$year,df[,i],cex=.25, type="n", main=colnames(df)[i], cex.main =1.5, xlab="", ylab="", cex.lab=1.5)
@@ -147,6 +149,12 @@ for (i in 1:12){
 }
 dev.off()
 
+# select variables from climate space
+vars <- c("OctTmin", "JanTmin", "MarTmin", "Tvar", "summerTmean", "AugTmean", "AugTmax", "ddAugJul",
+					"summerP0", "summerP2", "wd", "mi")
+df <- dt[,c(vars, "year")]
+
+
 indata <- get_data()				 
 #indata <- read.csv(paste0(outpath, "bioclim_vars_both_1996_2015_r.csv"))
 indata.cc <- indata[complete.cases(indata),]
@@ -155,32 +163,34 @@ peakyears <- 2006:2008
 nonpeakyears <- 1996:1998
 dt$peak <- ifelse(dt$year %in% peakyears, 1, ifelse(dt$year %in% nonpeakyears, 0, 2))
 
-vars <- c("cwd", "OptTsum", "ddAugJul", "maxAugT", "Tvar", "cv.gsp", "wd", "winterMin",
-            "PPT", "summerP2", "AugMaxT", "pt.coef")
+#vars <- c("ddAugJul", "wd", "mi", "AugTmax", "Tvar", "summerP2")
+vars <- c("Tvar", "ddAugJul", "Tmin", "AugTmax", "wd", "mi")
 
 taus <- c(0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95)
 
 THRESHOLD <- 0.000000001
+#cum.means <- read.csv(paste0(outpath, "cumulative_means_daymet.csv"))
+#cum.means$Tin <- get.all.cumulative.means("Tmin", dt, q=0.95, threshold=THRESHOLD, use.threshold=F)
 cum.means <- get.all.cumulative.means(vars, dt, q=0.95, threshold=THRESHOLD, use.threshold=F)
 write.csv(cum.means, paste0(outpath, "cumulative_means_daymet.csv"), row.names=FALSE)
 
-png(paste0(out,"cumulative_means_daymet.png"), width=12, height=9, units="in", res=300)
-par(mfrow=c(3,4), mar=c(2.5, 2.5, 3.5, 2))
-for(i in 1:12){
+png(paste0(out,"cumulative_means.png"), width=9, height=6, units="in", res=300)
+par(mfrow=c(2,3), mar=c(2.5, 2.5, 3.5, 2))
+for(i in 1:6){
 	plot(cum.means[, i], type='l', col=i, xlab="", ylab="", main=vars[i], lwd=2)
 }
 dev.off()
 
-iters <- c(3000, 3000, 2000, 500, 3000, 3000, 2000, 1000, 2000, 2000, 2000, 2000)
+iters <- c(2000, 3000, 3000, 2000, 2000, 2000)
 for(var in vars){
 	get.diff.matrix(dt, var, iters[which(vars==var)])
 	print(paste(which(vars==var), var, iters[which(vars==var)]))
 }
 
 cols <- brewer.pal(7,"Blues")
-png(paste0(out,"quant_diff_density_plots_both.png"), width=12, height=9, units="in", res=300)
-par(mfrow=c(3,4),mar=c(3.5,3.5,3,1))
-for (i in 1:12){
+png(paste0(out,"quant_diff_density_plots_Tmin.png"), width=9, height=6, units="in", res=300)
+par(mfrow=c(2,3),mar=c(3.5,3.5,3,1))
+for (i in 1:6){
   density.plot(vars[i])
   if(i==9){
     legend('topright', lty=1, lwd=2, col=cols, legend=taus, cex = 1.5, bty='n')

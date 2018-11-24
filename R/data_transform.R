@@ -92,7 +92,7 @@ get.best.transform.big <- function(data, field, n.samples, plt=T, time=T) {
 
 ignore <- c('Acs', 'Ecs', 'Lcs', 'Ncs','summerT40', 'drop10','drop15', 'drop20', 'drop20plus',
 							'Oct20', 'Oct30', 'Oct40', 'Jan20', 'Jan30', 'Jan40', 'Mar20', 'Mar30', 'Mar40',
-							'winter20', 'winter30', 'winter40', 'beetles', 'hosts', 'year')
+							'winter20', 'winter30', 'winter40', 'beetles', 'hosts', 'year', 'prs')
 							
 get.best.exps <- function(df){
 	SAMPLES <- 500
