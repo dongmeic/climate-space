@@ -10,13 +10,13 @@ source("/gpfs/projects/gavingrp/dongmeic/climate-space/R/combine_CRU_Daymet.R")
 out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/climate_space/paired/ts"
 setwd(out)
 
-vargrp1 <- c("JanTmin", "MarTmin", "TMarAug", "summerTmean", "AugTmean","OctTmin", "fallTmean",
-							"Tmin", "Tmean", "TOctSep", "OptTsum","AugMaxT", "maxT", "ddAugJul", "ddAugJun",
-							"OctMin", "JanMin", "MarMin", "winterMin", "minT")
+vargrp1 <- c("OctTmin", "JanTmin", "MarTmin", "Tmin", "OctMin", "JanMin", "MarMin",  
+							"winterMin", "AugMaxT", "maxT", "TMarAug", "summerTmean", 
+							"AugTmean", "fallTmean", "TOctSep", "Tmean", "ddAugJul", "ddAugJun")
 
-vargrp2 <- c("drop0", "drop5", "PMarAug","summerP0", "summerP1", "max.drop", "GSP",
-							"PPT", "Pmean", "POctSep", "cv.gsp", "maxAugT", "wd", "summerP2", "PcumOctSep",
-							"Tvar", "vpd", "mi", "cwd", "pt.coef")
+vargrp2 <- c("summerP0", "summerP1", "summerP2", "AugTmax", "PcumOctSep", "max.drop", "PPT",
+						  "cv.gsp", "Tvar", "minT", "PMarAug", "mi",  "cwd", "pt.coef",
+							 "POctSep", "Pmean", "wd", "OptTsum")
 
 bioClim <- get_data()
 bioClim <- bioClim[complete.cases(bioClim),]
