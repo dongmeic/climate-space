@@ -18,8 +18,12 @@ out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/maps/daymet/"
 setwd(out)
 
 drops <- c("drop5", "drop10", "drop15", "drop20", "drop20plus", "max.drop")
-mins <- c("min20", "min22", "min24", "min26", "min28", "min30", "min32", "min34", "min36", "min38", "min40")
-varnms <- c("Lcs", "maxAugT", "summerT40", "winterTmin", "Ecs", "Ncs", "Acs", "drop0", drops, "ddAugJul", "ddAugJun", mins)
+mins <- c("Oct20","Oct30","Oct40","OctMin","Jan20","Jan30","Jan40","JanMin","Mar20","Mar30",
+					"Mar40","MarMin","min20","min30","min40","winterMin","minT")
+wd <- c("wd", "cwd", "vpd", "mi", "pt.coef", "cv.gsp")
+maxs <- c("OptTsum", "AugMaxT", "maxT")
+varnms <- c("Lcs", "maxAugT", "summerT40", "Ecs", "Ncs", "Acs", "drop0", drops, 
+						"ddAugJul", "ddAugJun", mins, maxs, wd)
 
 ncin <- nc_open("/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/na10km_v2.nc")
 x <- ncvar_get(ncin, varid="x"); nx <- length(x)
@@ -34,33 +38,47 @@ lrglakes <- readOGR(dsn = shppath, layer = "na10km_lrglakes")
 proj4string(lrglakes) <- crs
 
 #Lcs, Ecs, Ncs 
-cutpts <- data.frame(maxAugT=c(0,5,7,9,11,13,17,21,25,29,31),
-winterTmin=c(-50,-40,-30,-25,-20,-15,-10,-5,0,5,12),
-Acs=c(0,2,4,6,8,10,15,20,40,60,90),
-drop0=c(30,35,40,45,48,50,52,55,60,65,70),
-drop5=c(5,10,20,25,30,35,37.5,40,45,50,60),
-drop10=c(0,2,4,6,8,10,12,14,16,20,25),
-drop15=c(0,1,2,3,4,5,6,7,8,10,15),
-drop20=c(0,1,2,3,4,5,6,7,8,9,10),
-drop20plus=c(0,1,2,3,4,5,6,7,8,10,12),
-max.drop=c(1,5,8,10,12,15,18,20,30,40,50),
-ddAugJul=c(10,1000,2000,3000,4000,5000,6000,8000,9000,10000,11000),
-ddAugJun=c(5,1000,2000,3000,4000,5000,6000,7000,8000,9000,10000),
-summerT40=c(0,5,10,15,25,35,45,55,65,75,95),
-min20 = c(0,5,10,20,30,40,50,60,70,80,90),
-min22 = c(0,5,10,20,30,40,50,60,70,80,90),
-min24 = c(0,5,10,20,30,40,50,60,70,80,90),
-min26 = c(0,5,10,20,30,40,50,60,70,80,90),
-min28 = c(0,5,10,15,20,30,40,50,65,75,85),
-min30 = c(0,5,10,15,20,25,30,40,50,60,80),
-min32 = c(0,5,10,15,20,25,30,40,50,60,80),
-min34 = c(0,2,5,10,15,20,25,30,40,55,75),
-min36 = c(0,1,2,5,10,15,20,25,35,55,75),
-min38 = c(0,1,2,5,10,15,20,25,35,55,75),
-min40 = c(0,1,2,5,10,15,20,25,35,55,75))
+cutpts <- data.frame(maxAugT=c(0,5,8,11,13,17,21,25,29,31),
+Acs=c(0,2,4,6,8,10,20,40,60,90),
+drop0=c(30,35,40,45,48,52,55,60,65,70),
+drop5=c(5,10,20,25,30,35,40,45,50,60),
+drop10=c(0,2,4,6,8,10,13,16,20,25),
+drop15=c(0,1,2,3,4,5,6,7,10,15),
+drop20=c(0,1,2,3,4,5,6,7,9,10),
+drop20plus=c(0,1,2,3,4,5,6,7,10,12),
+max.drop=c(1,5,8,10,12,15,20,30,40,50),
+ddAugJul=c(10,1000,2000,3000,4000,5000,6000,8000,10000,11000),
+ddAugJun=c(5,1000,2000,3000,4000,5000,6000,7000,8500,10000),
+summerT40=c(0,5,10,15,25,35,45,60,75,95),
+Oct20=c(0,2,4,6,8,10,15,20,25,30),
+Oct30=c(0,2,4,6,8,10,15,18,23,28),
+Oct40=c(0,2,4,6,8,10,12,14,16,18),
+OctMin=c(-50,-25,-15,-10,-5,0,5,10,20,43),
+Jan20=c(0,2,4,6,8,10,15,20,25,30),
+Jan30=c(0,2,4,6,8,10,15,20,25,30),
+Jan40=c(0,2,4,6,8,10,15,20,25,28),
+JanMin=c(-50,-25,-15,-10,-5,0,5,10,20,35),
+Mar20=c(0,2,4,6,8,10,15,20,25,30),
+Mar30=c(0,2,4,6,8,10,15,20,25,30),
+Mar40=c(0,2,4,6,8,10,15,20,25,28),
+MarMin=c(-50,-25,-15,-10,-5,0,5,10,20,36),
+min20=c(0,10,20,30,40,50,60,70,80,90),
+min30=c(0,10,15,20,25,30,40,50,60,80),
+min40=c(0,2,5,10,15,20,25,35,55,75),
+winterMin=c(-50,-35,-25,-20,-15,-10,-5,0,5,21),
+minT=c(-50,-35,-25,-20,-15,-10,-5,0,5,21),
+wd=c(-500, -100, 0, 500, 1000, 2000, 5000, 10000, 20000, 45000), 
+cwd=c(0,100,200,300,400,500,600,800,1000,1200), 
+vpd=c(0,50000,80000,120000,180000,200000,300000,400000,600000,800000), 
+mi=c(0,1,2,3,4,6,8,10,14,20), 
+pt.coef=c(0,0.1,0.3,0.5,0.6,0.7,0.8,1.0,1.1,1.2), 
+cv.gsp=c(0,1,2,3,4,5,6,7,8,10),
+OptTsum=c(0,2,10,20,30,40,60,70,80,95), 
+AugMaxT=c(-25,0,10,20,25,30,35,40,45,50), 
+maxT=c(0,5,10,15,20,25,30,35,40,50))
 
 get.data <- function(var){
-  ncfile <- paste0("na10km_v2_daymet_", var, "_1996.2015.3d.nc")
+  ncfile <- paste0("na10km_v2_daymet_na_", var, "_1996.2015.3d.nc")
   ncin <- nc_open(paste0(ncpath, ncfile))
   data <- ncvar_get(ncin,var)
   fillvalue <- ncatt_get(ncin,var,"_FillValue")
@@ -82,7 +100,7 @@ pos <- cbind(c(1,1),c(2,1),c(3,1),c(4,1),c(5,1),
 						 c(1,3),c(2,3),c(3,3),c(4,3),c(5,3),
 						 c(1,4),c(2,4),c(3,4),c(4,4),c(5,4))
 						 				 
-# check the codes before running				              
+# check the codes before running, particularly colors		              
 for(var in varnms){
   var_3d <- get.data(var)
   png(paste0("daymet_maps_",var,".png"), width=8, height=10, units="in", res=300)
@@ -101,14 +119,14 @@ for(var in varnms){
 			scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.2),
 			xlab="",ylab="", colorkey = FALSE, aspect="iso")
 	}else if(var %in% c("Acs", drops, mins)){
-		p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=11, pretty=T, 
-			col.regions=brewer.pal(10,"RdBu"), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
+		p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=10, pretty=T, 
+			col.regions=brewer.pal(9,"GnBu"), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
 			par.settings = list(axis.line = list(col = "transparent")),colorkey = FALSE,
 			scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.0),
 			xlab="",ylab="", aspect="iso")
 	}else{
-		p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=11, pretty=T, 
-			col.regions=rev(brewer.pal(10,"RdBu")), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
+		p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=10, pretty=T, 
+			col.regions=rev(brewer.pal(9,"GnBu")), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
 			par.settings = list(axis.line = list(col = "transparent")),colorkey = FALSE,
 			scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.2),
 			xlab="",ylab="", aspect="iso")
@@ -121,7 +139,7 @@ for(var in varnms){
 	points2grid(df)
 	btl_pixels <- as(df, "SpatialPixelsDataFrame")
 	names(btl_pixels) <- "btlprs"
-	p <- p + latticeExtra::layer(sp.points(btl_pixels[btl_pixels$btlprs==1,], pch=19, cex=0.05, col='green', alpha=0.4))
+	p <- p + latticeExtra::layer(sp.points(btl_pixels[btl_pixels$btlprs==1,], pch=19, cex=0.05, col='#d95f02', alpha=0.4))
   print(p,split=c(pos[,yr][1], pos[,yr][2], 5, 4))
   for(yr in 2:20){
 	  var_3d_slice <- var_3d[,,yr]
@@ -136,14 +154,14 @@ for(var in varnms){
 			  scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.2),
 			  xlab="",ylab="", colorkey = FALSE, aspect="iso")
 		}else if(var %in% c("Acs", drops, mins)){
-			p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=11, pretty=T, 
-				col.regions=brewer.pal(10,"RdBu"), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
+			p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=10, pretty=T, 
+				col.regions=brewer.pal(9,"GnBu"), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
 				par.settings = list(axis.line = list(col = "transparent")), colorkey = FALSE,
 				scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.0),
 				xlab="",ylab="", aspect="iso")
 	  }else{
-	    p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=11, pretty=T, 
-			  col.regions=rev(brewer.pal(10,"RdBu")), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
+	    p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=10, pretty=T, 
+			  col.regions=rev(brewer.pal(9,"GnBu")), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
 			  par.settings = list(axis.line = list(col = "transparent")), colorkey = FALSE,
 			  scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.2),
 			  xlab="",ylab="", aspect="iso")
@@ -156,7 +174,7 @@ for(var in varnms){
     points2grid(df)
     btl_pixels <- as(df, "SpatialPixelsDataFrame")
     names(btl_pixels) <- "btlprs"
-    p <- p + latticeExtra::layer(sp.points(btl_pixels[btl_pixels$btlprs==1,], pch=19, cex=0.05, col='green', alpha=0.4))
+    p <- p + latticeExtra::layer(sp.points(btl_pixels[btl_pixels$btlprs==1,], pch=19, cex=0.05, col='#d95f02', alpha=0.4))
     print(p,split=c(pos[,yr][1], pos[,yr][2], 5, 4), newpage=FALSE) 
   }
   dev.off()
@@ -169,8 +187,8 @@ if(0){
 	var_3d <- get.data(var)
 	var_3d_slice <- var_3d[,,yr]
 	png(paste0("daymet_legend_",var,".png"), width=8, height=7.5, units="in", res=300)
-	p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=11, pretty=T, 
-					col.regions=brewer.pal(10,"RdBu"), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
+	p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=10, pretty=T, 
+					col.regions=brewer.pal(9,"GnBu"), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
 					par.settings = list(axis.line = list(col = "transparent")), colorkey=list(space="bottom", height=2, width=2),
 					scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.0),
 					xlab="",ylab="", aspect="iso")
@@ -193,14 +211,14 @@ for(var in varnms){
 			  scales = list(draw = FALSE), margin=F, main=list(label=yr, cex=1.5),
 			  xlab="",ylab="", colorkey = FALSE, key=myKey2, aspect="iso")
 		}else if(var %in% c("Acs", drops, mins)){
-			p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=11, pretty=T, 
-			  col.regions=brewer.pal(10,"RdBu"), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
+			p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=10, pretty=T, 
+			  col.regions=brewer.pal(9,"GnBu"), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
 			  par.settings = list(axis.line = list(col = "transparent")), 
 			  scales = list(draw = FALSE), margin=F, main=list(label=yr, cex=1.5),
 			  xlab="",ylab="", aspect="iso")
 	  }else{
-	    p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=11, pretty=T, 
-			  col.regions=rev(brewer.pal(10,"RdBu")), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
+	    p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=10, pretty=T, 
+			  col.regions=rev(brewer.pal(9,"GnBu")), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
 			  par.settings = list(axis.line = list(col = "transparent")), 
 			  scales = list(draw = FALSE), margin=F, main=list(label=yr, cex=1.5),
 			  xlab="",ylab="", aspect="iso")
@@ -213,7 +231,7 @@ for(var in varnms){
     points2grid(df)
     btl_pixels <- as(df, "SpatialPixelsDataFrame")
     names(btl_pixels) <- "btlprs"
-    p <- p + latticeExtra::layer(sp.points(btl_pixels[btl_pixels$btlprs==1,], pch=19, cex=0.05, col='green', alpha=0.4))
+    p <- p + latticeExtra::layer(sp.points(btl_pixels[btl_pixels$btlprs==1,], pch=19, cex=0.05, col='#d95f02', alpha=0.4))
     png(paste0("daymet_map_",var,"_",yr,".png"), width=6, height=8, units="in", res=300)
     print(p)
     dev.off()

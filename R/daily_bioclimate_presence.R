@@ -69,11 +69,11 @@ more <- c('Oct20', 'Oct30', 'Oct40', 'OctMin','Jan20', 'Jan30', 'Jan40', 'JanMin
 vars <- c("maxAugT", "summerT40", "winterTmin", "drop0", drops, "ddAugJul", "ddAugJun", mins)
 
 library(rgdal)
-roi.shp <- readOGR(dsn="/gpfs/projects/gavingrp/dongmeic/beetle/shapefiles", layer = "na10km_roi")
+#roi.shp <- readOGR(dsn="/gpfs/projects/gavingrp/dongmeic/beetle/shapefiles", layer = "na10km_roi")
 
-ndf <- read.csv(paste0(csvpath,"bioclim_values_Daymet_",years[1],".csv")) # from daymet_combined.R
-ndf <- cbind(ndf, roi.shp@data[,paste0("prs_",(years[1]+1))])
-colnames(ndf)[dim(ndf)[2]] <- "beetles"
+#ndf <- read.csv(paste0(csvpath,"bioclim_values_Daymet_",years[1],".csv")) # from daymet_combined.R
+#ndf <- cbind(ndf, roi.shp@data[,paste0("prs_",(years[1]+1))])
+#colnames(ndf)[dim(ndf)[2]] <- "beetles"
 
 for(i in 2:length(years)){
   df <- read.csv(paste0(csvpath,"bioclim_values_Daymet_",years[i],".csv"))
@@ -91,25 +91,28 @@ sink(paste0(csvpath,"bioclim_summary_statistics_daymet.txt"))
 summary(ClimDaily)
 sink()
 
-vars <- c("ddAugJun", "ddAugJul", "winterTmin", "Acs", "Ecs", "Lcs", "min20", "min22", "min24", "min26", 
-					"min28", "min30", "min32", "min34", "min36", "min38", "min40", "maxAugT", "summerT40")
-btlClim <- ClimDaily[,vars]
-btlClim <- btlClim[complete.cases(btlClim),]
+vars <- c("ddAugJun", "ddAugJul", "Acs", "Ecs", "Lcs", "Oct20", "Oct30", "Oct40", "OctMin",
+					"Jan20", "Jan30", "Jan40", "JanMin", "Mar20", "Mar30", "Mar40", "MarMin",
+					"winter20", "winter30", "winter40", "winterMin", "maxAugT", "OptTsum","summerT40")
+btlC
+#btlClim <- btlClim[complete.cases(btlClim),]
 k <- dim(btlClim)[1]
 d1 <- vector(); d2 <- vector()
-for(i in 1:length(vars)){
-	if(i == 1){
+for(i in vars){
+	if(i == "ddAugJun"){
 		d1[i] <- sum(btlClim[,i]>305) / k		
-	}else if(i==2){
+	}else if(i=="ddAugJul"){
 		d1[i] <- sum(btlClim[,i]>833)/k		
-	}else if(i==3){
-		d1[i] <- sum(btlClim[,i]>-40)/k	
-	}else if(i==4){	
+	}else if(i=="Acs"){
 		d1[i] <- sum(btlClim[,i]<=4)/k	
-	}else if(i==18){
+	}else if(i %in% c("OctMin", "JanMin", "MarMin", "winterMin")){	
+		d1[i] <- sum(btlClim[,i]>-40)/k
+	}else if(i=="maxAugT"){
 		d1[i] <- sum(btlClim[,i]>2)/k	
-	}else if(i==19){
+	}else if(i=="summerT40"){
 		d1[i] <- sum(btlClim[,i]==0)/k
+	}else if(i=="OptTsum"){
+		d1[i] <- sum(btlClim[,i]>=18 & btlClim[,i]<=30)/k
 	}else{
 		d1[i] <- sum(btlClim[,i]==0)/k
 	}
