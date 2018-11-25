@@ -17,13 +17,14 @@ ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/ts/var/dail
 out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/maps/daymet/"
 setwd(out)
 
-drops <- c("drop5", "drop10", "drop15", "drop20", "drop20plus", "max.drop")
-mins <- c("Oct20","Oct30","Oct40","OctMin","Jan20","Jan30","Jan40","JanMin","Mar20","Mar30",
-					"Mar40","MarMin","min20","min30","min40","winterMin","minT")
+drops <- c("drop5", "drop10", "drop15", "drop20", "drop20plus","max.drop")
+mindays <- c("Oct20","Oct30","Oct40","Jan20","Jan30","Jan40","Mar20","Mar30",
+					"Mar40","winter20","winter30","winter40")
+mins <- c("OctMin","JanMin","MarMin","winterMin","minT")
 wd <- c("wd", "cwd", "vpd", "mi", "pt.coef", "cv.gsp")
 maxs <- c("OptTsum", "AugMaxT", "maxT")
 varnms <- c("Lcs", "maxAugT", "summerT40", "Ecs", "Ncs", "Acs", "drop0", drops, 
-						"ddAugJul", "ddAugJun", mins, maxs, wd)
+						"ddAugJul", "ddAugJun", mindays, mins, maxs, wd)
 
 ncin <- nc_open("/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/na10km_v2.nc")
 x <- ncvar_get(ncin, varid="x"); nx <- length(x)
@@ -62,9 +63,9 @@ Mar20=c(0,2,4,6,8,10,15,20,25,30),
 Mar30=c(0,2,4,6,8,10,15,20,25,30),
 Mar40=c(0,2,4,6,8,10,15,20,25,28),
 MarMin=c(-50,-25,-15,-10,-5,0,5,10,20,36),
-min20=c(0,10,20,30,40,50,60,70,80,90),
-min30=c(0,10,15,20,25,30,40,50,60,80),
-min40=c(0,2,5,10,15,20,25,35,55,75),
+winter20=c(0,10,20,30,40,50,60,70,80,90),
+winter30=c(0,10,15,20,25,30,40,50,60,80),
+winter40=c(0,2,5,10,15,20,25,35,55,75),
 winterMin=c(-50,-35,-25,-20,-15,-10,-5,0,5,21),
 minT=c(-50,-35,-25,-20,-15,-10,-5,0,5,21),
 wd=c(-500, -100, 0, 500, 1000, 2000, 5000, 10000, 20000, 45000), 
@@ -118,7 +119,7 @@ for(var in varnms){
 			par.settings = list(axis.line = list(col = "transparent")), col.regions=myColors2,
 			scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.2),
 			xlab="",ylab="", colorkey = FALSE, aspect="iso")
-	}else if(var %in% c("Acs", drops, mins)){
+	}else if(var %in% c("Acs", drops, mindays)){
 		p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=10, pretty=T, 
 			col.regions=brewer.pal(9,"GnBu"), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
 			par.settings = list(axis.line = list(col = "transparent")),colorkey = FALSE,
@@ -153,7 +154,7 @@ for(var in varnms){
 			  par.settings = list(axis.line = list(col = "transparent")), col.regions=myColors2,
 			  scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.2),
 			  xlab="",ylab="", colorkey = FALSE, aspect="iso")
-		}else if(var %in% c("Acs", drops, mins)){
+		}else if(var %in% c("Acs", drops, mindays)){
 			p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=10, pretty=T, 
 				col.regions=brewer.pal(9,"GnBu"), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
 				par.settings = list(axis.line = list(col = "transparent")), colorkey = FALSE,
@@ -210,7 +211,7 @@ for(var in varnms){
 			  par.settings = list(axis.line = list(col = "transparent")), col.regions=myColors2,
 			  scales = list(draw = FALSE), margin=F, main=list(label=yr, cex=1.5),
 			  xlab="",ylab="", colorkey = FALSE, key=myKey2, aspect="iso")
-		}else if(var %in% c("Acs", drops, mins)){
+		}else if(var %in% c("Acs", drops, mindays)){
 			p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=10, pretty=T, 
 			  col.regions=brewer.pal(9,"GnBu"), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
 			  par.settings = list(axis.line = list(col = "transparent")), 
@@ -222,7 +223,7 @@ for(var in varnms){
 			  par.settings = list(axis.line = list(col = "transparent")), 
 			  scales = list(draw = FALSE), margin=F, main=list(label=yr, cex=1.5),
 			  xlab="",ylab="", aspect="iso")
-	}
+	 }
     p <- p + latticeExtra::layer(sp.polygons(canada.prov, lwd=0.8, col='dimgray', alpha=0.3))
     p <- p + latticeExtra::layer(sp.polygons(us.states, lwd=0.8, col='dimgray', alpha=0.3))
     p <- p + latticeExtra::layer(sp.polygons(lrglakes, lwd=0.8, col='dimgray', fill='lightblue', alpha=0.3))	  

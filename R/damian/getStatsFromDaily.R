@@ -107,8 +107,8 @@ get.degree.days <- function(daily.means) {
   n <- length(daily.means)
   above5.5.aug.jul <- daily.means > 5.5
   above5.5.aug.jun <- above5.5.aug.jul[1:(n-31)]
-  ddAugJul <- sum(round(daily.means[above5.5.aug.jul] - 5.5 - 0.5), na.rm=T)
-  ddAugJun <- sum(round(daily.means[above5.5.aug.jun] - 5.5 - 0.5), na.rm=T)
+  ddAugJul <- sum(round(daily.means[above5.5.aug.jul] - 5.5), na.rm=T)
+  ddAugJun <- sum(round(daily.means[above5.5.aug.jun] - 5.5), na.rm=T)
   list(ddAugJul=ddAugJul, ddAugJun=ddAugJun)
 }
 
