@@ -192,7 +192,7 @@ png(paste0(out,"quant_diff_density_plots_Tmin.png"), width=9, height=6, units="i
 par(mfrow=c(2,3),mar=c(3.5,3.5,3,1))
 for (i in 1:6){
   density.plot(vars[i])
-  if(i==9){
+  if(i==6){
     legend('topright', lty=1, lwd=2, col=cols, legend=taus, cex = 1.5, bty='n')
   }
 }

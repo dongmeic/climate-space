@@ -197,6 +197,7 @@ get.diff.matrix <- function(dt, var, iter){
 	names(df1) <- paste0("t", taus)
 	names(df2) <- paste0("t", taus)
 	names(df3) <- paste0("t", taus)
+	outpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
 	write.csv(df1, paste0(outpath, "quantile/", var, "_peak.csv"), row.names=FALSE)
 	write.csv(df2, paste0(outpath, "quantile/", var, "_nonpeak.csv"), row.names=FALSE)
 	write.csv(df3, paste0(outpath, "quantile/", var, "_diff.csv"), row.names=FALSE)

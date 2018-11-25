@@ -22,6 +22,7 @@ crubioclm <- cbind(ndf, year=unlist(lapply(1996:2015,function(i) rep(i,dim(ndf)[
 #write.csv(crubioclm, paste0(inpath, "daily_bioclimatic_values_1996_2015_r.csv"), row.names=FALSE)
 
 #ndf <- read.csv(paste0(inpath, "daily_bioclimatic_values_1996_2015_r.csv"))
+
 vars <- c("ddAugJun", "ddAugJul", "winterTmin", "Acs", "Ecs", "Lcs", "min20", "min22", "min24", "min26", 
 					"min28", "min30", "min32", "min34", "min36", "min38", "min40", "maxAugT", "summerT40")
 								
@@ -85,6 +86,12 @@ for(i in 2:length(years)){
 dmClim <- cbind(ndf, year=unlist(lapply(1996:2015,function(i) rep(i,dim(ndf)[1]/length(1996:2015)))))
 write.csv(dmClim, paste0(csvpath, "daymet_bioclim_1996_2015_r.csv"), row.names=FALSE)
 
+# update input data
+source("/gpfs/projects/gavingrp/dongmeic/climate-space/R/combine_CRU_Daymet.R")
+source("/gpfs/projects/gavingrp/dongmeic/climate-space/R/data_transform.R")
+
+outpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
+dmClim <- get_data()
 ClimDaily <- dmClim[dmClim$beetles==1,]
 
 sink(paste0(csvpath,"bioclim_summary_statistics_daymet.txt"))
@@ -96,29 +103,31 @@ vars <- c("ddAugJun", "ddAugJul", "Acs", "Ecs", "Lcs", "Oct20", "Oct30", "Oct40"
 					"winter20", "winter30", "winter40", "winterMin", "maxAugT", "OptTsum","summerT40")
 btlC
 #btlClim <- btlClim[complete.cases(btlClim),]
-k <- dim(btlClim)[1]
+k <- dim(ClimDaily)[1]
 d1 <- vector(); d2 <- vector()
-for(i in vars){
-	if(i == "ddAugJun"){
-		d1[i] <- sum(btlClim[,i]>305) / k		
-	}else if(i=="ddAugJul"){
-		d1[i] <- sum(btlClim[,i]>833)/k		
-	}else if(i=="Acs"){
-		d1[i] <- sum(btlClim[,i]<=4)/k	
-	}else if(i %in% c("OctMin", "JanMin", "MarMin", "winterMin")){	
-		d1[i] <- sum(btlClim[,i]>-40)/k
-	}else if(i=="maxAugT"){
-		d1[i] <- sum(btlClim[,i]>2)/k	
-	}else if(i=="summerT40"){
-		d1[i] <- sum(btlClim[,i]==0)/k
-	}else if(i=="OptTsum"){
-		d1[i] <- sum(btlClim[,i]>=18 & btlClim[,i]<=30)/k
+for(var in vars){
+	i <- which(vars==var)
+	if(var == "ddAugJun"){
+		d1[i] <- sum(ClimDaily[,var]>305) / k		
+	}else if(var=="ddAugJul"){
+		d1[i] <- sum(ClimDaily[,var]>833)/k		
+	}else if(var=="Acs"){
+		d1[i] <- sum(ClimDaily[,var]<=4)/k	
+	}else if(var %in% c("OctMin", "JanMin", "MarMin", "winterMin")){	
+		d1[i] <- sum(ClimDaily[,var]>-40)/k
+	}else if(var=="maxAugT"){
+		d1[i] <- sum(ClimDaily[,var]>2)/k	
+	}else if(var=="summerT40"){
+		d1[i] <- sum(ClimDaily[,var]==0)/k
+	}else if(var=="OptTsum"){
+		d1[i] <- sum(ClimDaily[,var]>0)/k
 	}else{
-		d1[i] <- sum(btlClim[,i]==0)/k
+		d1[i] <- sum(ClimDaily[,var]==0)/k
 	}
 	d2[i] <- 1 - d1[i]	
 }
 df <- data.frame(prs=d1, abs=d2, var=vars)
-write.csv(df, paste0(inpath, "daily_winter_tmp_daymet.csv"), row.names=FALSE)
+out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
+write.csv(df, paste0(out, "daily_winter_tmp_daymet.csv"), row.names=FALSE)
 
 save.image(file="/gpfs/projects/gavingrp/dongmeic/beetle/output/RData/summary_daily.RData")
