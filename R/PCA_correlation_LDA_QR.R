@@ -115,17 +115,21 @@ print(dt.lda)
 sink()
 
 dt <- indata.cc[indata.cc$beetles==1,]
-#df <- dt[,c("ddAugJul", "wd", "mi", "AugTmax", "Tvar", "summerP2", "year")]
-df <- dt[,c("Tvar", "ddAugJul", "Tmin", "AugTmax", "wd", "mi", "year")]
+#df <- dt[,c("Tvar", "ddAugJul", "Tmin", "AugTmax", "wd", "mi", "year")]
+df <- dt[,c("JanTmin", "MarTmin", "Tvar", "summerP2", "ddAugJul", "AugTmax", "wd", "mi", "year")]
 write.csv(df, paste0(outpath, "data_for_QR_both.csv"), row.names=FALSE)
 #df <- read.csv(paste0(outpath, "data_for_QR.csv"))
 taus <- c(.05,.1,.25,.75,.90,.95)
 sink(paste0(outpath,"QR_summary_both.txt"))
+fit <- rq(JanTmin~year, tau=taus, data=df)
+summary(fit)
+fit <- rq(MarTmin~year, tau=taus, data=df)
+summary(fit)
 fit <- rq(Tvar~year, tau=taus, data=df)
 summary(fit)
-fit <- rq(ddAugJul~year, tau=taus, data=df)
+fit <- rq(summerP2~year, tau=taus, data=df)
 summary(fit)
-fit <- rq(Tmin~year, tau=taus, data=df)
+fit <- rq(ddAugJul~year, tau=taus, data=df)
 summary(fit)
 fit <- rq(AugTmax~year, tau=taus, data=df)
 summary(fit)
@@ -135,9 +139,9 @@ fit <- rq(mi~year, tau=taus, data=df)
 summary(fit)
 sink()					 
 
-png(paste0(out,"QR_plots.png"), width=12, height=9, units="in", res=300)
-par(mfrow=c(3,4), mar=c(3.5,3.5,3,1))
-for (i in 1:12){
+png(paste0(out,"QR_plots.png"), width=12, height=6, units="in", res=300)
+par(mfrow=c(2,4), mar=c(3.5,3.5,3,1))
+for (i in 1:8){
 	plot(df$year,df[,i],cex=.25, type="n", main=colnames(df)[i], cex.main =1.5, xlab="", ylab="", cex.lab=1.5)
 	points(df$year,df[,i],pch=16,cex=.5,col=rgb(0.7,0.7,0.7,0.05))
 	abline(rq(df[,i]~df$year,tau=.5),col="black", lwd=1.5)
@@ -154,7 +158,6 @@ vars <- c("OctTmin", "JanTmin", "MarTmin", "Tvar", "summerTmean", "AugTmean", "A
 					"summerP0", "summerP2", "wd", "mi")
 df <- dt[,c(vars, "year")]
 
-
 indata <- get_data()				 
 #indata <- read.csv(paste0(outpath, "bioclim_vars_both_1996_2015_r.csv"))
 indata.cc <- indata[complete.cases(indata),]
@@ -163,8 +166,8 @@ peakyears <- 2006:2008
 nonpeakyears <- 1996:1998
 dt$peak <- ifelse(dt$year %in% peakyears, 1, ifelse(dt$year %in% nonpeakyears, 0, 2))
 
-#vars <- c("ddAugJul", "wd", "mi", "AugTmax", "Tvar", "summerP2")
-vars <- c("Tvar", "ddAugJul", "Tmin", "AugTmax", "wd", "mi")
+#vars <- c("Tvar", "ddAugJul", "Tmin", "AugTmax", "wd", "mi")
+vars <- c("JanTmin", "MarTmin", "Tvar", "summerP2", "ddAugJul", "AugTmax", "wd", "mi")
 
 taus <- c(0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95)
 
@@ -174,25 +177,25 @@ THRESHOLD <- 0.000000001
 cum.means <- get.all.cumulative.means(vars, dt, q=0.95, threshold=THRESHOLD, use.threshold=F)
 write.csv(cum.means, paste0(outpath, "cumulative_means_daymet.csv"), row.names=FALSE)
 
-png(paste0(out,"cumulative_means.png"), width=9, height=6, units="in", res=300)
-par(mfrow=c(2,3), mar=c(2.5, 2.5, 3.5, 2))
-for(i in 1:6){
+png(paste0(out,"cumulative_means.png"), width=12, height=6, units="in", res=300)
+par(mfrow=c(2,4), mar=c(2.5, 2.5, 3.5, 2))
+for(i in 1:8){
 	plot(cum.means[, i], type='l', col=i, xlab="", ylab="", main=vars[i], lwd=2)
 }
 dev.off()
 
-iters <- c(2000, 3000, 3000, 2000, 2000, 2000)
+iters <- c(3000, 2000, 2000, 2000, 5000, 2000, 1000, 1000)
 for(var in vars){
 	get.diff.matrix(dt, var, iters[which(vars==var)])
 	print(paste(which(vars==var), var, iters[which(vars==var)]))
 }
 
 cols <- brewer.pal(7,"Blues")
-png(paste0(out,"quant_diff_density_plots_Tmin.png"), width=9, height=6, units="in", res=300)
-par(mfrow=c(2,3),mar=c(3.5,3.5,3,1))
-for (i in 1:6){
+png(paste0(out,"quant_diff_density_plots.png"), width=9, height=6, units="in", res=300)
+par(mfrow=c(2,4),mar=c(3.5,3.5,3,1))
+for (i in 1:8){
   density.plot(vars[i])
-  if(i==6){
+  if(i==8){
     legend('topright', lty=1, lwd=2, col=cols, legend=taus, cex = 1.5, bty='n')
   }
 }

@@ -13,13 +13,13 @@ vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
 vars <- c("JanTmin", "Tmean", "AugTmax", "summerP2", "PPT", "Tvar")
 varnms <- c("Monthly average of daily minimum temperature in Jan",
 						"Annual mean temperature from Aug to Jul",
-					  "Monthly average of daily minimum temperature in Aug",
-					  "Cumulative summer precipitation in current and previous years",
-					  "Cumulative monthly Oct-Aug precipitation",
+					  "Monthly average of daily maximum temperature in Aug",
+					  "Two-year cumulative summer precipitation",
+					  "Six-year cumulative Oct-Aug monthly precipitation",
 					  "Seasonal temperature variation from Aug to Jul")
 
 startyrs <- c(1901, 1902, 1901, 1902, 1907, 1902)
-units <- c("(°C)", "(°C)", "(°C)", "(°C)", "(mm)", "(mm)","")
+units <- c("(°C)", "(°C)", "(°C)", "(mm)", "(mm)","")
 
 cols <- c("#A9A9A9", "#1b9e77", "#d95f02")
 rect <- data.frame(xmin=1996, xmax=2015, ymin=-Inf, ymax=Inf)

@@ -18,7 +18,11 @@ vargrp2 <- c("summerP0", "summerP1", "summerP2", "AugTmax", "PcumOctSep", "max.d
 						  "cv.gsp", "Tvar", "minT", "PMarAug", "mi",  "cwd", "pt.coef",
 							 "POctSep", "Pmean", "wd", "OptTsum")
 							 
-vargrp <- c(vargrp1, vargrp2)
+vargrp <- c("OctTmin", "JanTmin", "MarTmin", "Tmin", "OctMin", "JanMin", "MarMin",  
+							"winterMin", "minT", "Acs", "drop5", "max.drop", "maxAugT", "AugMaxT", "AugTmax", "maxT", 
+							"TMarAug", "OptTsum", "summerTmean", "AugTmean", "fallTmean", "TOctSep", "Tmean", "ddAugJul", 
+							"ddAugJun", "Tvar", "PMarAug", "summerP0", "summerP1", "summerP2", "POctSep",
+						  "PcumOctSep", "Pmean", "PPT", "cv.gsp", "mi", "pt.coef", "vpd", "cwd", "wd")
 
 cols <- c("#A9A9A9", "#1b9e77", "#d95f02")
 
@@ -52,11 +56,11 @@ for(i in 1:length(vargrp)){
   print(paste(vargrp[i], "is done!"))
 }
 
-png("bioclim_density_plots.png", width=18, height=18, units="in", res=300)
-par(mfrow=c(6,6),mar=c(3.5,3.5,3,1))
+png("bioclim_density_plots.png", width=15, height=24, units="in", res=300)
+par(mfrow=c(8,5),mar=c(3.5,3.5,3,1))
 for (i in 1:length(vargrp)){
   density.plot(i)
-  if(i==36){
+  if(i==40){
     legend('topright', lty=1, lwd=4, col=cols, legend=c("Continent", "Host", "MPB"), cex = 1.5, bty='n')
   }
 }

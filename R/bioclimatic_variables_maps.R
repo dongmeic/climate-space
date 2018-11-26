@@ -9,6 +9,10 @@ library(latticeExtra)
 library(gridExtra)
 library(RColorBrewer)
 library(animation)
+library(parallel)
+library(doParallel)
+library(foreach)
+registerDoParallel(cores=28)
 
 #source("/gpfs/projects/gavingrp/dongmeic/climate-space/R/plotlist.R")
 years <- 1996:2015; nyr <- length(years)
@@ -40,9 +44,9 @@ c(-45,-25,-15,-5,0,5,10,15,20,25,30),
 #winterTmin
 c(-55,-40,-30,-20,-15,-10,-5,0,5,15,30),
 #JanTmin
-c(-50,-30,-20,-10,-5,0,5,10,15,25,30),
+c(-55,-30,-20,-10,-5,0,5,10,15,25,30),
 #MarTmin
-c(-50,-30,-20,-15,-10,-5,0,5,10,20,30),
+c(-55,-30,-20,-15,-10,-5,0,5,10,20,30),
 #Tmin
 c(-50,-30,-15,-10,-5,0,5,10,15,25,35),
 #Tmean
