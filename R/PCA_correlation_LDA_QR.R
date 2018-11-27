@@ -114,7 +114,7 @@ sink(paste0(outpath,"lda_daymet.txt"))
 print(dt.lda)
 sink()
 
-dt <- indata.cc[indata.cc$beetles==1,]
+dt <- indata[indata$beetles==1,]
 #df <- dt[,c("Tvar", "ddAugJul", "Tmin", "AugTmax", "wd", "mi", "year")]
 df <- dt[,c("JanTmin", "MarTmin", "Tvar", "summerP2", "ddAugJul", "AugTmax", "wd", "mi", "year")]
 write.csv(df, paste0(outpath, "data_for_QR_both.csv"), row.names=FALSE)
@@ -159,9 +159,7 @@ vars <- c("OctTmin", "JanTmin", "MarTmin", "Tvar", "summerTmean", "AugTmean", "A
 df <- dt[,c(vars, "year")]
 
 indata <- get_data()				 
-#indata <- read.csv(paste0(outpath, "bioclim_vars_both_1996_2015_r.csv"))
-indata.cc <- indata[complete.cases(indata),]
-dt <- indata.cc[indata.cc$beetles==1,]
+dt <- indata[indata$beetles==1,]
 peakyears <- 2006:2008
 nonpeakyears <- 1996:1998
 dt$peak <- ifelse(dt$year %in% peakyears, 1, ifelse(dt$year %in% nonpeakyears, 0, 2))
@@ -191,7 +189,7 @@ for(var in vars){
 }
 
 cols <- brewer.pal(7,"Blues")
-png(paste0(out,"quant_diff_density_plots.png"), width=9, height=6, units="in", res=300)
+png(paste0(out,"quant_diff_density_plots.png"), width=12, height=6, units="in", res=300)
 par(mfrow=c(2,4),mar=c(3.5,3.5,3,1))
 for (i in 1:8){
   density.plot(vars[i])

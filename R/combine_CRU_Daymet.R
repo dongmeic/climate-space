@@ -18,6 +18,8 @@ read_CRU <- function(yr){
 read_Daymet <- function(yr){
 	df1 <- read.csv(paste0(daymet.path, "dm_bioclm_var_",years[yr],"_na.csv"))
   df2 <- read.csv(paste0(daymet.path, "dm_bioclm_var_",years[yr],"_na_wd.csv"))
+  df3 <- read.csv(paste0(daymet.path, "dm_bioclm_DD_",years[yr],"_na.csv"))
+  df1$ddAugJul <- df3$ddAugJul; df1$ddAugJun <- df3$ddAugJun;
 	cbind(df1, df2)
 }
 

@@ -111,8 +111,8 @@ for(var in vars){
 		d1[i] <- sum(ClimDaily[,var]>305) / k		
 	}else if(var=="ddAugJul"){
 		d1[i] <- sum(ClimDaily[,var]>833)/k		
-	}else if(var=="Acs"){
-		d1[i] <- sum(ClimDaily[,var]<=4)/k	
+	}else if(var %in% c("Acs", "Oct20", "Jan20", "Mar20", "winter20")){
+		d1[i] <- sum(ClimDaily[,var]<=20)/k	
 	}else if(var %in% c("OctMin", "JanMin", "MarMin", "winterMin")){	
 		d1[i] <- sum(ClimDaily[,var]>-40)/k
 	}else if(var=="maxAugT"){

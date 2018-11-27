@@ -178,14 +178,19 @@ get.sample.sizes.needed <- function(cum.means) {
   apply(cum.means, 2, get.index.of.last.finite.value)
 }
 
-get.diff.matrix <- function(dt, var, iter){
+get.diff.matrix <- function(dt, var, iter, peak=T){
 	taus <- c(0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95)
 	df1 <- as.data.frame(matrix(,ncol=0,nrow=7))
 	df2 <- as.data.frame(matrix(,ncol=0,nrow=7))
 	df3 <- as.data.frame(matrix(,ncol=0,nrow=7))
 	for(i in 1:iter){
-		s1 <- sample(dt[dt$peak==1,][,var],5000)
-		s2 <- sample(dt[dt$peak==0,][,var],5000)
+		if(peak){
+			s1 <- sample(dt[dt$peak==1,][,var],5000)
+			s2 <- sample(dt[dt$peak==0,][,var],5000)	
+		}else{
+			s1 <- sample(dt[dt$expand=="expanded",][,var],5000)
+			s2 <- sample(dt[dt$expand=="core",][,var],5000)			
+		}		
 		q1 <- as.numeric(quantile(s1, taus))
 		q2 <- as.numeric(quantile(s2, taus))
 		q3 <- q1 - q2
@@ -194,18 +199,22 @@ get.diff.matrix <- function(dt, var, iter){
 		df3 <- rbind(df3, q3)
 		print(paste(var, i))
 	}
-	names(df1) <- paste0("t", taus)
-	names(df2) <- paste0("t", taus)
 	names(df3) <- paste0("t", taus)
 	outpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
-	write.csv(df1, paste0(outpath, "quantile/", var, "_peak.csv"), row.names=FALSE)
-	write.csv(df2, paste0(outpath, "quantile/", var, "_nonpeak.csv"), row.names=FALSE)
-	write.csv(df3, paste0(outpath, "quantile/", var, "_diff.csv"), row.names=FALSE)
+	if(peak){
+		write.csv(df3, paste0(outpath, "quantile/", var, "_peak_diff.csv"), row.names=FALSE)
+	}else{
+		write.csv(df3, paste0(outpath, "quantile/", var, "_expand_diff.csv"), row.names=FALSE)
+	}	
 }
 
-density.plot <- function(var){
+density.plot <- function(var, peak=T){
 	outpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
-	df <- read.csv(paste0(outpath, "quantile/", var, "_diff.csv"))
+	if(peak){
+		df <- read.csv(paste0(outpath, "quantile/", var, "_peak_diff.csv"))
+	}else{
+		df <- read.csv(paste0(outpath, "quantile/", var, "_expand_diff.csv"))
+	}	
   p1 <- density(df[,1])
   p2 <- density(df[,2])
   p3 <- density(df[,3])
