@@ -199,6 +199,43 @@ for (i in 1:8){
 }
 dev.off()
 
+vars <- c("ddAugJun", "ddAugJul", "Acs", "Ecs", "Lcs", "Oct20", "Oct30", "Oct40", "OctMin",
+					"Jan20", "Jan30", "Jan40", "JanMin", "Mar20", "Mar30", "Mar40", "MarMin",
+					"winter20", "winter30", "winter40", "winterMin", "maxAugT", "OptTsum","summerT40")
+					
+k1 <- dim(dt[dt$peak==1,])[1]; k2 <- dim(dt[dt$peak==0,])[1]
+d1 <- vector(); d2 <- vector()
+for(var in vars){
+	i <- which(vars==var)
+	if(var == "ddAugJun"){
+		d1[i] <- sum(dt[dt$peak==1,][,var]>305) / k1		
+		d2[i] <- sum(dt[dt$peak==0,][,var]>305) / k2	
+	}else if(var=="ddAugJul"){
+		d1[i] <- sum(dt[dt$peak==1,][,var]>833)/k1
+		d2[i] <- sum(dt[dt$peak==0,][,var]>833)/k2	
+	}else if(var %in% c("Acs", "Oct20", "Jan20", "Mar20", "winter20")){
+		d1[i] <- sum(dt[dt$peak==1,][,var]<=20)/k1
+		d2[i] <- sum(dt[dt$peak==0,][,var]<=20)/k2		
+	}else if(var %in% c("OctMin", "JanMin", "MarMin", "winterMin")){	
+		d1[i] <- sum(dt[dt$peak==1,][,var]>-40)/k1
+		d2[i] <- sum(dt[dt$peak==0,][,var]>-40)/k2
+	}else if(var=="maxAugT"){
+		d1[i] <- sum(dt[dt$peak==1,][,var]>2)/k1
+		d2[i] <- sum(dt[dt$peak==0,][,var]>2)/k2
+	}else if(var=="summerT40"){
+		d1[i] <- sum(dt[dt$peak==1,][,var]==0)/k1
+		d2[i] <- sum(dt[dt$peak==0,][,var]==0)/k2
+	}else if(var=="OptTsum"){
+		d1[i] <- sum(dt[dt$peak==1,][,var]>0)/k1
+		d2[i] <- sum(dt[dt$peak==0,][,var]>0)/k2
+	}else{
+		d1[i] <- sum(dt[dt$peak==1,][,var]==0)/k1
+		d2[i] <- sum(dt[dt$peak==0,][,var]==0)/k2
+	}
+}
+df <- data.frame(peak=d1, nonpeak=d2, var=vars)
+
+write.csv(df, paste0(outpath, "daily_threshold_peak.csv"), row.names=FALSE)
 
 
 
