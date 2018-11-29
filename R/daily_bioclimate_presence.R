@@ -98,7 +98,7 @@ sink(paste0(csvpath,"bioclim_summary_statistics_daymet.txt"))
 summary(ClimDaily)
 sink()
 
-vars <- c("ddAugJun", "ddAugJul", "Acs", "Ecs", "Lcs", "Oct20", "Oct30", "Oct40", "OctMin",
+vars <- c("ddAugJun", "ddAugJul", "Acs", "Ecs", "Lcs", "Ncs", "Oct20", "Oct30", "Oct40", "OctMin",
 					"Jan20", "Jan30", "Jan40", "JanMin", "Mar20", "Mar30", "Mar40", "MarMin",
 					"winter20", "winter30", "winter40", "winterMin", "maxAugT", "OptTsum","summerT40")
 btlC

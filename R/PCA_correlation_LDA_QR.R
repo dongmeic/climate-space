@@ -199,7 +199,7 @@ for (i in 1:8){
 }
 dev.off()
 
-vars <- c("ddAugJun", "ddAugJul", "Acs", "Ecs", "Lcs", "Oct20", "Oct30", "Oct40", "OctMin",
+vars <- c("ddAugJun", "ddAugJul", "Acs", "Ecs", "Lcs", "Ncs","Oct20", "Oct30", "Oct40", "OctMin",
 					"Jan20", "Jan30", "Jan40", "JanMin", "Mar20", "Mar30", "Mar40", "MarMin",
 					"winter20", "winter30", "winter40", "winterMin", "maxAugT", "OptTsum","summerT40")
 					
@@ -236,6 +236,3 @@ for(var in vars){
 df <- data.frame(peak=d1, nonpeak=d2, var=vars)
 
 write.csv(df, paste0(outpath, "daily_threshold_peak.csv"), row.names=FALSE)
-
-
-
