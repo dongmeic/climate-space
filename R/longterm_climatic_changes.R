@@ -10,16 +10,16 @@ setwd(outpath)
 
 vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
 
-vars <- c("JanTmin", "Tmean", "AugTmax", "summerP2", "PPT", "Tvar")
+vars <- c("JanTmin", "AugTmax", "Tmean", "Tvar", "summerP2", "PPT")
 varnms <- c("Monthly average of daily minimum temperature in Jan",
+						"Monthly average of daily maximum temperature in Aug",
 						"Annual mean temperature from Aug to Jul",
-					  "Monthly average of daily maximum temperature in Aug",
+					  "Seasonal temperature variation from Aug to Jul",
 					  "Two-year cumulative summer precipitation",
-					  "Six-year cumulative Oct-Aug monthly precipitation",
-					  "Seasonal temperature variation from Aug to Jul")
+					  "Six-year cumulative Oct-Aug monthly precipitation")
 
-startyrs <- c(1901, 1902, 1901, 1902, 1907, 1902)
-units <- c("(°C)", "(°C)", "(°C)", "(mm)", "(mm)","")
+startyrs <- c(1901, 1901, 1902, 1902, 1902, 1907)
+units <- c("(°C)", "(°C)", "(°C)", "", "(mm)", "(mm)")
 
 cols <- c("#A9A9A9", "#1b9e77", "#d95f02")
 rect <- data.frame(xmin=1996, xmax=2015, ymin=-Inf, ymax=Inf)
@@ -53,7 +53,8 @@ g <- function(i){
   g <- g + scale_linetype_manual(values=override.linetype, guide = FALSE)
   g <- g + guides(colour = guide_legend(override.aes = list(linetype = override.linetype)))
   g <- g + scale_colour_manual(name="", labels=c("Continent","Host","MPB"), values = cols)
-  g <- g + theme(legend.position="none")
+  g <- g + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.position="none",
+								 panel.background = element_blank(), axis.line = element_line(colour = "black"))
   #g <- g + labs(title=varnms[i], subtitle=paste0("Correlation with time in the beetle range: r = ", format(as.numeric(test$estimate), digits = 2),", p-value = ",format(as.numeric(test$p.value), digits = 2)), 
   #							x=paste("Years since", startyrs[i]), y = paste(vars[i], units[i]))
   g <- g + labs(title=paste(varnms[i],units[i]), x="", y ="")
