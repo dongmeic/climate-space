@@ -1,5 +1,6 @@
 library(ncdf4)
 library(ggplot2)
+library(grid)
 
 source("/gpfs/projects/gavingrp/dongmeic/climate-space/R/combine_CRU_Daymet.R")
 source("/gpfs/projects/gavingrp/dongmeic/climate-space/R/data_transform.R")
@@ -44,8 +45,8 @@ host_cs_plot <- function(var){
 	labs <- colnames(ndf)[1:2]
 	colnames(ndf)[1:2] <- c("var1", "var2")
 	ndf <- ndf[ndf$var==1,]
-	df1 <- ndf[sample(nrow(ndf), 500),]
-	p <- ggplot(df1, aes(x=var1, y=var2, z = beetles))
+	#df1 <- ndf[sample(nrow(ndf), 500),]
+	p <- ggplot(ndf, aes(x=var1, y=var2, z = beetles))
 	p <- p + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
 									panel.background = element_blank(), axis.line = element_line(colour = "black"))
 	p <- p + theme(legend.position="none")
@@ -56,3 +57,17 @@ host_cs_plot <- function(var){
 	p <- p + labs(x=labs[1], y=labs[2], title=varnms[which(vars==var)])
 	return(p)	
 }
+
+n1 <- rep(c(1,2),2); n2 <- c(rep(1,2),rep(2,2))
+vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
+out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/plots/"
+png(paste0(out, "cs_host_union.png"), width=6, height=6, units="in", res=300)
+grid.newpage()
+par(mar=c(2,2,4,2))
+pushViewport(viewport(layout = grid.layout(2, 2)))
+for(var in vars){
+	i <- which(vars==var)
+	p <- host_cs_plot(var)
+	print(p, vp = vplayout(n2[i], n1[i]))
+}
+dev.off()
