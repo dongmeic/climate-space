@@ -58,5 +58,7 @@ foreach(j=1:length(vargrp1))%dopar%{
   print(paste("The time-series climate space with variables", vargrp1[j], "and", vargrp2[j], "is done!"))  
 }
 
+ts_cs_plot("Tvar", "summerP2")
+
 save.image(file="/gpfs/projects/gavingrp/dongmeic/beetle/output/RData/climate_space.RData")
 print("all done")
