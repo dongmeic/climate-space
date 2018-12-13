@@ -42,3 +42,12 @@ get_data <- function(){
 	}
 	cbind(df, year=unlist(lapply(years,function(i) rep(i,dim(df)[1]/nyr))))
 }
+
+split_data <- function(){
+    for(i in 1:18){
+        df <- bioClim[,c(vargrp[i], vargrp[i+18], "beetles", "hosts", "year")]
+        df <- df[sample(nrow(df), 500),]
+        write.csv(df, paste0(vargrp[i],"_",vargrp[i+18],"_sample.csv"), row.names=FALSE)
+        print(c(vargrp[i], vargrp[i+18]))
+    }
+}

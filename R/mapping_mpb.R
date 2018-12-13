@@ -5,11 +5,7 @@ library(maptools)
 library(sp)
 library(rgdal)
 library(animation)
-# library(parallel)
-# library(doParallel)
-# library(foreach)
-# registerDoParallel(cores=28)
-
+library(Scale)
 
 shapepath <- "/gpfs/projects/gavingrp/dongmeic/beetle/shapefiles"
 csvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/csvfiles/"
@@ -81,6 +77,7 @@ shade_colnum <- shade_clr[shade_int]
 
 btl_csvfile <- "na10km_presence_details_all.csv"
 csvin_btl <- read.csv(paste0(csvpath, btl_csvfile))
+csvin_btl$expand <- csvin_btl$allyears - csvin_btl$prs_1997
 head(csvin_btl)
 
 # foreach(yr=1997:2016) %dopar% {
@@ -182,14 +179,16 @@ plot(lrglakes_shp, lwd=0.2, bor="black", col="lightblue", add=TRUE)
 plot(na_shp, add=TRUE)
 #plot(coast_shp, lwd=0.3, add=TRUE)
 plot(corehost,bord=rgb(0,0.6,0,1), add=TRUE)
-df <- csvin_btl[,c("x","y","allyears")]
+df <- csvin_btl[,c("x","y","expand","prs_1997")]
 coordinates(df) <- c("x","y")
 points2grid(df)
 btl_pixels <- as(df, "SpatialPixelsDataFrame")
-points(btl_pixels[btl_pixels$allyears==1,], pch=19, cex=0.1, col=rgb(0.8,0,0,0.2))
+points(btl_pixels[btl_pixels$expand==1,], pch=19, cex=0.1, col=alpha("#fc8d62",0.2))
+points(btl_pixels[btl_pixels$prs_1997==1,], pch=19, cex=0.1, col=rgb(0.8,0,0,0.2))
 plot(bb_shp, add=TRUE)
-legend(-5000000, -2200000, bty="n", pch=0, cex=1.2, legend="Study area")
-legend(-5000000, -2600000, bty="n", pch=15, col="lightblue", cex=1.2, legend="Large lakes")
-legend(-5000000, -3000000, bty="n", pch=15, col=rgb(0.8,0,0,0.8), cex=1.2, legend="MPB outbreak range")
-legend(-5000000, -3400000, bty="n", pch=0, col=rgb(0,0.6,0,1), cex=1.2, legend="Core host range")
+legend(-5500000, -1800000, bty="n", pch=0, cex=1.2, legend="Study area")
+legend(-5500000, -2200000, bty="n", pch=15, col="lightblue", cex=1.2, legend="Large lakes")
+legend(-5500000, -2600000, bty="n", pch=15, col=rgb(0.8,0,0,0.8), cex=1.2, legend="MPB outbreak range in 1997")
+legend(-5500000, -3000000, bty="n", pch=15, col=alpha("#fc8d62",0.8), cex=1.2, legend="MPB range expansion after 1997")
+legend(-5500000, -3400000, bty="n", pch=0, col=rgb(0,0.6,0,1), cex=1.2, legend="Core host range")
 dev.off()
