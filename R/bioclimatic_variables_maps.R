@@ -98,7 +98,7 @@ pos <- cbind(c(1,1),c(2,1),c(3,1),c(4,1),c(5,1),
 
 for (i in 1:length(vargrp)){
   var_4d <- get.data(vargrp[i])
-  png(paste0("bioclimatic_maps_",vargrp[i],".png"), width=8, height=10, units="in", res=300)
+  png(paste0("bioclimatic_maps_",vargrp[i],".png"), width=12, height=12, units="in", res=300)
   plot.new()
   par(mfrow=c(5,4), xpd=FALSE, mar=rep(0.5,4))
   yr = 1
@@ -107,13 +107,13 @@ for (i in 1:length(vargrp)){
 		p <- levelplot(var_4d_slice ~ x * y, data=grid, at=cutpts[,i], cuts=11, pretty=T, 
 			col.regions=rev(brewer.pal(10,"RdBu")),xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
 			par.settings = list(axis.line = list(col = "transparent")), aspect="iso", 
-			scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr]), cex=1.5),
+			scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr])),
 			xlab="",ylab="")
 	}else{
 		p <- levelplot(var_4d_slice ~ x * y, data=grid, at=cutpts[,i], cuts=11, pretty=T, 
 			col.regions=brewer.pal(10,"RdYlGn"),xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
 			par.settings = list(axis.line = list(col = "transparent")), aspect="iso", 
-			scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr]), cex=1.5),
+			scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr])),
 			xlab="",ylab="")
 	}
 	p <- p + latticeExtra::layer(sp.polygons(canada.prov, lwd=0.8, col='dimgray', alpha=0.3))
@@ -136,13 +136,13 @@ for (i in 1:length(vargrp)){
 		 p <- levelplot(var_4d_slice ~ x * y, data=grid, at=cutpts[,i], cuts=11, pretty=T, 
 			  col.regions=rev(brewer.pal(10,"RdBu")),xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
 			  par.settings = list(axis.line = list(col = "transparent")), aspect="iso", 
-			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr]), cex=1.5),
+			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr])),
 			  xlab="",ylab="")
 	  }else{
 		 p <- levelplot(var_4d_slice ~ x * y, data=grid, at=cutpts[,i], cuts=11, pretty=T, 
 			  col.regions=brewer.pal(10,"RdYlGn"),xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
 			  par.settings = list(axis.line = list(col = "transparent")), aspect="iso", 
-			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr]), cex=1.5),
+			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr])),
 			  xlab="",ylab="")
 	  }
 	  p <- p + latticeExtra::layer(sp.polygons(canada.prov, lwd=0.8, col='dimgray', alpha=0.3))
