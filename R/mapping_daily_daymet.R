@@ -112,25 +112,25 @@ for(var in varnms){
   if(var=="Lcs" | var =="Ecs"){
 		p <- levelplot(var_3d_slice ~ x * y, data=grid, xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
 					par.settings = list(axis.line = list(col = "transparent")), col.regions=myColors,
-					scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.2),
+					scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr])),
 					xlab="", ylab="", colorkey = FALSE, aspect="iso")
 	}else if(var == "Ncs"){
 		p <- levelplot(var_3d_slice ~ x * y, data=grid, xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
 			par.settings = list(axis.line = list(col = "transparent")), col.regions=myColors2,
-			scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.2),
-			xlab="",ylab="", colorkey = FALSE, aspect="iso")
+			scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr])),
+			xlab="", ylab="", colorkey = FALSE, aspect="iso")
 	}else if(var %in% c("Acs", drops, mindays)){
 		p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=10, pretty=T, 
 			col.regions=brewer.pal(9,"GnBu"), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
 			par.settings = list(axis.line = list(col = "transparent")),colorkey = TRUE,
-			scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.0),
-			xlab="",ylab="", aspect="iso")
+			scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr])),
+			xlab="", ylab="", aspect="iso")
 	}else{
 		p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=10, pretty=T, 
 			col.regions=rev(brewer.pal(9,"GnBu")), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
 			par.settings = list(axis.line = list(col = "transparent")),colorkey = TRUE,
-			scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.2),
-			xlab="",ylab="", aspect="iso")
+			scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr])),
+			xlab="", ylab="", aspect="iso")
 	}
 	p <- p + latticeExtra::layer(sp.polygons(canada.prov, lwd=0.8, col='dimgray', alpha=0.3))
 	p <- p + latticeExtra::layer(sp.polygons(us.states, lwd=0.8, col='dimgray', alpha=0.3))
@@ -147,25 +147,25 @@ for(var in varnms){
 	  if(var=="Lcs" | var =="Ecs"){
 		  p <- levelplot(var_3d_slice ~ x * y, data=grid, xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
 			  par.settings = list(axis.line = list(col = "transparent")), col.regions=myColors,
-			  scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.2),
-			  xlab="",ylab="", colorkey = FALSE, aspect="iso")
+			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr])),
+			  xlab="", ylab="", colorkey = FALSE, aspect="iso")
 		}else if(var == "Ncs"){
 			p <- levelplot(var_3d_slice ~ x * y, data=grid, xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
 			  par.settings = list(axis.line = list(col = "transparent")), col.regions=myColors2,
-			  scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.2),
-			  xlab="",ylab="", colorkey = FALSE, aspect="iso")
+			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr])),
+			  xlab="", ylab="", colorkey = FALSE, aspect="iso")
 		}else if(var %in% c("Acs", drops, mindays)){
 			p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=10, pretty=T, 
 				col.regions=brewer.pal(9,"GnBu"), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
 				par.settings = list(axis.line = list(col = "transparent")), colorkey = TRUE,
-				scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.0),
-				xlab="",ylab="", aspect="iso")
+				scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr])),
+				xlab="", ylab="", aspect="iso")
 	  }else{
 	    p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=10, pretty=T, 
 			  col.regions=rev(brewer.pal(9,"GnBu")), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
 			  par.settings = list(axis.line = list(col = "transparent")), colorkey = TRUE,
-			  scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.2),
-			  xlab="",ylab="", aspect="iso")
+			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr])),
+			  xlab="", ylab="", aspect="iso")
 	  }
 	  p <- p + latticeExtra::layer(sp.polygons(canada.prov, lwd=0.8, col='dimgray', alpha=0.3))
 	  p <- p + latticeExtra::layer(sp.polygons(us.states, lwd=0.8, col='dimgray', alpha=0.3))
@@ -191,7 +191,7 @@ if(0){
 	p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=10, pretty=T, 
 					col.regions=brewer.pal(9,"GnBu"), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
 					par.settings = list(axis.line = list(col = "transparent")), colorkey=list(space="bottom", height=2, width=2),
-					scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.0),
+					scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr])),
 					xlab="",ylab="", aspect="iso")
 	print(p)
 	dev.off()
@@ -204,24 +204,24 @@ if(0){
 #     if(var=="Lcs" | var =="Ecs"){
 # 		  p <- levelplot(var_3d_slice ~ x * y, data=grid, xlim=c(-2050000,20000), ylim=c(-2000000,1600000), 
 # 			  par.settings = list(axis.line = list(col = "transparent")), col.regions=myColors,
-# 			  scales = list(draw = FALSE), margin=F, main=list(label=yr, cex=1.5),
+# 			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr]), cex=1.5),
 # 			  xlab="",ylab="", colorkey = FALSE, key=myKey, aspect="iso")
 # 		}else if(var == "Ncs"){
 # 			p <- levelplot(var_3d_slice ~ x * y, data=grid, xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
 # 			  par.settings = list(axis.line = list(col = "transparent")), col.regions=myColors2,
-# 			  scales = list(draw = FALSE), margin=F, main=list(label=yr, cex=1.5),
+# 			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr]), cex=1.5),
 # 			  xlab="",ylab="", colorkey = FALSE, key=myKey2, aspect="iso")
 # 		}else if(var %in% c("Acs", drops, mindays)){
 # 			p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=10, pretty=T, 
 # 			  col.regions=brewer.pal(9,"GnBu"), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
 # 			  par.settings = list(axis.line = list(col = "transparent")), colorkey = TRUE,
-# 			  scales = list(draw = FALSE), margin=F, main=list(label=yr, cex=1.5),
+# 			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr]), cex=1.5),
 # 			  xlab="",ylab="", aspect="iso")
 # 	  }else{
 # 	    p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=10, pretty=T, 
 # 			  col.regions=rev(brewer.pal(9,"GnBu")), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
 # 			  par.settings = list(axis.line = list(col = "transparent")), colorkey = TRUE,
-# 			  scales = list(draw = FALSE), margin=F, main=list(label=yr, cex=1.5),
+# 			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[yr]), cex=1.5),
 # 			  xlab="",ylab="", aspect="iso")
 # 	 }
 #     p <- p + latticeExtra::layer(sp.polygons(canada.prov, lwd=0.8, col='dimgray', alpha=0.3))
