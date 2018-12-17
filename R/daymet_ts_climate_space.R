@@ -47,11 +47,12 @@ ts_cs_plot <- function(var1, var2){
 		#p <- p + scale_fill_gradient(low="lightgray", high="darkred", limits = c(0, 1))
 		p <- p + scale_fill_gradient(low=rgb(0.8,0.8,0.8,0.8), high=rgb(0.5,0,0,0.8), limits = c(0, 1))
 		p <- p + xlim(min(bioClim.ss[,var1]), max(bioClim.ss[,var1])) + ylim(min(bioClim.ss[,var2]), max(bioClim.ss[,var2]))
-		if(i == 1){
-			p <- p + labs(x=var1, y=var2, title =yr)
-		}else{
-			p <- p + labs(x="", y="", title =yr)
-		}		
+# 		if(i == 1){
+# 			p <- p + labs(x=var1, y=var2, title =yr)
+# 		}else{
+# 			p <- p + labs(x="", y="", title =yr)
+# 		}		
+		p <- p + labs(x=var1, y=var2, title =yr)
 		print(p, vp = vplayout(n2[i], n1[i]))
 	}
 	dev.off()
@@ -62,7 +63,7 @@ foreach(j=1:length(vargrp1))%dopar%{
   print(paste("The time-series climate space with variables", vargrp1[j], "and", vargrp2[j], "is done!"))  
 }
 
-#ts_cs_plot("Tvar", "summerP2")
+ts_cs_plot("Tvar", "summerP2")
 
 save.image(file="/gpfs/projects/gavingrp/dongmeic/beetle/output/RData/climate_space.RData")
 print("all done")
