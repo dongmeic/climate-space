@@ -89,10 +89,10 @@ get.data <- function(var){
 
 btlprs <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/beetle_presence.csv")
 
-myColors <- c('dimgrey', 'blue')
+myColors <- c('white', 'lightblue')
 myKey <- list(text=list(lab=c("0","1"), cex=c(1.2,1.2)), 
               rectangles=list(col = myColors), space="inside", width = 0.5, columns=1)
-myColors2 <- c('dimgrey', 'blue', 'darkblue')
+myColors2 <- c('white', 'lightblue', 'blue')
 myKey2 <- list(text=list(lab=c("0","1","2"), cex=c(1.2,1.2)), 
               rectangles=list(col = myColors2), space="inside", width = 0.5, columns=1)
 
@@ -140,7 +140,7 @@ for(var in varnms){
 	points2grid(df)
 	btl_pixels <- as(df, "SpatialPixelsDataFrame")
 	names(btl_pixels) <- "btlprs"
-	p <- p + latticeExtra::layer(sp.points(btl_pixels[btl_pixels$btlprs==1,], pch=19, cex=0.05, col='#d95f02', alpha=0.4))
+	p <- p + latticeExtra::layer(sp.points(btl_pixels[btl_pixels$btlprs==1,], pch=19, cex=0.05, col='#e41a1c', alpha=0.4))
   print(p,split=c(pos[,yr][1], pos[,yr][2], 5, 4))
   for(yr in 2:20){
 	  var_3d_slice <- var_3d[,,yr]
@@ -175,7 +175,7 @@ for(var in varnms){
     points2grid(df)
     btl_pixels <- as(df, "SpatialPixelsDataFrame")
     names(btl_pixels) <- "btlprs"
-    p <- p + latticeExtra::layer(sp.points(btl_pixels[btl_pixels$btlprs==1,], pch=19, cex=0.05, col='#d95f02', alpha=0.4))
+    p <- p + latticeExtra::layer(sp.points(btl_pixels[btl_pixels$btlprs==1,], pch=19, cex=0.05, col='#e41a1c', alpha=0.4))
     print(p,split=c(pos[,yr][1], pos[,yr][2], 5, 4), newpage=FALSE) 
   }
   dev.off()
@@ -214,13 +214,13 @@ for(var in varnms){
 		}else if(var %in% c("Acs", drops, mindays)){
 			p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=10, pretty=T, 
 			  col.regions=brewer.pal(9,"GnBu"), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
-			  par.settings = list(axis.line = list(col = "transparent")), 
+			  par.settings = list(axis.line = list(col = "transparent")), colorkey = TRUE,
 			  scales = list(draw = FALSE), margin=F, main=list(label=yr, cex=1.5),
 			  xlab="",ylab="", aspect="iso")
 	  }else{
 	    p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=10, pretty=T, 
 			  col.regions=rev(brewer.pal(9,"GnBu")), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
-			  par.settings = list(axis.line = list(col = "transparent")), 
+			  par.settings = list(axis.line = list(col = "transparent")), colorkey = TRUE,
 			  scales = list(draw = FALSE), margin=F, main=list(label=yr, cex=1.5),
 			  xlab="",ylab="", aspect="iso")
 	 }
@@ -232,7 +232,7 @@ for(var in varnms){
     points2grid(df)
     btl_pixels <- as(df, "SpatialPixelsDataFrame")
     names(btl_pixels) <- "btlprs"
-    p <- p + latticeExtra::layer(sp.points(btl_pixels[btl_pixels$btlprs==1,], pch=19, cex=0.05, col='#d95f02', alpha=0.4))
+    p <- p + latticeExtra::layer(sp.points(btl_pixels[btl_pixels$btlprs==1,], pch=19, cex=0.05, col='#e41a1c', alpha=0.4))
     png(paste0("daymet_map_",var,"_",yr,".png"), width=6, height=8, units="in", res=300)
     print(p)
     dev.off()
