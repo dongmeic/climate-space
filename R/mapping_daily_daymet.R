@@ -89,10 +89,10 @@ get.data <- function(var){
 
 btlprs <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/beetle_presence.csv")
 
-myColors <- c('grey', 'red')
+myColors <- c('dimgrey', 'blue')
 myKey <- list(text=list(lab=c("0","1"), cex=c(1.2,1.2)), 
               rectangles=list(col = myColors), space="inside", width = 0.5, columns=1)
-myColors2 <- c('grey', 'red', 'darkred')
+myColors2 <- c('dimgrey', 'blue', 'darkblue')
 myKey2 <- list(text=list(lab=c("0","1","2"), cex=c(1.2,1.2)), 
               rectangles=list(col = myColors2), space="inside", width = 0.5, columns=1)
 
@@ -113,22 +113,22 @@ for(var in varnms){
 		p <- levelplot(var_3d_slice ~ x * y, data=grid, xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
 					par.settings = list(axis.line = list(col = "transparent")), col.regions=myColors,
 					scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.2),
-					xlab="", ylab="", colorkey = FALSE, aspect="iso")
+					xlab="", ylab="", colorkey = FALSE, key=myKey, aspect="iso")
 	}else if(var == "Ncs"){
 		p <- levelplot(var_3d_slice ~ x * y, data=grid, xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
 			par.settings = list(axis.line = list(col = "transparent")), col.regions=myColors2,
 			scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.2),
-			xlab="",ylab="", colorkey = FALSE, aspect="iso")
+			xlab="",ylab="", colorkey = FALSE, key=myKey, aspect="iso")
 	}else if(var %in% c("Acs", drops, mindays)){
 		p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=10, pretty=T, 
 			col.regions=brewer.pal(9,"GnBu"), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
-			par.settings = list(axis.line = list(col = "transparent")),colorkey = FALSE,
+			par.settings = list(axis.line = list(col = "transparent")),colorkey = TRUE,
 			scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.0),
 			xlab="",ylab="", aspect="iso")
 	}else{
 		p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=10, pretty=T, 
 			col.regions=rev(brewer.pal(9,"GnBu")), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
-			par.settings = list(axis.line = list(col = "transparent")),colorkey = FALSE,
+			par.settings = list(axis.line = list(col = "transparent")),colorkey = TRUE,
 			scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.2),
 			xlab="",ylab="", aspect="iso")
 	}
@@ -148,22 +148,22 @@ for(var in varnms){
 		  p <- levelplot(var_3d_slice ~ x * y, data=grid, xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
 			  par.settings = list(axis.line = list(col = "transparent")), col.regions=myColors,
 			  scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.2),
-			  xlab="",ylab="", colorkey = FALSE, aspect="iso")
+			  xlab="",ylab="", colorkey = FALSE, key=myKey, aspect="iso")
 		}else if(var == "Ncs"){
 			p <- levelplot(var_3d_slice ~ x * y, data=grid, xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
 			  par.settings = list(axis.line = list(col = "transparent")), col.regions=myColors2,
 			  scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.2),
-			  xlab="",ylab="", colorkey = FALSE, aspect="iso")
+			  xlab="",ylab="", colorkey = FALSE, key=myKey, aspect="iso")
 		}else if(var %in% c("Acs", drops, mindays)){
 			p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=10, pretty=T, 
 				col.regions=brewer.pal(9,"GnBu"), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
-				par.settings = list(axis.line = list(col = "transparent")), colorkey = FALSE,
+				par.settings = list(axis.line = list(col = "transparent")), colorkey = TRUE,
 				scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.0),
 				xlab="",ylab="", aspect="iso")
 	  }else{
 	    p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=10, pretty=T, 
 			  col.regions=rev(brewer.pal(9,"GnBu")), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
-			  par.settings = list(axis.line = list(col = "transparent")), colorkey = FALSE,
+			  par.settings = list(axis.line = list(col = "transparent")), colorkey = TRUE,
 			  scales = list(draw = FALSE), margin=F, main=list(label=years[yr], cex=1.2),
 			  xlab="",ylab="", aspect="iso")
 	  }
