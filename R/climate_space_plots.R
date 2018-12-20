@@ -1,22 +1,30 @@
 # Created by Dongmei Chen
 
-csvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
-csvfile <- "bioclimatic_values_1996_2015_r.csv" # from PCA_bioclimatic_variables.R
-ndf <- read.csv(paste0(csvpath,csvfile))
+#csvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
+#csvfile <- "bioclimatic_values_1996_2015_r.csv" # from PCA_bioclimatic_variables.R
+#ndf <- read.csv(paste0(csvpath,csvfile))
+source("/gpfs/projects/gavingrp/dongmeic/climate-space/R/combine_CRU_Daymet.R")
+ndf <- get_data()
+ndf <- ndf[complete.cases(ndf),]
+ndf$hosts <- ifelse(ndf$beetles==1 & ndf$hosts==0, 1, ndf$hosts)
 out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/plots"
 setwd(out)
 
-# vargrp.t <- c("Tmin", "MarTmin", "TOctSep", "Tmean", "fallTmean", "OctTmin", "winterTmin",
-#               "JanTmin", "ddAugJun", "ddAugJul", "TMarAug", "summerTmean")
-# 
-# vargrp.p <- c("AugTmean", "AugTmax", "Tvar", "PMarAug", "PcumOctSep", "PPT", "Pmean",
-#               "POctSep", "summerP2", "GSP", "summerP0", "summerP1")
+vargrp1 <- c("OctTmin", "JanTmin", "MarTmin", "Tmin", "OctMin", "JanMin", "MarMin",  
+							"winterMin", "AugMaxT", "maxT", "TMarAug", "summerTmean", 
+							"AugTmean", "fallTmean", "TOctSep", "Tmean", "ddAugJul", "ddAugJun")
 
-vars1 <- c("ddAugJul", "AugTmax", "winterTmin", "summerP1")
-vars2 <- c("GSP", "summerP0", "PPT", "Tvar")
-vargrp <- c("ddAugJul", "AugTmax", "winterTmin", "summerP0", "PPT", "GSP", "summerP1", "Tvar")
+vargrp2 <- c("summerP0", "summerP1", "summerP2", "AugTmax", "PcumOctSep", "max.drop", "PPT",
+						  "cv.gsp", "Tvar", "minT", "PMarAug", "mi",  "cwd", "pt.coef",
+							 "POctSep", "Pmean", "wd", "OptTsum")
+							 
+vargrp <- c("OctTmin", "JanTmin", "MarTmin", "Tmin", "OctMin", "JanMin", "MarMin",  
+							"winterMin", "minT", "Acs", "drop5", "max.drop", "maxAugT", "AugMaxT", "AugTmax", "maxT", 
+							"TMarAug", "OptTsum", "summerTmean", "AugTmean", "fallTmean", "TOctSep", "Tmean", "ddAugJul", 
+							"ddAugJun", "Tvar", "PMarAug", "summerP0", "summerP1", "summerP2", "POctSep",
+						  "PcumOctSep", "Pmean", "PPT", "cv.gsp", "mi", "pt.coef", "vpd", "cwd", "wd")
 
-cols <- c("grey70", "#1b9e77", "#7570b3")
+cols <- c("#A9A9A9", "#1b9e77", "#d95f02")
 
 # density plot
 density.plot <- function(i){
@@ -27,7 +35,7 @@ density.plot <- function(i){
   plot(p3,col=cols[3], main=vargrp[i], xlab="", ylab="", cex.main=2, cex.lab=1.5, cex.axis=1.5, lwd=4, ylim=r)
   lines(p2,col=cols[2], lwd=4)
   lines(p1,col=cols[1], lwd=4)
-  polygon(p3, col="#7570B37D", border=cols[3])
+  polygon(p3, col="#d95f027D", border=cols[3])
   print(paste(vargrp[i], "is done!"))
 }
 
@@ -48,12 +56,12 @@ for(i in 1:length(vargrp)){
   print(paste(vargrp[i], "is done!"))
 }
 
-png("bioclim_density_plots.png", width=12, height=6, units="in", res=300)
-par(mfrow=c(2,4),mar=c(3.5,3.5,3,1))
+png("bioclim_density_plots.png", width=15, height=24, units="in", res=300)
+par(mfrow=c(8,5),mar=c(3.5,3.5,3,1))
 for (i in 1:length(vargrp)){
   density.plot(i)
-  if(i==1){
-    legend('topright', lty=1, lwd=4, col=cols, legend=c("Continent", "Hosts", "Beetles"), cex = 1.5, bty='n')
+  if(i==40){
+    legend('topright', lty=1, lwd=4, col=cols, legend=c("Continent", "Host", "MPB"), cex = 1.5, bty='n')
   }
 }
 #plot(0,type='n',axes=FALSE,ann=FALSE)

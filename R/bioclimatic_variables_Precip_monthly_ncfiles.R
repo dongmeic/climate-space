@@ -72,17 +72,6 @@ crs_CRS.PROJ.4 <- ncatt_get(ncin, "lambert_azimuthal_equal_area", "CRS.PROJ.4")$
 nc_close(ncin)
 pre[pre==fillvalue$value] <- NA
 
-# make a missing data mask
-print("make a landmask...")
-landmask <- array(1, dim=c(nx,ny))
-# # use last month of data to set data flag
-for (j in 1:nx) {
-  for (k in 1:ny) {
-    if (is.na(pre[j,k,1,1])) landmask[j,k]=NA
-  }
-  #print(j);print(k)
-}
-
 start_year = 1901; end_year = 2016; first_year = 1996; last_year = 2015
 years = first_year:last_year; nyr <- length(years)
 # get long-term means
@@ -704,7 +693,7 @@ foreach(i=1:length(dnames)) %dopar%{
 }
 proc.time() - ptm
 
-# write 3d data in a loop
+# write 3d data for PPT
 dnames <- "PPT"
 dlongnames <- "Cumulative monthly October-August precipitation in current and previous 5 years"
 dunits <- "mm"

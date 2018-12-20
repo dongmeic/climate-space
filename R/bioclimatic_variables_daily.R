@@ -11,7 +11,7 @@ if(0){
 source("/gpfs/projects/gavingrp/dongmeic/climate-space/R/getDailyStatsfromMonthly.R")
 inpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
 setwd(inpath)
-start_year <- 1983; end_year <- 1995; years <- start_year:end_year; nt <- length(years)
+start_year <- 1948; end_year <- 1957; years <- start_year:end_year; nt <- length(years)
 
 print("calculating the biocliamtic variables using daily data")
 dim1 <- 277910; dim2 <- nt

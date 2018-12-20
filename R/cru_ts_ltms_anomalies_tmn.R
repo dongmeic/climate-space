@@ -182,7 +182,6 @@ for (j in 1:nlon) {
   }
 }
 
-
 # quick maps to check anomalies
 n <- 1380
 var_slice_3d <- var3d[,,n]

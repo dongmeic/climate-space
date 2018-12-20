@@ -98,7 +98,7 @@ class Splash:
         self.pet = 0.     # daily potential ET, mm
         self.aet = 0.     # daily actual ET, mm
         self.wn_vec = numpy.array([])  # daily soil moisture array
-        self.aet_vec = numpy.array([]) 
+        #self.aet_vec = numpy.array([]) 
 
     def spin_up(self, d):
         """
@@ -116,7 +116,7 @@ class Splash:
             n = d.num_lines[0]
             if (numpy.array(d.num_lines) == n).all():
                 wn_vec = numpy.zeros((n,))
-                self.aet_vec = numpy.zeros((n,))
+                #self.aet_vec = numpy.zeros((n,))
             else:
                 self.logger.error(
                     "Inconsistent number of lines read from Data class!")
@@ -125,7 +125,7 @@ class Splash:
         else:
             n = d.num_lines
             wn_vec = numpy.zeros((n,))
-            aet_vec = numpy.zeros((n,))
+            #aet_vec = numpy.zeros((n,))
             self.logger.info("Created soil moisture array of length %d"
                              % len(wn_vec))
 
@@ -140,14 +140,12 @@ class Splash:
 
             # Calculate soil moisture and runoff:
             sm, ro, aet = self.quick_run(n=i + 1,
-                                    y=d.year,
-                                    wn=wn,
-                                    sf=d.sf_vec[i],
-                                    tc=d.tair_vec[i],
-                                    pn=d.pn_vec[i])
+                                         y=d.year,
+                                         wn=wn,
+                                         sf=d.sf_vec[i],
+                                         tc=d.tair_vec[i],
+                                         pn=d.pn_vec[i])
             wn_vec[i] = sm
-            #aet_vec[i] = aet
-            #print('1:', aet)
         self.logger.info("completed first year")
 
         # 3. Calculate change in starting soil moisture--------------------
@@ -179,8 +177,7 @@ class Splash:
                                              tc=d.tair_vec[i],
                                              pn=d.pn_vec[i])
                 wn_vec[i] = sm
-                aet_vec[i] = aet
-                #print(' 2:', aet) 
+                #aet_vec[i] = aet
             start_sm = wn_vec[0]
             end_sm, ro, aet = self.quick_run(n=1,
                                              y=d.year,
@@ -193,7 +190,7 @@ class Splash:
             spin_count += 1
         self.logger.info("equilibrated after %d iterations" % spin_count)
         self.wn_vec = wn_vec
-        self.aet_vec = aet_vec
+        #self.aet_vec = aet_vec
         self.wn = wn_vec[-1]
 
     def quick_run(self, n, y, wn, sf, tc, pn):
@@ -337,6 +334,16 @@ class Splash:
         print("  Wn: %0.6f mm" % (self.wn))
         print("  RO: %0.6f mm" % (self.ro))
 
+    def get_vals(self, vals=('eet', 'pet', 'aet', 'wn')):
+        val_options = {'pn': self.precip,
+                       'cn': self.cond,
+                       'eet': self.eet,
+                       'pet': self.pet,
+                       'aet': self.aet,
+                       'wn': self.wn,
+                       'ro': self.ro}
+        return [str(val_options[val]) for val in vals]
+
     def print_daily_sm(self):
         """
         Name:     SPLASH.print_daily_sm
@@ -348,10 +355,6 @@ class Splash:
         for i in range(len(self.wn_vec)):
             print("%d,%0.6f" % (i, self.wn_vec[i]))
 
-    def print_daily_aet(self):
-        print('Day,Actual ET (mm)')
-        for i in range(len(self.aet_vec)):
-            print('%d,%0.6f' % (i, self.aet_vec[i]))
 
 
 def main():
