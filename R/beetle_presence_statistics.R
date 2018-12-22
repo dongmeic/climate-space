@@ -3,7 +3,8 @@
 
 library(ncdf4)
 csvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
-btlprs <- read.csv(paste0(csvpath, "beetle_presence.csv"))
+#btlprs <- read.csv(paste0(csvpath, "beetle_presence.csv"))
+btlprs <- read.csv(paste0(csvpath, "beetle_presence_updated.csv"))
 btlprs$key <- seq(1,dim(btlprs)[1])
 target_columns <- colnames(btlprs[,grepl("prs_", colnames(btlprs))])
 btlprs$sumprs <- rowSums(btlprs[,target_columns])
