@@ -130,8 +130,8 @@ summary(abs.df.ss$ngbyrs[!is.na(abs.df.ss$ngbyrs)])
 ptm <- proc.time()
 t=0
 for(i in 1:length(abs.df.ss$key)){
-  print(paste("the original value is", df$ngbyrs[which(df$key == abs.df.ss$key[i])],
-  "and the replacement is", abs.df.ss$ngbyrs[i]))
+  #print(paste("the original value is", df$ngbyrs[which(df$key == abs.df.ss$key[i])],
+  #"and the replacement is", abs.df.ss$ngbyrs[i]))
   if (is.na(df$ngbyrs[which(df$key == abs.df.ss$key[i])]) && is.na(abs.df.ss$ngbyrs[i])){
   	#print("keeping NA value")
   	t=t+0

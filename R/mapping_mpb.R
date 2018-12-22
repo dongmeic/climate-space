@@ -75,7 +75,8 @@ shade_colnum <- shade_clr[shade_int]
 # plot(bb_shp, add=TRUE)
 # dev.off()
 
-btl_csvfile <- "na10km_presence_details_all.csv"
+#btl_csvfile <- "na10km_presence_details_all.csv"
+btl_csvfile <- "beetle_presence_updated.csv"
 csvin_btl <- read.csv(paste0(csvpath, btl_csvfile))
 csvin_btl$expand <- csvin_btl$allyears - csvin_btl$prs_1997
 head(csvin_btl)
