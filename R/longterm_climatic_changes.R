@@ -28,7 +28,7 @@ override.linetype <- c("dashed", "longdash", "solid")
 get.df <- function(vars){
 	df.v <- data.frame()
 	for (i in 1:length(vars)){
-		indata <- read.csv(paste0(inpath,vars[i],"_",startyrs[i],"_1.csv"))
+		indata <- read.csv(paste0(inpath,vars[i],"_",startyrs[i],"_1.csv")) # time_series_boxplot.R
 		# from time_series_boxplot.R; 1- the whole beetle affected area in all years
 		df <- aggregate(indata$var, by=list(prs=indata$prs, yrs=indata$yrs), FUN=mean)
 		df.s <- subset(df, prs == "mpb"); df.s$var <- rep(vars[i], dim(df.s)[1])
@@ -38,7 +38,7 @@ get.df <- function(vars){
 	df.v[,-1]	
 }
 df <- get.df(vars)
-#write.csv(df, "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/longterm_bioclim_mean.csv", row.names=FALSE)
+write.csv(df, "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/longterm_bioclim_mean.csv", row.names=FALSE)
 #df <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/longterm_bioclim_mean.csv")
 
 g <- function(i){

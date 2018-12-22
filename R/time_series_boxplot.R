@@ -16,16 +16,18 @@ setwd(out)
 
 # read vegetation and bettle presence data
 prs_path <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/prs/"
-vgt_ncfile <- "na10km_v2_presence_pines.nc"
+#vgt_ncfile <- "na10km_v2_presence_pines.nc"
+vgt_ncfile <- "na10km_v2_presence_2d.nc"
 ncin_vgt <- nc_open(paste(prs_path,vgt_ncfile,sep=""))
 print(ncin_vgt)
 vgt.nc <- ncvar_get(ncin_vgt,"navgtprs")
 btl.all <- ncvar_get(ncin_vgt, "nabtlprsayr")
-btl_ncfile <- "na10km_v2_mpb_presence.nc"
+#btl_ncfile <- "na10km_v2_mpb_presence.nc"
+btl_ncfile <- "na10km_v2_mpb_presence_fishnet.nc"
 ncin_btl <- nc_open(paste(prs_path,btl_ncfile, sep=""))
 print(ncin_btl)
 btl.nc <- ncvar_get(ncin_btl,"mpb_prs") # with all hosts
-mpb.nc <- ncvar_get(ncin_btl,"chosts_mpb_prs") # with all core hosts
+#mpb.nc <- ncvar_get(ncin_btl,"chosts_mpb_prs") # with all core hosts
 nc_close(ncin_btl)
 
 # start_year:1901
@@ -122,7 +124,6 @@ ptm <- proc.time()
 cols <- c("grey70", "#1b9e77", "#7570b3")
 foreach(i=1:length(varnms)) %dopar% {
 #for(i in 1:length(varnms)){
-for(i in 1:length(varnms)){
   #df <- get.dataframe(vargrp[i], startyrs[i])
   df <- read.csv(paste0(vargrp[i], "_", startyrs[i], "_1.csv"), stringsAsFactors = F)
   print(paste("plotting", vargrp[i]))
