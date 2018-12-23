@@ -22,6 +22,7 @@ indata.cc <- indata[complete.cases(indata),]
 indata.cc$prs <- indata.cc$beetles + indata.cc$hosts
 test <- indata.cc[sample(nrow(indata.cc), 500000),]
 write.csv(test, paste0(outpath, "bioclim_vars_na_r_test.csv"), row.names=FALSE)
+head(indata)
 df <- indata.cc[,-a:-(a-3)] # remove the last four columns
 #dat <- df[,!(names(df) %in% ignore)]
 pca <- prcomp(df, scale. = TRUE)
@@ -34,6 +35,7 @@ head(pca$rotation)
 write.csv(x = pca$rotation, file = paste0(outpath,"pca_loading.csv"))
 
 out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/plots/"
+pca <- princomp(df)
 png(paste0(out,"PCA_variable_selection.png"), width=12, height=9, units="in", res=300)
 par(mfrow=c(2, 2))
 par(mar=c(4, 4, 3, 3))

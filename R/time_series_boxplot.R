@@ -122,8 +122,8 @@ get.dataframe <- function(varnm,start_yr){
 ptm <- proc.time()
 #cols <- c("grey70", "#1b9e77", "#d95f02")
 cols <- c("grey70", "#1b9e77", "#7570b3")
-foreach(i=1:length(varnms)) %dopar% {
-#for(i in 1:length(varnms)){
+#foreach(i=1:length(varnms)) %dopar% {
+for(i in 1:length(varnms)){
   #df <- get.dataframe(vargrp[i], startyrs[i])
   df <- read.csv(paste0(vargrp[i], "_", startyrs[i], "_1.csv"), stringsAsFactors = F)
   print(paste("plotting", vargrp[i]))
