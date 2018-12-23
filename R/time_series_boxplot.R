@@ -36,12 +36,13 @@ vargrp.a <- c("JanTmin", "MarTmin", "TMarAug", "summerTmean",
 # start_year:1902
 vargrp.b <- c("OctTmin", "fallTmean", "winterTmin", "Tmin", "Tmean", "Tvar", "TOctSep", "summerP1", "summerP2", "Pmean")
 # start_year:1902, daily
-vargrp.e <- c("drop0", "drop5", "ddAugJul", "ddAugJun")
+#vargrp.e <- c("drop0", "drop5", "ddAugJul", "ddAugJun")
 # start_year:1903
 vargrp.c <- c("POctSep", "PcumOctSep")
 # start_year:1907
 vargrp.d <- c("PPT")
-vargrp <- c(vargrp.a, vargrp.b, vargrp.e, vargrp.c, vargrp.d)
+#vargrp <- c(vargrp.a, vargrp.b, vargrp.e, vargrp.c, vargrp.d)
+vargrp <- c(vargrp.c, vargrp.d)
 			
 varnms.a <- c("Minimum temperature in Jan",
 			  "Minimum temperature in Mar",
@@ -74,9 +75,11 @@ varnms.c <- c("Precipitation from Oct and Sep in previous year",
 
 varnms.d <- c("Cumulative monthly Oct-Aug precipitation")
 
-varnms <- c(varnms.a, varnms.b, varnms.e, varnms.c, varnms.d)
+#varnms <- c(varnms.a, varnms.b, varnms.e, varnms.c, varnms.d)
+varnms <- c(varnms.c, varnms.d)
 
-startyrs <- c(rep(1901,9), rep(1902,10), rep(1903, 2), 1907)
+#startyrs <- c(rep(1901,9), rep(1902,10), rep(1903, 2), 1907)
+startyrs <- c(rep(1903, 2), 1907)
 #startyrs <- rep(1902,4)
 
 get.data <- function(var, start_yr){

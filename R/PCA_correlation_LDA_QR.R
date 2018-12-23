@@ -77,12 +77,12 @@ proc.time() - ptm
 df.t <- cbind(df.t, indata.cc[,(a-2):a])
 write.csv(df.t, paste0(outpath, "bioclim_vars_both_na_1996_2015_t.csv"), row.names=FALSE)
 
-df.t <- read.csv(paste0(outpath, "bioclim_vars_both_na_1996_2015_t.csv"))
+#df.t <- read.csv(paste0(outpath, "bioclim_vars_both_na_1996_2015_t.csv"))
 dat <- df.t[,!(names(df.t) %in% ignore)]
 png(paste0(out, "histograms_trans_both.png"), width=16, height=10, units="in", res=300)
 par(mfrow=c(5,8))
-for(i in (1:37,39:41)){
-	plotNormalHistogram(dat[,i], main=colnames(dat)[i])
+for(i in names(dat)){
+	plotNormalHistogram(dat[,i], main=i)
 	print(i)
 }
 dev.off()
@@ -160,7 +160,7 @@ vars <- c("OctTmin", "JanTmin", "MarTmin", "Tvar", "summerTmean", "AugTmean", "A
 					"summerP0", "summerP2", "wd", "mi")
 df <- dt[,c(vars, "year")]
 
-indata <- get_data()				 
+#indata <- get_data()				 
 dt <- indata[indata$beetles==1,]
 peakyears <- 2006:2008
 nonpeakyears <- 1996:1998
@@ -184,7 +184,7 @@ for(i in 1:8){
 }
 dev.off()
 
-iters <- c(3000, 2000, 2000, 2000, 5000, 2000, 1000, 1000)
+iters <- c(2000, 2000, 2000, 2000, 2000, 2000, 1000, 1000)
 for(var in vars){
 	get.diff.matrix(dt, var, iters[which(vars==var)])
 	print(paste(which(vars==var), var, iters[which(vars==var)]))
