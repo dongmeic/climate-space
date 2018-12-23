@@ -13,7 +13,8 @@ library(animation)
 source("/gpfs/projects/gavingrp/dongmeic/climate-space/R/plotlist.R")
 years <- 1998:2016; nyr <- length(years)
 ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/prs/"
-ncfile <- "time_series_presence_statistics.nc"
+#ncfile <- "time_series_presence_statistics.nc"
+ncfile <- "time_series_alteration_statistics.nc"
 out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/maps/"
 setwd(out)
 

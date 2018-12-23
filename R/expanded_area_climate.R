@@ -23,7 +23,7 @@ sink(paste0(csvpath,"expanded_bioclm.txt"))
 summary(expanded.clm)
 sink()
 
-core <- which(btlstat$ngbyrs >= 100)
+core <- which(btlstat$ngbyrs >= 80)
 allrows <- c()
 for(i in 1:20){allrows <- c(allrows, core+(i-1)*d)}
 core.clm <- indata[allrows,]
