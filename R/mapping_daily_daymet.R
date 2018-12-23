@@ -87,7 +87,8 @@ get.data <- function(var){
   return(data)
 }
 
-btlprs <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/beetle_presence.csv")
+#btlprs <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/beetle_presence.csv")
+btlprs <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/beetle_presence_updated.csv")
 
 myColors <- c('white', 'lightblue')
 myKey <- list(text=list(lab=c("0","1"), cex=c(1.2,1.2)), 
