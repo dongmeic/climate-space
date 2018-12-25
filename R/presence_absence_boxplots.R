@@ -6,7 +6,6 @@ out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/plots/"
 setwd(out)
 indata <- get_data()
 indata$hosts <- ifelse(indata$beetles==1 & indata$hosts==0, 1, indata$hosts)
-indata$prs <- indata$hosts + indata$beetles
 
 vargrp <- c("OctTmin", "JanTmin", "MarTmin", "Tmin", "OctMin", "JanMin", "MarMin",  
 							"winterMin", "minT", "Acs", "drop5", "max.drop", "maxAugT", "AugMaxT", "AugTmax", "maxT", 

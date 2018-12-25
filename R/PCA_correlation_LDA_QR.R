@@ -216,8 +216,8 @@ for(var in vars){
 		d1[i] <- sum(dt[dt$peak==1,][,var]>833)/k1
 		d2[i] <- sum(dt[dt$peak==0,][,var]>833)/k2	
 	}else if(var %in% c("Acs", "Oct20", "Jan20", "Mar20", "winter20")){
-		d1[i] <- sum(dt[dt$peak==1,][,var]<=20)/k1
-		d2[i] <- sum(dt[dt$peak==0,][,var]<=20)/k2		
+		d1[i] <- sum(dt[dt$peak==1,][,var]<=4)/k1
+		d2[i] <- sum(dt[dt$peak==0,][,var]<=4)/k2		
 	}else if(var %in% c("OctMin", "JanMin", "MarMin", "winterMin")){	
 		d1[i] <- sum(dt[dt$peak==1,][,var]>-40)/k1
 		d2[i] <- sum(dt[dt$peak==0,][,var]>-40)/k2

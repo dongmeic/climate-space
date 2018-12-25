@@ -1,32 +1,15 @@
 # Run in an interactive mode
 
 inpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
+source("/gpfs/projects/gavingrp/dongmeic/climate-space/R/combine_CRU_Daymet.R")
+indata <- get_data()
+indata$hosts <- ifelse(indata$beetles==1 & indata$hosts==0, 1, indata$hosts)
 
-na10km_btl_df <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/beetle_presence.csv")
-head(na10km_btl_df)
-years <- 1996:2015
-
-ndf <- read.csv(paste0(inpath,"daily_climate/CRU/CRU_bioclim_var_",years[1],".csv")) # from bioclimatic_values_time_series_combined.R
-ndf <- cbind(ndf, na10km_btl_df[,c(paste0("prs_",(years[1]+1)),"vegetation")])
-b <- dim(ndf)[2]; a <- b - 1
-colnames(ndf)[a:b] <- c("beetles","hosts")
-
-for(i in 2:length(years)){
-  df <- read.csv(paste0(inpath,"daily_climate/CRU/CRU_bioclim_var_",years[i],".csv"))
-  df <- cbind(df,na10km_btl_df[,c(paste0("prs_",(years[i]+1)),"vegetation")])
-  colnames(df)[a:b] <- c("beetles","hosts")
-  ndf <- rbind(ndf,df)
-  print(paste(years[i], "done!"))
-}
-crubioclm <- cbind(ndf, year=unlist(lapply(1996:2015,function(i) rep(i,dim(ndf)[1]/length(1996:2015)))))
-#write.csv(crubioclm, paste0(inpath, "daily_bioclimatic_values_1996_2015_r.csv"), row.names=FALSE)
-
-#ndf <- read.csv(paste0(inpath, "daily_bioclimatic_values_1996_2015_r.csv"))
-
-vars <- c("ddAugJun", "ddAugJul", "winterTmin", "Acs", "Ecs", "Lcs", "min20", "min22", "min24", "min26", 
-					"min28", "min30", "min32", "min34", "min36", "min38", "min40", "maxAugT", "summerT40")
+vars <- c("ddAugJun", "ddAugJul", "Acs", "Ecs", "Lcs", "Ncs","Oct20", "Oct30", "Oct40", "OctMin",
+					"Jan20", "Jan30", "Jan40", "JanMin", "Mar20", "Mar30", "Mar40", "MarMin",
+					"winter20", "winter30", "winter40", "winterMin", "maxAugT", "OptTsum","summerT40")
 								
-ClimDaily <- crubioclm[crubioclm$beetles==1,]
+ClimDaily <- indata[indata$beetles==1,]
 btlClim <- ClimDaily[,vars]
 t <- dim(ClimDaily)[1]
 hist(btlClim$Ecs)
@@ -112,7 +95,7 @@ for(var in vars){
 	}else if(var=="ddAugJul"){
 		d1[i] <- sum(ClimDaily[,var]>833)/k		
 	}else if(var %in% c("Acs", "Oct20", "Jan20", "Mar20", "winter20")){
-		d1[i] <- sum(ClimDaily[,var]<=20)/k	
+		d1[i] <- sum(ClimDaily[,var]<=4)/k	
 	}else if(var %in% c("OctMin", "JanMin", "MarMin", "winterMin")){	
 		d1[i] <- sum(ClimDaily[,var]>-40)/k
 	}else if(var=="maxAugT"){
