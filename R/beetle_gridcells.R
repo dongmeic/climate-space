@@ -7,7 +7,7 @@ library(grid)
 library(reshape)
 
 prs_path <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/prs/"
-out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/climate_space/times_series/"
+out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
 
 vgt_ncfile <- "na10km_v2_presence_pines.nc"
 ncin_vgt <- nc_open(paste0(prs_path, vgt_ncfile))
@@ -39,3 +39,24 @@ ggplot(data = df2, aes(x = time, y = value, colour = variable)) + geom_line(size
   scale_colour_manual(name="Beetle", labels=c("All hosts", "Core hosts"), values = c("red","green"))+
   geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax),color="pink",alpha=0.2,inherit.aes = FALSE)
 dev.off()
+
+# update beetle grid cells
+btl_ncfile <- "na10km_v2_mpb_presence_fishnet.nc"
+ncin_btl <- nc_open(paste0(prs_path, btl_ncfile))
+btl <- ncvar_get(ncin_btl,"mpb_prs") # with all hosts
+nc_close(ncin_btl)
+years = 1997:2016; nyr <- length(years)
+df <- data.frame(time=years)
+btl.t <- vector()
+for (yr in 1:nyr){
+	btl_slice <- btl[,,yr]
+	btl.l <- length(btl_slice[which(btl_slice==1)])
+	btl.t <- c(btl.t, btl.l)
+	print(years[yr])
+}
+df <- cbind(df, btl.t)
+write.csv(df, paste0(out, "beetle_grids_update.csv"), row.names=FALSE)
+
+# time-series autocorrelation
+acf(df$btl.t)
+pacf(df$btl.t)
