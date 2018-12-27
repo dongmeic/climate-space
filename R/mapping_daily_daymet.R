@@ -55,7 +55,7 @@ Oct20=c(0,2,4,6,8,10,15,20,25,30),
 Oct30=c(0,2,4,6,8,10,15,18,23,28),
 Oct40=c(0,2,4,6,8,10,12,14,16,18),
 OctMin=c(-50,-25,-15,-10,-5,0,5,10,20,43),
-Jan20=c(0,2,4,6,8,10,15,20,25,30),
+Jan20=c(0,2,4,6,8,10,15,20,25,31),
 Jan30=c(0,2,4,6,8,10,15,20,25,30),
 Jan40=c(0,2,4,6,8,10,15,20,25,28),
 JanMin=c(-50,-25,-15,-10,-5,0,5,10,20,35),
@@ -198,51 +198,51 @@ if(0){
 	dev.off()
 }
 
-# for(var in varnms){
-#   var_3d <- get.data(var)
-#   for(yr in years){
-#     var_3d_slice <- var_3d[,,which(years==yr)]
-#     if(var=="Lcs" | var =="Ecs"){
-# 		  p <- levelplot(var_3d_slice ~ x * y, data=grid, xlim=c(-2050000,20000), ylim=c(-2000000,1600000), 
-# 			  par.settings = list(axis.line = list(col = "transparent")), col.regions=myColors,
-# 			  scales = list(draw = FALSE), margin=F, main=list(label=paste(var,years[yr]), cex=1.5),
-# 			  xlab="",ylab="", colorkey = FALSE, key=myKey, aspect="iso")
-# 		}else if(var == "Ncs"){
-# 			p <- levelplot(var_3d_slice ~ x * y, data=grid, xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
-# 			  par.settings = list(axis.line = list(col = "transparent")), col.regions=myColors2,
-# 			  scales = list(draw = FALSE), margin=F, main=list(label=paste(var,years[yr]), cex=1.5),
-# 			  xlab="",ylab="", colorkey = FALSE, key=myKey2, aspect="iso")
-# 		}else if(var %in% c("Acs", drops, mindays)){
-# 			p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=10, pretty=T, 
-# 			  col.regions=brewer.pal(9,"GnBu"), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
-# 			  par.settings = list(axis.line = list(col = "transparent")), colorkey = TRUE,
-# 			  scales = list(draw = FALSE), margin=F, main=list(label=paste(var,years[yr]), cex=1.5),
-# 			  xlab="",ylab="", aspect="iso")
-# 	  }else{
-# 	    p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=10, pretty=T, 
-# 			  col.regions=rev(brewer.pal(9,"GnBu")), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
-# 			  par.settings = list(axis.line = list(col = "transparent")), colorkey = TRUE,
-# 			  scales = list(draw = FALSE), margin=F, main=list(label=paste(var,years[yr]), cex=1.5),
-# 			  xlab="",ylab="", aspect="iso")
-# 	 }
-#     p <- p + latticeExtra::layer(sp.polygons(canada.prov, lwd=0.8, col='dimgray', alpha=0.3))
-#     p <- p + latticeExtra::layer(sp.polygons(us.states, lwd=0.8, col='dimgray', alpha=0.3))
-#     p <- p + latticeExtra::layer(sp.polygons(lrglakes, lwd=0.8, col='dimgray', fill='lightblue', alpha=0.3))	  
-#     df <- btlprs[,c("x","y",paste0("prs_",(yr+1)))]
-#     coordinates(df) <- c("x","y")
-#     points2grid(df)
-#     btl_pixels <- as(df, "SpatialPixelsDataFrame")
-#     names(btl_pixels) <- "btlprs"
-#     p <- p + latticeExtra::layer(sp.points(btl_pixels[btl_pixels$btlprs==1,], pch=19, cex=0.05, col='#e41a1c', alpha=0.4))
-#     png(paste0("daymet_map_",var,"_",yr,".png"), width=6, height=8, units="in", res=300)
-#     print(p)
-#     dev.off()
-#     print(paste("mapping", var, "in", yr, "is done!"))
-#   }
-# }
-# 
-# foreach(var=varnms) %dopar% {
-#   im.convert(paste0("daymet_map_",var,"_*.png"),output=paste0("daymet_map_",var,".gif"))
-# }
+for(var in varnms){
+  var_3d <- get.data(var)
+  for(yr in years){
+    var_3d_slice <- var_3d[,,which(years==yr)]
+    if(var=="Lcs" | var =="Ecs"){
+		  p <- levelplot(var_3d_slice ~ x * y, data=grid, xlim=c(-2050000,20000), ylim=c(-2000000,1600000), 
+			  par.settings = list(axis.line = list(col = "transparent")), col.regions=myColors,
+			  scales = list(draw = FALSE), margin=F, main=list(label=paste(var,years[yr]), cex=1.5),
+			  xlab="",ylab="", colorkey = FALSE, key=myKey, aspect="iso")
+		}else if(var == "Ncs"){
+			p <- levelplot(var_3d_slice ~ x * y, data=grid, xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
+			  par.settings = list(axis.line = list(col = "transparent")), col.regions=myColors2,
+			  scales = list(draw = FALSE), margin=F, main=list(label=paste(var,years[yr]), cex=1.5),
+			  xlab="",ylab="", colorkey = FALSE, key=myKey2, aspect="iso")
+		}else if(var %in% c("Acs", drops, mindays)){
+			p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=10, pretty=T, 
+			  col.regions=brewer.pal(9,"GnBu"), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
+			  par.settings = list(axis.line = list(col = "transparent")), colorkey = TRUE,
+			  scales = list(draw = FALSE), margin=F, main=list(label=paste(var,years[yr]), cex=1.5),
+			  xlab="",ylab="", aspect="iso")
+	  }else{
+	    p <- levelplot(var_3d_slice ~ x * y, data=grid, at=cutpts[,var], cuts=10, pretty=T, 
+			  col.regions=rev(brewer.pal(9,"GnBu")), xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
+			  par.settings = list(axis.line = list(col = "transparent")), colorkey = TRUE,
+			  scales = list(draw = FALSE), margin=F, main=list(label=paste(var,years[yr]), cex=1.5),
+			  xlab="",ylab="", aspect="iso")
+	 }
+    p <- p + latticeExtra::layer(sp.polygons(canada.prov, lwd=0.8, col='dimgray', alpha=0.3))
+    p <- p + latticeExtra::layer(sp.polygons(us.states, lwd=0.8, col='dimgray', alpha=0.3))
+    p <- p + latticeExtra::layer(sp.polygons(lrglakes, lwd=0.8, col='dimgray', fill='lightblue', alpha=0.3))	  
+    df <- btlprs[,c("x","y",paste0("prs_",(yr+1)))]
+    coordinates(df) <- c("x","y")
+    points2grid(df)
+    btl_pixels <- as(df, "SpatialPixelsDataFrame")
+    names(btl_pixels) <- "btlprs"
+    p <- p + latticeExtra::layer(sp.points(btl_pixels[btl_pixels$btlprs==1,], pch=19, cex=0.05, col='//e41a1c', alpha=0.4))
+    png(paste0("daymet_map_",var,"_",yr,".png"), width=6, height=8, units="in", res=300)
+    print(p)
+    dev.off()
+    print(paste("mapping", var, "in", yr, "is done!"))
+  }
+}
+
+foreach(var=varnms) %dopar% {
+  im.convert(paste0("daymet_map_",var,"_*.png"),output=paste0("daymet_map_",var,".gif"))
+}
 
 print("all done!")
