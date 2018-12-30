@@ -10,27 +10,32 @@ library(gridExtra)
 library(RColorBrewer)
 library(animation)
 
-source("/gpfs/projects/gavingrp/dongmeic/climate-space/R/plotlist.R")
+#source("/gpfs/projects/gavingrp/dongmeic/climate-space/R/plotlist.R")
+source("/Users/dongmeichen/GitHub/climate-space/R/plotlist.R")
 years <- 1998:2016; nyr <- length(years)
-ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/prs/"
+#ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/prs/"
+ncpath <- "/Users/dongmeichen/Documents/beetle/ncfiles/"
 ncfile <- "time_series_presence_statistics.nc"
-out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/maps/"
+#out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/maps/"
+out <- "/Users/dongmeichen/Documents/beetle/output/"
 setwd(out)
 
-ncin <- nc_open("/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/na10km_v2.nc")
+#ncin <- nc_open("/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/na10km_v2.nc")
+ncin <- nc_open("/Users/dongmeichen/Documents/beetle/ncfiles/na10km_v2.nc")
 x <- ncvar_get(ncin, varid="x"); nx <- length(x)
 y <- ncvar_get(ncin, varid="y"); ny <- length(y)
 grid <- expand.grid(x=x, y=y)
 
-shppath <- "/gpfs/projects/gavingrp/dongmeic/beetle/shapefiles"
+#shppath <- "/gpfs/projects/gavingrp/dongmeic/beetle/shapefiles"
+shppath <- "/Users/dongmeichen/Documents/beetle/shp"
 canada.prov <- readOGR(dsn = shppath, layer = "na10km_can_prov")
 us.states <- readOGR(dsn = shppath, layer = "na10km_us_state")
 crs <- proj4string(us.states)
 lrglakes <- readOGR(dsn = shppath, layer = "na10km_lrglakes")
 proj4string(lrglakes) <- crs
 
-hostpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/shapefiles/corehost"
-corehost <- readOGR(dsn=hostpath, layer="MPB_corehost_proj_disall")
+#hostpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/shapefiles/corehost"
+corehost <- readOGR(dsn=shppath, layer="MPB_corehost_proj_disall")
 corehost <- spTransform(corehost, crs)
 
 # yearly transitions (0-stay the same as 0, 1-stay the same as 1; 2-from 1 to 0; 3-from 0 to 1)
