@@ -22,6 +22,7 @@ indata.cc <- indata[complete.cases(indata),]
 indata.cc$prs <- indata.cc$beetles + indata.cc$hosts
 test <- indata.cc[sample(nrow(indata.cc), 500000),]
 write.csv(test, paste0(outpath, "bioclim_vars_na_r_test.csv"), row.names=FALSE)
+head(indata)
 df <- indata.cc[,-a:-(a-3)] # remove the last four columns
 #dat <- df[,!(names(df) %in% ignore)]
 pca <- prcomp(df, scale. = TRUE)
@@ -34,6 +35,7 @@ head(pca$rotation)
 write.csv(x = pca$rotation, file = paste0(outpath,"pca_loading.csv"))
 
 out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/plots/"
+pca <- princomp(df)
 png(paste0(out,"PCA_variable_selection.png"), width=12, height=9, units="in", res=300)
 par(mfrow=c(2, 2))
 par(mar=c(4, 4, 3, 3))
@@ -75,12 +77,12 @@ proc.time() - ptm
 df.t <- cbind(df.t, indata.cc[,(a-2):a])
 write.csv(df.t, paste0(outpath, "bioclim_vars_both_na_1996_2015_t.csv"), row.names=FALSE)
 
-df.t <- read.csv(paste0(outpath, "bioclim_vars_both_na_1996_2015_t.csv"))
+#df.t <- read.csv(paste0(outpath, "bioclim_vars_both_na_1996_2015_t.csv"))
 dat <- df.t[,!(names(df.t) %in% ignore)]
 png(paste0(out, "histograms_trans_both.png"), width=16, height=10, units="in", res=300)
 par(mfrow=c(5,8))
-for(i in (1:37,39:41)){
-	plotNormalHistogram(dat[,i], main=colnames(dat)[i])
+for(i in names(dat)){
+	plotNormalHistogram(dat[,i], main=i)
 	print(i)
 }
 dev.off()
@@ -158,7 +160,7 @@ vars <- c("OctTmin", "JanTmin", "MarTmin", "Tvar", "summerTmean", "AugTmean", "A
 					"summerP0", "summerP2", "wd", "mi")
 df <- dt[,c(vars, "year")]
 
-indata <- get_data()				 
+#indata <- get_data()				 
 dt <- indata[indata$beetles==1,]
 peakyears <- 2006:2008
 nonpeakyears <- 1996:1998
@@ -182,7 +184,7 @@ for(i in 1:8){
 }
 dev.off()
 
-iters <- c(3000, 2000, 2000, 2000, 5000, 2000, 1000, 1000)
+iters <- c(2000, 2000, 2000, 2000, 2000, 2000, 1000, 1000)
 for(var in vars){
 	get.diff.matrix(dt, var, iters[which(vars==var)])
 	print(paste(which(vars==var), var, iters[which(vars==var)]))
@@ -214,8 +216,8 @@ for(var in vars){
 		d1[i] <- sum(dt[dt$peak==1,][,var]>833)/k1
 		d2[i] <- sum(dt[dt$peak==0,][,var]>833)/k2	
 	}else if(var %in% c("Acs", "Oct20", "Jan20", "Mar20", "winter20")){
-		d1[i] <- sum(dt[dt$peak==1,][,var]<=20)/k1
-		d2[i] <- sum(dt[dt$peak==0,][,var]<=20)/k2		
+		d1[i] <- sum(dt[dt$peak==1,][,var]<=4)/k1
+		d2[i] <- sum(dt[dt$peak==0,][,var]<=4)/k2		
 	}else if(var %in% c("OctMin", "JanMin", "MarMin", "winterMin")){	
 		d1[i] <- sum(dt[dt$peak==1,][,var]>-40)/k1
 		d2[i] <- sum(dt[dt$peak==0,][,var]>-40)/k2

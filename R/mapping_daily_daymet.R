@@ -55,7 +55,7 @@ Oct20=c(0,2,4,6,8,10,15,20,25,30),
 Oct30=c(0,2,4,6,8,10,15,18,23,28),
 Oct40=c(0,2,4,6,8,10,12,14,16,18),
 OctMin=c(-50,-25,-15,-10,-5,0,5,10,20,43),
-Jan20=c(0,2,4,6,8,10,15,20,25,30),
+Jan20=c(0,2,4,6,8,10,15,20,25,31),
 Jan30=c(0,2,4,6,8,10,15,20,25,30),
 Jan40=c(0,2,4,6,8,10,15,20,25,28),
 JanMin=c(-50,-25,-15,-10,-5,0,5,10,20,35),
@@ -87,7 +87,8 @@ get.data <- function(var){
   return(data)
 }
 
-btlprs <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/beetle_presence.csv")
+#btlprs <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/beetle_presence.csv")
+btlprs <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/beetle_presence_updated.csv")
 
 myColors <- c('white', 'lightblue')
 myKey <- list(text=list(lab=c("0","1"), cex=c(1.2,1.2)), 
@@ -104,7 +105,7 @@ pos <- cbind(c(1,1),c(2,1),c(3,1),c(4,1),c(5,1),
 # check the codes before running, particularly colors		              
 for(var in varnms){
   var_3d <- get.data(var)
-  png(paste0("daymet_maps_",var,".png"), width=10, height=12, units="in", res=300)
+  png(paste0("daymet_maps_",var,".png"), width=12, height=12, units="in", res=300)
   plot.new()
   par(mfrow=c(5,4), xpd=FALSE, mar=rep(0.5,4))
   yr = 1
@@ -232,7 +233,7 @@ for(var in varnms){
     points2grid(df)
     btl_pixels <- as(df, "SpatialPixelsDataFrame")
     names(btl_pixels) <- "btlprs"
-    p <- p + latticeExtra::layer(sp.points(btl_pixels[btl_pixels$btlprs==1,], pch=19, cex=0.05, col='#e41a1c', alpha=0.4))
+    p <- p + latticeExtra::layer(sp.points(btl_pixels[btl_pixels$btlprs==1,], pch=19, cex=0.05, col='//e41a1c', alpha=0.4))
     png(paste0("daymet_map_",var,"_",yr,".png"), width=6, height=8, units="in", res=300)
     print(p)
     dev.off()

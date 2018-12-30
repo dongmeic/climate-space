@@ -16,16 +16,18 @@ setwd(out)
 
 # read vegetation and bettle presence data
 prs_path <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/prs/"
-vgt_ncfile <- "na10km_v2_presence_pines.nc"
+#vgt_ncfile <- "na10km_v2_presence_pines.nc"
+vgt_ncfile <- "na10km_v2_presence_2d.nc"
 ncin_vgt <- nc_open(paste(prs_path,vgt_ncfile,sep=""))
 print(ncin_vgt)
 vgt.nc <- ncvar_get(ncin_vgt,"navgtprs")
 btl.all <- ncvar_get(ncin_vgt, "nabtlprsayr")
-btl_ncfile <- "na10km_v2_mpb_presence.nc"
+#btl_ncfile <- "na10km_v2_mpb_presence.nc"
+btl_ncfile <- "na10km_v2_mpb_presence_fishnet.nc"
 ncin_btl <- nc_open(paste(prs_path,btl_ncfile, sep=""))
 print(ncin_btl)
 btl.nc <- ncvar_get(ncin_btl,"mpb_prs") # with all hosts
-mpb.nc <- ncvar_get(ncin_btl,"chosts_mpb_prs") # with all core hosts
+#mpb.nc <- ncvar_get(ncin_btl,"chosts_mpb_prs") # with all core hosts
 nc_close(ncin_btl)
 
 # start_year:1901
@@ -34,12 +36,13 @@ vargrp.a <- c("JanTmin", "MarTmin", "TMarAug", "summerTmean",
 # start_year:1902
 vargrp.b <- c("OctTmin", "fallTmean", "winterTmin", "Tmin", "Tmean", "Tvar", "TOctSep", "summerP1", "summerP2", "Pmean")
 # start_year:1902, daily
-vargrp.e <- c("drop0", "drop5", "ddAugJul", "ddAugJun")
+#vargrp.e <- c("drop0", "drop5", "ddAugJul", "ddAugJun")
 # start_year:1903
 vargrp.c <- c("POctSep", "PcumOctSep")
 # start_year:1907
 vargrp.d <- c("PPT")
-vargrp <- c(vargrp.a, vargrp.b, vargrp.e, vargrp.c, vargrp.d)
+#vargrp <- c(vargrp.a, vargrp.b, vargrp.e, vargrp.c, vargrp.d)
+vargrp <- c(vargrp.c, vargrp.d)
 			
 varnms.a <- c("Minimum temperature in Jan",
 			  "Minimum temperature in Mar",
@@ -72,9 +75,11 @@ varnms.c <- c("Precipitation from Oct and Sep in previous year",
 
 varnms.d <- c("Cumulative monthly Oct-Aug precipitation")
 
-varnms <- c(varnms.a, varnms.b, varnms.e, varnms.c, varnms.d)
+#varnms <- c(varnms.a, varnms.b, varnms.e, varnms.c, varnms.d)
+varnms <- c(varnms.c, varnms.d)
 
-startyrs <- c(rep(1901,9), rep(1902,10), rep(1903, 2), 1907)
+#startyrs <- c(rep(1901,9), rep(1902,10), rep(1903, 2), 1907)
+startyrs <- c(rep(1903, 2), 1907)
 #startyrs <- rep(1902,4)
 
 get.data <- function(var, start_yr){
@@ -120,8 +125,7 @@ get.dataframe <- function(varnm,start_yr){
 ptm <- proc.time()
 #cols <- c("grey70", "#1b9e77", "#d95f02")
 cols <- c("grey70", "#1b9e77", "#7570b3")
-foreach(i=1:length(varnms)) %dopar% {
-#for(i in 1:length(varnms)){
+#foreach(i=1:length(varnms)) %dopar% {
 for(i in 1:length(varnms)){
   #df <- get.dataframe(vargrp[i], startyrs[i])
   df <- read.csv(paste0(vargrp[i], "_", startyrs[i], "_1.csv"), stringsAsFactors = F)

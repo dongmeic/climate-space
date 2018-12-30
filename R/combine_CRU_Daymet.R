@@ -5,13 +5,14 @@ cru.path <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
 daymet.path <- "/gpfs/projects/gavingrp/dongmeic/daymet/bioclm_na/"
 
 # read beetle data
-na10km_btl_df <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/beetle_presence.csv")
+#na10km_btl_df <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/beetle_presence.csv")
+na10km_btl_df <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/beetle_presence_updated.csv")
 rows <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/csvfiles/daymet_na10km.csv")
 na10km_btl_df <- na10km_btl_df[rows$rows,]
 
 read_CRU <- function(yr){
 	df <- read.csv(paste0(cru.path, "bioclimatic_values_", years[yr],".csv"))
-	df <- df[, -which(names(df) %in% c("winterTmin"))]
+	df <- df[, -which(names(df) %in% c("winterTmin", "GSP"))]
 	df[rows$rows,]
 }
 
@@ -41,13 +42,4 @@ get_data <- function(){
 		print(paste("reading data from", years[i]))
 	}
 	cbind(df, year=unlist(lapply(years,function(i) rep(i,dim(df)[1]/nyr))))
-}
-
-split_data <- function(){
-    for(i in 1:18){
-        df <- bioClim[,c(vargrp[i], vargrp[i+18], "beetles", "hosts", "year")]
-        df <- df[sample(nrow(df), 500),]
-        write.csv(df, paste0(vargrp[i],"_",vargrp[i+18],"_sample.csv"), row.names=FALSE)
-        print(c(vargrp[i], vargrp[i+18]))
-    }
 }

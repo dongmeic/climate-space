@@ -24,7 +24,6 @@ ndf <- cbind(ndf, year=unlist(lapply(1996:2015,function(i) rep(i,dim(ndf)[1]/len
 ndf <- ndf[, -which(names(ndf) %in% c("winterTmin.1"))]
 write.csv(ndf, paste0(csvpath, "bioclimatic_values_1996_2015_r.csv"), row.names=FALSE)
 
-
 df <- ndf[ndf$beetles == 1,]
 
 sink(paste0(csvpath,"bioclim_summary_statistics.txt"))

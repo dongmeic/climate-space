@@ -12,7 +12,8 @@ source("/gpfs/projects/gavingrp/dongmeic/climate-space/R/plotlist.R")
 out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/maps/"
 setwd(out)
 ncpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/ncfiles/na10km_v2/prs/"
-btl_ncfile <- paste0(ncpath, "na10km_v2_mpb_presence.nc")
+#btl_ncfile <- paste0(ncpath, "na10km_v2_mpb_presence.nc")
+btl_ncfile <- paste0(ncpath, "na10km_v2_mpb_presence_fishnet.nc")
 ncin_btl <- nc_open(btl_ncfile)
 print(ncin_btl)
 btl <- ncvar_get(ncin_btl,"mpb_prs")

@@ -7,10 +7,9 @@ btlstat <- read.csv(paste0(csvpath, "beetle_presence_statistics.csv"))
 btlstat <- btlstat[rows$rows,]
 indata <- get_data()
 indata$hosts <- ifelse(indata$beetles==1 & indata$hosts==0, 1, indata$hosts)
-indata$prs <- indata$beetles + indata$hosts
 
 sink(paste0(csvpath,"bioclimate_summary.txt"))
-summary(indata[indata$beetles==1,][,1:62])
+summary(indata[indata$beetles==1,][,1:61])
 sink()
 
 d <- dim(btlstat)[1]
@@ -24,7 +23,7 @@ sink(paste0(csvpath,"expanded_bioclm.txt"))
 summary(expanded.clm)
 sink()
 
-core <- which(btlstat$ngbyrs >= 100)
+core <- which(btlstat$ngbyrs >= 80)
 allrows <- c()
 for(i in 1:20){allrows <- c(allrows, core+(i-1)*d)}
 core.clm <- indata[allrows,]
@@ -57,7 +56,7 @@ for (var in vars){
 }
 dev.off()
 
-iters <- c(3000, 2000, 2000, 2000, 5000, 2000, 1000, 1000)
+iters <- c(2000, 2000, 2000, 2000, 2000, 2000, 1000, 1000)
 for(var in vars){
 	get.diff.matrix(dt, var, iters[which(vars==var)], peak=F)
 	print(paste(which(vars==var), var, iters[which(vars==var)]))

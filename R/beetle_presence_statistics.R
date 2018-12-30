@@ -3,7 +3,8 @@
 
 library(ncdf4)
 csvpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
-btlprs <- read.csv(paste0(csvpath, "beetle_presence.csv"))
+#btlprs <- read.csv(paste0(csvpath, "beetle_presence.csv"))
+btlprs <- read.csv(paste0(csvpath, "beetle_presence_updated.csv"))
 btlprs$key <- seq(1,dim(btlprs)[1])
 target_columns <- colnames(btlprs[,grepl("prs_", colnames(btlprs))])
 btlprs$sumprs <- rowSums(btlprs[,target_columns])
@@ -129,8 +130,8 @@ summary(abs.df.ss$ngbyrs[!is.na(abs.df.ss$ngbyrs)])
 ptm <- proc.time()
 t=0
 for(i in 1:length(abs.df.ss$key)){
-  print(paste("the original value is", df$ngbyrs[which(df$key == abs.df.ss$key[i])],
-  "and the replacement is", abs.df.ss$ngbyrs[i]))
+  #print(paste("the original value is", df$ngbyrs[which(df$key == abs.df.ss$key[i])],
+  #"and the replacement is", abs.df.ss$ngbyrs[i]))
   if (is.na(df$ngbyrs[which(df$key == abs.df.ss$key[i])]) && is.na(abs.df.ss$ngbyrs[i])){
   	#print("keeping NA value")
   	t=t+0

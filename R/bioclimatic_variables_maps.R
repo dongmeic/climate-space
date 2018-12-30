@@ -90,7 +90,8 @@ get.data <- function(var){
   return(data)
 }
 
-btlprs <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/beetle_presence.csv")
+#btlprs <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/beetle_presence.csv")
+btlprs <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/beetle_presence_updated.csv")
 pos <- cbind(c(1,1),c(2,1),c(3,1),c(4,1),c(5,1),
 						 c(1,2),c(2,2),c(3,2),c(4,2),c(5,2),
 						 c(1,3),c(2,3),c(3,3),c(4,3),c(5,3),
@@ -164,45 +165,45 @@ for (i in 1:length(vargrp)){
   print(vargrp[i])
 }
 
-# for(i in 1:length(vargrp)){
-#   var_4d <- get.data(vargrp[i])
-#   for(j in 1:length(years)){
-#     var_4d_slice <- var_4d[,,1,j]
-#     if(i<=13){
-# 	  	p <- levelplot(var_4d_slice ~ x * y, data=grid, at=cutpts[,i], cuts=11, pretty=T, 
-# 			  col.regions=rev(brewer.pal(10,"RdBu")),
-# 			  par.settings = list(axis.line = list(col = "transparent")), 
-# 			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[j]), cex=1.5),
-# 			  xlab="",ylab="")
-# 		}else{
-# 	  	p <- levelplot(var_4d_slice ~ x * y, data=grid, at=cutpts[,i], cuts=11, pretty=T, 
-# 			  col.regions=brewer.pal(10,"RdYlGn"),
-# 			  par.settings = list(axis.line = list(col = "transparent")), 
-# 			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[j]), cex=1.5),
-# 			  xlab="",ylab="")
-# 		}
-#     p <- p + latticeExtra::layer(sp.polygons(canada.prov, lwd=0.8, col='dimgray', alpha=0.3))
-#     p <- p + latticeExtra::layer(sp.polygons(us.states, lwd=0.8, col='dimgray', alpha=0.3))
-#     p <- p + latticeExtra::layer(sp.polygons(lrglakes, lwd=0.8, col='dimgray', fill='lightblue', alpha=0.3))	  
-#     df <- btlprs[,c("x","y",paste0("prs_",(years[j]+1)))]
-#     coordinates(df) <- c("x","y")
-#     points2grid(df)
-#     btl_pixels <- as(df, "SpatialPixelsDataFrame")
-#     names(btl_pixels) <- "btlprs"
-#     if(i<=13){
-#       p <- p + latticeExtra::layer(sp.points(btl_pixels[btl_pixels$btlprs==1,], pch=19, cex=0.05, col='green', alpha=0.4))
-#     }else{
-#       p <- p + latticeExtra::layer(sp.points(btl_pixels[btl_pixels$btlprs==1,], pch=19, cex=0.05, col='blue', alpha=0.4))
-#     }
-#     png(paste0("bioclimatic_map_",vargrp[i],"_",years[j],".png"), width=9, height=8, units="in", res=300)
-#     print(p)
-#     dev.off()
-#     print(paste("mapping", vargrp[i], "in", years[j], "is done!"))
-#   }
-# }
-# 
-# foreach(i=1:length(vargrp)) %dopar% {
-#   im.convert(paste0("bioclimatic_map_",vargrp[i],"_*.png"),output=paste0("bioclimatic_map_",vargrp[i],".gif"))
-# }
+for(i in 1:length(vargrp)){
+  var_4d <- get.data(vargrp[i])
+  for(j in 1:length(years)){
+    var_4d_slice <- var_4d[,,1,j]
+    if(i<=13){
+	  	p <- levelplot(var_4d_slice ~ x * y, data=grid, at=cutpts[,i], cuts=11, pretty=T, 
+			  col.regions=rev(brewer.pal(10,"RdBu")),
+			  par.settings = list(axis.line = list(col = "transparent")), 
+			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[j]), cex=1.5),
+			  xlab="",ylab="")
+		}else{
+	  	p <- levelplot(var_4d_slice ~ x * y, data=grid, at=cutpts[,i], cuts=11, pretty=T, 
+			  col.regions=brewer.pal(10,"RdYlGn"),
+			  par.settings = list(axis.line = list(col = "transparent")), 
+			  scales = list(draw = FALSE), margin=F, main=list(label=paste(vargrp[i],years[j]), cex=1.5),
+			  xlab="",ylab="")
+		}
+    p <- p + latticeExtra::layer(sp.polygons(canada.prov, lwd=0.8, col='dimgray', alpha=0.3))
+    p <- p + latticeExtra::layer(sp.polygons(us.states, lwd=0.8, col='dimgray', alpha=0.3))
+    p <- p + latticeExtra::layer(sp.polygons(lrglakes, lwd=0.8, col='dimgray', fill='lightblue', alpha=0.3))	  
+    df <- btlprs[,c("x","y",paste0("prs_",(years[j]+1)))]
+    coordinates(df) <- c("x","y")
+    points2grid(df)
+    btl_pixels <- as(df, "SpatialPixelsDataFrame")
+    names(btl_pixels) <- "btlprs"
+    if(i<=13){
+      p <- p + latticeExtra::layer(sp.points(btl_pixels[btl_pixels$btlprs==1,], pch=19, cex=0.05, col='green', alpha=0.4))
+    }else{
+      p <- p + latticeExtra::layer(sp.points(btl_pixels[btl_pixels$btlprs==1,], pch=19, cex=0.05, col='blue', alpha=0.4))
+    }
+    png(paste0("bioclimatic_map_",vargrp[i],"_",years[j],".png"), width=9, height=8, units="in", res=300)
+    print(p)
+    dev.off()
+    print(paste("mapping", vargrp[i], "in", years[j], "is done!"))
+  }
+}
+
+foreach(i=1:length(vargrp)) %dopar% {
+  im.convert(paste0("bioclimatic_map_",vargrp[i],"_*.png"),output=paste0("bioclimatic_map_",vargrp[i],".gif"))
+}
 
 print("all done!")
