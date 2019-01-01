@@ -19,11 +19,10 @@ indata$hosts <- ifelse(indata$beetles==1 & indata$hosts==0, 1, indata$hosts)
 #write.csv(indata, paste0(outpath, "bioclim_vars_both_na_1996_2015_r.csv"), row.names=FALSE)
 a <- dim(indata)[2]
 indata.cc <- indata[complete.cases(indata),]
-indata.cc$prs <- indata.cc$beetles + indata.cc$hosts
-test <- indata.cc[sample(nrow(indata.cc), 500000),]
-write.csv(test, paste0(outpath, "bioclim_vars_na_r_test.csv"), row.names=FALSE)
+#test <- indata.cc[sample(nrow(indata.cc), 500000),]
+#write.csv(test, paste0(outpath, "bioclim_vars_na_r_test.csv"), row.names=FALSE)
 head(indata)
-df <- indata.cc[,-a:-(a-3)] # remove the last four columns
+df <- indata.cc[,-a:-(a-2)] # remove the last three columns
 #dat <- df[,!(names(df) %in% ignore)]
 pca <- prcomp(df, scale. = TRUE)
 #pca <- princomp(df, cor = TRUE)
