@@ -26,6 +26,7 @@ bioClim.ss <- subset(bioClim, hosts==1)
 n1 <- rep(c(1,2,3,4, 5),4); n2 <- c(rep(1,5),rep(2,5),rep(3,5),rep(4,5))
 vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
 years <- 1996:2015
+# test: var1 <- "OctTmin"; var2 <- "summerP0"
 ts_cs_plot <- function(var1, var2){
 	png(paste0("cs_",var1,"_",var2,"_ts.png"), width=15, height=12, units="in", res=300)
 	grid.newpage()

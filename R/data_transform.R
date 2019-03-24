@@ -108,13 +108,18 @@ get.best.exps <- function(df){
 		}
 	}
 	outpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
+	df <- data.frame(colname=names(df)[!(names(df) %in% ignore)], best.exps=best.exps)
 	write.csv(best.exps, paste0(outpath, "best_exps_transform.csv"), row.names=FALSE)
 	return(best.exps)
 }
 
 # transform and check the distributions before and after the transformation
-get.transformed.dt <- function(df){
-	best.exps <- get.best.exps(df)
+get.transformed.dt <- function(df, readTable=FALSE){
+	if(readTable){
+		best.exps <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/best_exps_transform.csv")
+	}else{
+		best.exps <- get.best.exps(df)
+	}
 	outpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/plots/"
 	pdf(paste0(outpath, "distributions_transform.pdf"), width=12, height=6)
 	par(mfrow=c(1, 2))
@@ -123,8 +128,11 @@ get.transformed.dt <- function(df){
 			hist(df[, field], main=field, col=4)
 			
 			min.x <- min(df[, field], na.rm=T)
-			df[, field] <- (df[, field] + abs(min.x) + 1)^best.exps[field]
-		
+			if(readTable){
+				df[, field] <- (df[, field] + abs(min.x) + 1)^best.exps$best.exps[which(names(df)==field)]
+			}else{
+				df[, field] <- (df[, field] + abs(min.x) + 1)^best.exps[field]
+			}	
 			hist(df[, field], main=paste(field, "'", sep=''), col=4)
 		}
 	}
@@ -212,8 +220,10 @@ density.plot <- function(var, peak=T){
 	outpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
 	if(peak){
 		df <- read.csv(paste0(outpath, "quantile/", var, "_peak_diff.csv"))
+		cols <- brewer.pal(7,"Blues")
 	}else{
 		df <- read.csv(paste0(outpath, "quantile/", var, "_expand_diff.csv"))
+		cols <- brewer.pal(7,"Browns")
 	}	
   p1 <- density(df[,1])
   p2 <- density(df[,2])

@@ -14,15 +14,21 @@ source("/gpfs/projects/gavingrp/dongmeic/climate-space/R/combine_CRU_Daymet.R")
 source("/gpfs/projects/gavingrp/dongmeic/climate-space/R/data_transform.R")
 
 outpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
+ptm <- proc.time()
 indata <- get_data()
-indata$hosts <- ifelse(indata$beetles==1 & indata$hosts==0, 1, indata$hosts)
+proc.time() - ptm
+# user  system elapsed
+# 682.455  11.609 694.729
+#indata$hosts <- ifelse(indata$beetles==1 & indata$hosts==0, 1, indata$hosts)
 #write.csv(indata, paste0(outpath, "bioclim_vars_both_na_1996_2015_r.csv"), row.names=FALSE)
 a <- dim(indata)[2]
 indata.cc <- indata[complete.cases(indata),]
+# remove cv.gsp
+df <- indata[, -which(names(indata) %in% c('cv.gsp', 'beetles', 'hosts', 'year'))]
 #test <- indata.cc[sample(nrow(indata.cc), 500000),]
 #write.csv(test, paste0(outpath, "bioclim_vars_na_r_test.csv"), row.names=FALSE)
 head(indata)
-df <- indata.cc[,-a:-(a-2)] # remove the last three columns
+#df <- indata.cc[,-a:-(a-2)] # remove the last three columns
 #dat <- df[,!(names(df) %in% ignore)]
 pca <- prcomp(df, scale. = TRUE)
 #pca <- princomp(df, cor = TRUE)
@@ -73,6 +79,8 @@ ptm <- proc.time()
 print("get transformed data...this will take a while...")
 df.t <- get.transformed.dt(df)
 proc.time() - ptm
+#    user   system  elapsed
+#3309.279   18.175 6677.268
 df.t <- cbind(df.t, indata.cc[,(a-2):a])
 write.csv(df.t, paste0(outpath, "bioclim_vars_both_na_1996_2015_t.csv"), row.names=FALSE)
 
@@ -172,7 +180,7 @@ taus <- c(0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95)
 
 THRESHOLD <- 0.000000001
 #cum.means <- read.csv(paste0(outpath, "cumulative_means_daymet.csv"))
-#cum.means$Tin <- get.all.cumulative.means("Tmin", dt, q=0.95, threshold=THRESHOLD, use.threshold=F)
+#cum.means$Tmin <- get.cumulative.mean('Tmin', dt, q=0.95, threshold=THRESHOLD, use.threshold=F)
 cum.means <- get.all.cumulative.means(vars, dt, q=0.95, threshold=THRESHOLD, use.threshold=F)
 write.csv(cum.means, paste0(outpath, "cumulative_means_daymet.csv"), row.names=FALSE)
 

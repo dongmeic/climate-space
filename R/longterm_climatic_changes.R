@@ -42,13 +42,15 @@ write.csv(df, "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/longterm_bi
 #df <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/longterm_bioclim_mean.csv")
 
 g <- function(i){
+	ptm <- proc.time()
 	indata <- read.csv(paste0(inpath,vars[i],"_",startyrs[i],"_1.csv"))
+	proc.time() - ptm
 	df <- aggregate(indata$var, by=list(prs=indata$prs, yrs=indata$yrs), FUN=mean)
 	df.s <- subset(df, prs == "mpb")
 	test <- cor.test(df.s$yrs, df.s$x)
 	g <- ggplot(data=df, aes(x=yrs, y=x,linetype = prs, color= prs)) + 
-    geom_line(alpha=0.3) + 
-    geom_point(alpha=0.3) + 
+    geom_line(alpha=0.2, size=0.8) + 
+    geom_point(alpha=0.2, size=0.8) + 
     geom_smooth(method = "lm", formula = y ~ splines::bs(x, 3), se = FALSE)
   g <- g + scale_linetype_manual(values=override.linetype, guide = FALSE)
   g <- g + guides(colour = guide_legend(override.aes = list(linetype = override.linetype)))
