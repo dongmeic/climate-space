@@ -223,7 +223,7 @@ density.plot <- function(var, peak=T){
 		cols <- brewer.pal(7,"Blues")
 	}else{
 		df <- read.csv(paste0(outpath, "quantile/", var, "_expand_diff.csv"))
-		cols <- brewer.pal(7,"Browns")
+		cols <- brewer.pal(7,"Oranges")
 	}	
   p1 <- density(df[,1])
   p2 <- density(df[,2])
@@ -241,5 +241,10 @@ density.plot <- function(var, peak=T){
   lines(p5, col=cols[5], lwd=2.5)
   lines(p6, col=cols[6], lwd=2.5)
   lines(p7, col=cols[7], lwd=2.5)
+  if(peak){
+		mtext('Quantile differences between peak and nonpeak years', outer = TRUE, cex = 1.5, line=-18)
+	}else{
+		mtext('Quantile differences between expanded and core areas', outer = TRUE, cex = 1.5, line=-35)
+	}	
   print(paste(var, "is done!"))
 }
