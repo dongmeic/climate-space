@@ -242,9 +242,9 @@ density.plot <- function(var, peak=T){
   lines(p6, col=cols[6], lwd=2.5)
   lines(p7, col=cols[7], lwd=2.5)
   if(peak){
-		mtext('Quantile differences between peak and nonpeak years', outer = TRUE, cex = 1.5, line=-18)
+		mtext('Quantile differences between peak and nonpeak years', outer = TRUE, cex = 1.5, line=-33)
 	}else{
-		mtext('Quantile differences between expanded and core areas', outer = TRUE, cex = 1.5, line=-35)
+		mtext('Quantile differences between expanded and core areas', outer = TRUE, cex = 1.5, line=-63)
 	}	
   print(paste(var, "is done!"))
 }
