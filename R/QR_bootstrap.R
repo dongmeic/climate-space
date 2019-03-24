@@ -130,13 +130,12 @@ peak.boxplot <- function(var){
 }
 
 expand.boxplot <- function(var){
-  df <- dt[,c(var,"expand")]
+  df <- dt1[,c(var,"expand")]
   colnames(df)[1] <- "bioclm"
   boxplot(bioclm~expand,data=df, main=var, cex=1.5, horizontal = TRUE,col=cols, outcol=rgb(0,0,0,0.4),outcex=0.5,
    xlab="", ylab="")
 }
 
-out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/plots/"
 png(paste0(out,"boxplot_years_expansion.png"), width=12, height=6, units="in", res=300)
 par(mfrow=c(2,4),mar=c(3.5,3.5,3,1))
 cols <- c('#f7f7f7','#cccccc','#969696','#525252')
