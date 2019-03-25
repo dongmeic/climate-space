@@ -125,15 +125,17 @@ dt$peak <- ifelse(dt$year %in% peakyears, 4,
 peak.boxplot <- function(var){
   df <- dt[dt$peak!=0,][,c(var,"peak")]
   colnames(df)[1] <- "bioclm"
-  boxplot(bioclm~peak,data=df, main=var, cex=1.5, horizontal = TRUE,col=cols, outcol=rgb(0,0,0,0.4),outcex=0.5,
-   xlab="", ylab="")
+  boxplot(bioclm~peak,data=df, main=var, cex=1.5, horizontal = TRUE, notch=TRUE,
+  				col=cols, outcol=rgb(0,0,0,0.4),outcex=0.5,
+   				xlab="", ylab="")
 }
 
 expand.boxplot <- function(var){
   df <- dt1[,c(var,"expand")]
   colnames(df)[1] <- "bioclm"
-  boxplot(bioclm~expand,data=df, main=var, cex=1.5, horizontal = TRUE,col=cols, outcol=rgb(0,0,0,0.4),outcex=0.5,
-   xlab="", ylab="")
+  boxplot(bioclm~expand,data=df, main=var, cex=1.5, horizontal = TRUE, notch=TRUE, 
+  				col=cols, outcol=rgb(0,0,0,0.4),outcex=0.5,
+   				xlab="", ylab="")
 }
 
 png(paste0(out,"boxplot_years_expansion.png"), width=12, height=6, units="in", res=300)
