@@ -6,7 +6,7 @@ library(gridExtra)
 library(MASS)
 
 source("/gpfs/projects/gavingrp/dongmeic/climate-space/R/combine_CRU_Daymet.R")
-out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/climate_space/paired/ts"
+out <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/climate_space/paired"
 setwd(out)
 
 vargrp1 <- c("OctTmin", "JanTmin", "MarTmin", "Tmin", "OctMin", "JanMin", "MarMin",  
@@ -46,7 +46,8 @@ u_cs_plot <- function(var1, var2, legend=F){
 }
 
 ucs_plot <- function(var1, var2){
-	df <- bioClim[,c(var1, var2, "beetles")]
+	df <- bioClim[,c(var1, var2, "hosts", "beetles")]
+	df <- df[df$hosts == 1,]
 	names(df)[1:2] <- c("var1", "var2")
 	#df2 <- df[sample(nrow(df), 500),]
 	p <- ggplot(df, aes(x=var1, y=var2, z = beetles))
@@ -56,7 +57,7 @@ ucs_plot <- function(var1, var2){
 		#p <- p + geom_point(color = rgb(0.75,0.75,0.75,0.4), size=0.8)
 		p <- p + stat_density_2d(geom = "point", aes(alpha=..density..,size = ..density..), n=10, contour = FALSE)
 		#p <- p + geom_density_2d(colour=rgb(0.3,0.3,0.3))
-		p <- p + stat_summary_hex(bins=30,colour=rgb(1,1,1,0),fun=function(x) sum(x)/length(x))
+		p <- p + stat_summary_hex(bins=30,colour=rgb(1,1,1,0.5),fun=function(x) sum(x)/length(x))
 		#p <- p + scale_fill_gradient(low="lightgray", high="darkred", limits = c(0, 1))
 		p <- p + scale_fill_gradient(low=rgb(0.8,0.8,0.8,0.8), high=rgb(0.5,0,0,0.8), limits = c(0, 1))
 		p <- p + labs(x=var1, y=var2)
