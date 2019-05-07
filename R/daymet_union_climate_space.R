@@ -45,20 +45,33 @@ u_cs_plot <- function(var1, var2, legend=F){
 	return(p)
 }
 
+ucs_plot <- function(var1, var2){
+	df <- bioClim[,c(var1, var2, "beetles")]
+	names(df)[1:2] <- c("var1", "var2")
+	#df2 <- df[sample(nrow(df), 500),]
+	p <- ggplot(df, aes(x=var1, y=var2, z = beetles))
+		p <- p + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+										panel.background = element_blank(), axis.line = element_line(colour = "black"))
+		p <- p + theme(legend.position="none")
+		#p <- p + geom_point(color = rgb(0.75,0.75,0.75,0.4), size=0.8)
+		p <- p + stat_density_2d(geom = "point", aes(alpha=..density..,size = ..density..), n=10, contour = FALSE)
+		#p <- p + geom_density_2d(colour=rgb(0.3,0.3,0.3))
+		p <- p + stat_summary_hex(bins=30,colour=rgb(1,1,1,0),fun=function(x) sum(x)/length(x))
+		#p <- p + scale_fill_gradient(low="lightgray", high="darkred", limits = c(0, 1))
+		p <- p + scale_fill_gradient(low=rgb(0.8,0.8,0.8,0.8), high=rgb(0.5,0,0,0.8), limits = c(0, 1))
+		p <- p + labs(x=var1, y=var2)
+	return(p)
+}
+
 n1 <- rep(c(1,2,3,4,5,6),3); n2 <- c(rep(1,6),rep(2,6),rep(3,6))
 vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
-png("cs_union.png", width=18, height=9, units="in", res=300)
+png("cs_union_hexbin.png", width=18, height=9, units="in", res=300)
 grid.newpage()
 par(mar=c(2,2,4,2))
 pushViewport(viewport(layout = grid.layout(3, 6)))
 for(i in 1:length(vargrp1)){
-	if(i==1){
-		p <- u_cs_plot(vargrp1[i], vargrp2[i], legend=T)
-	}else{
-		p <- u_cs_plot(vargrp1[i], vargrp2[i])
-	}
+	p <- ucs_plot(vargrp1[i], vargrp2[i])
 	print(p, vp = vplayout(n2[i], n1[i]))
 }
 dev.off()
-
 print("all done")
