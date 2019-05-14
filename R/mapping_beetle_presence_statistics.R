@@ -29,9 +29,9 @@ proj4string(lrglakes) <- crs
 hostpath <- "/gpfs/projects/gavingrp/dongmeic/beetle/shapefiles/corehost"
 corehost <- readOGR(dsn=hostpath, layer="MPB_corehost_proj_disall")
 corehost <- spTransform(corehost, crs)
-labels <- c("1. Maximum continuous presence", "2. Maximum continuous absence", 
-						"3. Absence year after presence", "4. Presence year after absence",  
-						"5. Average length of presence", "6. Beetle persistence")
+labels <- c("Maximum continuous presence", "Maximum continuous absence", 
+						"Absence year after presence", "Presence year after absence",  
+						"Average length of presence", "Beetle persistence")
 plots <- list()
 for(i in 1:length(varnms)){
 #for(i in c(1,2,6)){
@@ -41,19 +41,19 @@ for(i in 1:length(varnms)){
     p <- levelplot(var ~ x * y, data=grid, xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
                par.settings = list(axis.line = list(col = "transparent")), scales = list(draw = FALSE), 
                margin=F, at=cutpts, cuts=10, pretty=T, col.regions=rev(brewer.pal(10,"RdBu")), 
-               main=list(label=paste0(i, ". ", labels[i]), cex=1.0), xlab="",ylab="", aspect="iso")
+               main=list(label=paste0("M", i, ". ", labels[i]), cex=1.0), xlab="",ylab="", aspect="iso")
   }else if(i==3 | i==4){
    cutpts <- c(1999,2001,2003,2005,2006,2007,2009,2011,2013,2015,2016)
     p <- levelplot(var ~ x * y, data=grid, xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
                par.settings = list(axis.line = list(col = "transparent")), scales = list(draw = FALSE), 
                margin=F, cuts=11, pretty=T,col.regions=brewer.pal(11,"Spectral"),
-               main=list(label=paste0(i, ". ", labels[i]), cex=1.0), xlab="", ylab="", aspect="iso")
+               main=list(label=paste0("M", i, ". ", labels[i]), cex=1.0), xlab="", ylab="", aspect="iso")
   }else if(i==6){
     cutpts <- seq(0,180,by=20)
     p <- levelplot(var ~ x * y, data=grid, xlim=c(-2050000,20000), ylim=c(-2000000,1600000),
                par.settings = list(axis.line = list(col = "transparent")), scales = list(draw = FALSE), 
                margin=F, at=cutpts, cuts=10, pretty=T, col.regions=rev(brewer.pal(10,"RdBu")), 
-               main=list(label=paste0(i, ". ", labels[i]), cex=1.0), xlab="",ylab="", aspect="iso")
+               main=list(label=paste0("M", i, ". ", labels[i]), cex=1.0), xlab="",ylab="", aspect="iso")
   }
   p <- p + latticeExtra::layer(sp.polygons(canada.prov, lwd=0.8, col='dimgray'))
   p <- p + latticeExtra::layer(sp.polygons(us.states, lwd=0.8, col='dimgray'))

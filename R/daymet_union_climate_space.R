@@ -59,7 +59,7 @@ ucs_plot <- function(var1, var2){
 		#p <- p + geom_density_2d(colour=rgb(0.3,0.3,0.3))
 		p <- p + stat_summary_hex(bins=30,colour=rgb(1,1,1,0),fun=function(x) sum(x)/length(x))
 		#p <- p + scale_fill_gradient(low="lightgray", high="darkred", limits = c(0, 1))
-		p <- p + scale_fill_gradient(low=rgb(0.8,0.8,0.8,0.8), high=rgb(0.5,0,0,0.8), limits = c(0, 1))
+		p <- p + scale_fill_gradient(low=rgb(0.8,0.8,0.8,0.8), high=rgb(0.5,0,0,1), limits = c(0, 1))
 		p <- p + labs(x=var1, y=var2)
 	return(p)
 }
