@@ -81,6 +81,7 @@ for(var in vars){
 }
 
 taus <- c(0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95)
+
 ptm <- proc.time()
 png(paste0(out,"QR_quant_diff_density.png"), width=12, height=12, units="in", res=300)
 par(mfrow=c(3,4), mar=c(3.5,3.5,8,1))
@@ -102,6 +103,44 @@ for (i in 1:4){
     legend('topright', lty=1, lwd=2, col=cols, legend=taus, cex = 1.5, bty='n')
   }
 }
+for (i in 1:4){
+  density.plot(vars[i], peak=F)
+  cols <- brewer.pal(7,"Oranges")
+  if(i==3){
+    legend('topright', lty=1, lwd=2, col=cols, legend=taus, cex = 1.5, bty='n', ncol=2)
+  }
+}
+dev.off()
+proc.time() - ptm
+
+ptm <- proc.time()
+png(paste0(out,"QR.png"), width=12, height=4, units="in", res=300)
+par(mfrow=c(1,4), mar=c(3.5,3.5,2,1))
+for (i in 1:4){
+	plot(df$year,df[,i],cex=.25, type="n", main=colnames(df)[i], cex.main =1.5, xlab="", ylab="", cex.lab=1.5)
+	points(df$year,df[,i],pch=16,cex=.5,col=rgb(0.7,0.7,0.7,0.05))
+	abline(rq(df[,i]~df$year,tau=.5),col="black", lwd=1.5)
+	abline(lm(df[,i]~df$year),lty=2,col="red", lwd=1.5) #the dreaded ols line
+	for(k in 1:length(taus)){
+					 abline(rq(df[,i]~df$year,tau=taus[k]),col=rgb(0.3,0.3,0.3))
+					 }
+	print(i)
+}
+dev.off()
+
+png(paste0(out,"peak_years.png"), width=12, height=4, units="in", res=300)
+par(mfrow=c(1,4), mar=c(3.5,3.5,2,1))
+for (i in 1:4){
+  density.plot(vars[i])
+  cols <- brewer.pal(7,"Blues")
+  if(i==4){
+    legend('topright', lty=1, lwd=2, col=cols, legend=taus, cex = 1.5, bty='n')
+  }
+}
+dev.off()
+
+png(paste0(out,"expanded_area.png"), width=12, height=4, units="in", res=300)
+par(mfrow=c(1,4), mar=c(3.5,3.5,2,1))
 for (i in 1:4){
   density.plot(vars[i], peak=F)
   cols <- brewer.pal(7,"Oranges")

@@ -75,4 +75,25 @@ for(i in 1:length(vargrp1)){
 	print(p, vp = vplayout(n2[i], n1[i]))
 }
 dev.off()
+
+var1 <- "Tvar"; var2 <- "summerP2"
+png(paste0("cs_union_hexbin_",var1, "_",var2,".png"), width=8, height=8, units="in", res=300)
+par(mar=c(2,2,4,2))
+df <- bioClim[,c(var1, var2, "hosts", "beetles")]
+df <- df[df$hosts == 1,]
+names(df)[1:2] <- c("var1", "var2")
+p <- ggplot(df, aes(x=var1, y=var2, z = beetles))
+p <- p + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+										panel.background = element_blank(), axis.line = element_line(colour = "black"))
+p <- p + theme(legend.position=c(0.8,0.8),legend.text=element_text(size=12), legend.box = "horizontal",
+								axis.text=element_text(size=12), axis.title=element_text(size=14,face="bold"), 
+								plot.title = element_text(hjust = 0.5, size=16,face="bold")) + 
+								guides(colour = guide_legend(override.aes = list(size=2)))
+p <- p + stat_density_2d(geom = "point", aes(alpha=..density..,size = ..density..), n=10, contour = FALSE)
+p <- p + stat_summary_hex(bins=30,colour=rgb(1,1,1,0),fun=function(x) sum(x)/length(x))
+p <- p + scale_fill_gradient(low=rgb(0.8,0.8,0.8,0.8), high=rgb(0.5,0,0,1), limits = c(0, 1), name="with MPB")
+p <- p + labs(title="Union climate space", x="Seasonal temperature variation", y="Two-year cumulative summer precipitation")
+print(p)
+dev.off()
+
 print("all done")
