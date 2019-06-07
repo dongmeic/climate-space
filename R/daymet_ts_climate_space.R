@@ -23,15 +23,22 @@ bioClim <- bioClim[complete.cases(bioClim),]
 bioClim$hosts <- ifelse(bioClim$beetles==1 & bioClim$hosts==0, 1, bioClim$hosts)
 bioClim.ss <- subset(bioClim, hosts==1)
 
-n1 <- rep(c(1,2,3,4, 5),4); n2 <- c(rep(1,5),rep(2,5),rep(3,5),rep(4,5))
 vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
 years <- 1996:2015
 # test: var1 <- "OctTmin"; var2 <- "summerP0"
-ts_cs_plot <- function(var1, var2){
-	png(paste0("cs_",var1,"_",var2,"_ts.png"), width=15, height=12, units="in", res=300)
+ts_cs_plot <- function(var1, var2, years=years){
+	if(years==c(2000, 2005, 2010, 2015)){
+		png(paste0("cs_",var1,"_",var2,"_ts_2.png"), width=8, height=8, units="in", res=300)
+	}else{
+		png(paste0("cs_",var1,"_",var2,"_ts.png"), width=15, height=12, units="in", res=300)
+	}	
 	grid.newpage()
 	par(mar=c(2,2,4,2))
-	pushViewport(viewport(layout = grid.layout(4, 5)))
+	if(years==c(2000, 2005, 2010, 2015)){
+		pushViewport(viewport(layout = grid.layout(2, 2)))
+	}else{
+		pushViewport(viewport(layout = grid.layout(4, 5)))
+	}	
 	for(yr in years){
 		i <- which(years==yr)
 		df <- subset(bioClim, year==yr & hosts==1)
@@ -54,6 +61,11 @@ ts_cs_plot <- function(var1, var2){
 # 			p <- p + labs(x="", y="", title =yr)
 # 		}		
 		p <- p + labs(x=var1, y=var2, title =yr)
+		if(years==c(2000, 2005, 2010, 2015)){
+			n1 <- rep(c(1,2),2); n2 <- c(rep(1,2),rep(2,2))
+		}else{
+			n1 <- rep(c(1,2,3,4, 5),4); n2 <- c(rep(1,5),rep(2,5),rep(3,5),rep(4,5))
+		}
 		print(p, vp = vplayout(n2[i], n1[i]))
 	}
 	dev.off()
@@ -65,6 +77,9 @@ foreach(j=1:length(vargrp1))%dopar%{
 }
 
 ts_cs_plot("Tvar", "summerP2")
+ts_cs_plot("Tvar", "summerP2", years=c(2000, 2005, 2010, 2015))
+
+
 
 save.image(file="/gpfs/projects/gavingrp/dongmeic/beetle/output/RData/climate_space.RData")
 print("all done")

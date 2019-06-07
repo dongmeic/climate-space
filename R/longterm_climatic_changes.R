@@ -16,10 +16,18 @@ varnms <- c("Monthly average of daily minimum temperature in Jan",
 						"Annual mean temperature from Aug to Jul",
 					  "Seasonal temperature variation from Aug to Jul",
 					  "Two-year cumulative summer precipitation",
-					  "Six-year cumulative Oct-Aug monthly precipitation")
+					  "Six-year cumulative Oct-Aug monthly precipitation")		  			  
 
 startyrs <- c(1901, 1901, 1902, 1902, 1902, 1907)
 units <- c("(°C)", "(°C)", "(°C)", "", "(mm)", "(mm)")
+
+if(0){
+	vars <- c("Tmean", "summerP2")
+	varnms <- c("Annual mean temperature from Aug to Jul",
+					  "Two-year cumulative summer precipitation")
+	startyrs <- c(1902, 1902)
+	units <- c("(°C)", "(mm)")
+}		
 
 cols <- c("#A9A9A9", "#1b9e77", "#d95f02")
 rect <- data.frame(xmin=1996, xmax=2015, ymin=-Inf, ymax=Inf)
@@ -81,6 +89,43 @@ print(plot3, vp = vplayout(2, 1))
 print(plot4, vp = vplayout(2, 2))
 print(plot5, vp = vplayout(3, 1))
 print(plot6, vp = vplayout(3, 2))
+dev.off()
+
+g <- function(i){
+	ptm <- proc.time()
+	indata <- read.csv(paste0(inpath,vars[i],"_",startyrs[i],"_1.csv"))
+	proc.time() - ptm
+	df <- aggregate(indata$var, by=list(prs=indata$prs, yrs=indata$yrs), FUN=mean)
+	df.s <- subset(df, prs == "mpb")
+	test <- cor.test(df.s$yrs, df.s$x)
+	g <- ggplot(data=df, aes(x=yrs, y=x,linetype = prs, color= prs)) + 
+    geom_line(alpha=0.2, size=0.8) + 
+    geom_point(alpha=0.2, size=0.8) + 
+    geom_smooth(method = "lm", formula = y ~ splines::bs(x, 3), se = FALSE)
+  g <- g + scale_linetype_manual(values=override.linetype, guide = FALSE)
+  g <- g + guides(colour = guide_legend(override.aes = list(linetype = override.linetype)))
+  g <- g + scale_colour_manual(name="", labels=c("Continent","Host","MPB"), values = cols)
+  g <- g + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.position="none",
+								 panel.background = element_blank(), axis.line = element_line(colour = "black"), 
+								 axis.text=element_text(size=12), axis.title=element_text(size=14,face="bold"), 
+								plot.title = element_text(hjust = 0.5, size=16,face="bold"))
+  #g <- g + labs(title=varnms[i], subtitle=paste0("Correlation with time in the beetle range: r = ", format(as.numeric(test$estimate), digits = 2),", p-value = ",format(as.numeric(test$p.value), digits = 2)), 
+  #							x=paste("Years since", startyrs[i]), y = paste(vars[i], units[i]))
+  g <- g + labs(title=paste(varnms[i],units[i]), x="", y ="")
+  g <- g + geom_rect(data=rect, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax),color="grey",alpha=0.2,inherit.aes = FALSE)
+  g <- g + geom_vline(xintercept = 2008, color = "black", linetype=4)
+  return(g)
+}
+
+plot1 <- g(1)
+plot2 <- g(2)
+
+png(paste0(outpath,"longterm_climatic_changes_2.png"), width=10, height=6, units="in", res=300)
+grid.newpage()
+par(mar=c(2,1,3,2))
+pushViewport(viewport(layout = grid.layout(2, 1)))
+print(plot1, vp = vplayout(1, 1))
+print(plot2, vp = vplayout(2, 1))
 dev.off()
 
 print("all done")
