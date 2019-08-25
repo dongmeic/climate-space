@@ -105,8 +105,8 @@ ui <- fluidPage(
         tabPanel("Climate space", plotlyOutput("plot1")),
         tabPanel("Boxplot - X", plotlyOutput("plot2")), 
         tabPanel("Boxplot - Y", plotlyOutput("plot3")),
-        tabPanel("Map - X", plotlyOutput("plot4", width = 800, height = 600)),
-        tabPanel("Map - Y", plotlyOutput("plot5", width = 800, height = 600))
+        tabPanel("Map - X", plotlyOutput("plot4")), #width = 800, height = 600
+        tabPanel("Map - Y", plotlyOutput("plot5"))
         )
     )
   )
@@ -361,7 +361,7 @@ server <- function(input, output,session){
     plot1 <- ggplot(data=df, aes(x=xvar, y=yvar, color=factor(key), alpha=factor(key))) + geom_point() +
       labs(x= axislabs[which(varnames==input$xvar)], y = axislabs[which(varnames==input$yvar)],
            title=plttle(1))+
-      scale_colour_manual(name="Presencce", values = cols) +
+      scale_colour_manual(name="Presence", values = cols) +
       scale_alpha_discrete(range=c(input$trans[1], input$trans[2]),guide=FALSE) +
       theme(axis.text=element_text(size=12),axis.title=element_text(size=14,face="bold"))
     print(ggplotly(plot1, width = 900, height = 900))
@@ -377,18 +377,18 @@ server <- function(input, output,session){
     df <- get_df()
     cols <- brewer.pal(length(input$data), input$colors)[c(2,3,1)]
     plot2 <- ggplot(data=df, aes(x=key, y=xvar, fill=factor(key))) + geom_boxplot() +
-      scale_fill_manual(name="Presencce", values = cols) +geom_point(size=1.5, stat = "summary", fun.y = "mean", color="white")+ 
+      scale_fill_manual(name="Presence", values = cols) +geom_point(size=1.5, stat = "summary", fun.y = "mean", color="white")+ 
       theme(axis.text.x=element_blank(),axis.ticks.x=element_blank()) +
-      labs(x="Presencce", y=axislabs[which(varnames==input$xvar)], title=plttle(2))
+      labs(x="Presence", y=axislabs[which(varnames==input$xvar)], title=plttle(2))
     print(ggplotly(plot2, width = 700, height = 800))
   })
   output$plot3 <- renderPlotly({
     df <- get_df()
     cols <- brewer.pal(length(input$data), input$colors)[c(2,3,1)]
     plot3 <- ggplot(data=df, aes(x=key, y=yvar, fill=factor(key)))+geom_boxplot() + 
-      scale_fill_manual(name="Presencce", values = cols) +geom_point(size=1.5, stat = "summary", fun.y = "mean", color="white")+ 
+      scale_fill_manual(name="Presence", values = cols) +geom_point(size=1.5, stat = "summary", fun.y = "mean", color="white")+ 
       theme(axis.text.x=element_blank(),axis.ticks.x=element_blank()) + 
-      labs(x="Presencce", y=axislabs[which(varnames==input$yvar)], title=plttle(3))
+      labs(x="Presence", y=axislabs[which(varnames==input$yvar)], title=plttle(3))
     print(ggplotly(plot3, width = 700, height = 800))
   })
   

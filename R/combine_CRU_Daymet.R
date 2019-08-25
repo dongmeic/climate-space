@@ -1,25 +1,27 @@
 # the script is to combine both CRU and Daymet data
 
 years <- 1996:2015; nyr <- length(years)
-cru.path <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
-daymet.path <- "/gpfs/projects/gavingrp/dongmeic/daymet/bioclm_na/"
+#cru.path <- "/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/"
+#daymet.path <- "/gpfs/projects/gavingrp/dongmeic/daymet/bioclm_na/"
+inpath <- "/Users/dongmeichen/Documents/defense/data/"
 
 # read beetle data
 #na10km_btl_df <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/beetle_presence.csv")
-na10km_btl_df <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/output/tables/beetle_presence_updated.csv")
-rows <- read.csv("/gpfs/projects/gavingrp/dongmeic/beetle/csvfiles/daymet_na10km.csv")
+na10km_btl_df <- read.csv(paste0(inpath, "beetle_presence_updated.csv"))
+rows <- read.csv(paste0(inpath,"daymet_na10km.csv"))
+
 na10km_btl_df <- na10km_btl_df[rows$rows,]
 
 read_CRU <- function(yr){
-	df <- read.csv(paste0(cru.path, "bioclimatic_values_", years[yr],".csv"))
+	df <- read.csv(paste0(inpath, "bioclimatic_values_", years[yr],".csv"))
 	df <- df[, -which(names(df) %in% c("winterTmin", "GSP"))]
 	df[rows$rows,]
 }
 
 read_Daymet <- function(yr){
-	df1 <- read.csv(paste0(daymet.path, "dm_bioclm_var_",years[yr],"_na.csv"))
-  df2 <- read.csv(paste0(daymet.path, "dm_bioclm_var_",years[yr],"_na_wd.csv"))
-  df3 <- read.csv(paste0(daymet.path, "dm_bioclm_DD_",years[yr],"_na.csv"))
+	df1 <- read.csv(paste0(inpath, "dm_bioclm_var_",years[yr],"_na.csv"))
+  df2 <- read.csv(paste0(inpath, "dm_bioclm_var_",years[yr],"_na_wd.csv"))
+  df3 <- read.csv(paste0(inpath, "dm_bioclm_DD_",years[yr],"_na.csv"))
   df1$ddAugJul <- df3$ddAugJul; df1$ddAugJun <- df3$ddAugJun;
 	cbind(df1, df2)
 }
