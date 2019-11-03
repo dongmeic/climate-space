@@ -56,4 +56,5 @@ for (i in 1:length(vargrp)){
 }
 dev.off()
 
+mauc <- auc$VAR[auc$AUC==max(auc$AUC)]
 
